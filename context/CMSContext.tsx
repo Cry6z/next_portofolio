@@ -145,7 +145,7 @@ const defaultMessages: Message[] = [];
 const defaultTags: string[] = ["React", "Next.js", "TypeScript", "Tailwind CSS", "Figma", "Node.js", "Python"];
 
 const defaultTerminalConfig: TerminalConfig = {
-  welcomeMessage: "==================================================\nPORTFOLIO INTERACTIVE SHELL v1.0.0\nKetik 'help' untuk melihat daftar perintah.\n==================================================",
+  welcomeMessage: "==================================================\nportfolio interactive shell v1.0.0\nketik 'help' untuk melihat daftar perintah.\n==================================================",
   promptUser: "guest",
   promptHost: "gibran",
 };
@@ -154,20 +154,20 @@ const defaultTerminalCommands: TerminalCommand[] = [
   {
     id: "tc-1",
     command: "about",
-    description: "Menampilkan bio singkat dari saya",
-    output: "Saya adalah seorang developer yang mendedikasikan diri untuk menciptakan pengalaman digital yang minimalis, modern, dan interaktif. Berfokus pada detail estetika, tipografi yang kuat, serta performa web yang optimal.",
+    description: "menampilkan bio singkat dari saya",
+    output: "saya adalah seorang developer yang mendedikasikan diri untuk menciptakan pengalaman digital yang minimalis, modern, dan interaktif. berfokus pada detail estetika, tipografi yang kuat, serta performa web yang optimal.",
   },
   {
     id: "tc-2",
     command: "contact",
-    description: "Mendapatkan kontak detail email dan sosial media",
-    output: "Email: gibran@example.com\nGitHub: github.com/gibran\nLinkedIn: linkedin.com/in/gibran",
+    description: "mendapatkan kontak detail email dan sosial media",
+    output: "email: gibran@example.com\ngithub: github.com/gibran\nlinkedin: linkedin.com/in/gibran",
   },
   {
     id: "tc-3",
     command: "social",
-    description: "Melihat tautan akun sosial media saya",
-    output: "Instagram: @gibran\nGitHub: github.com/gibran",
+    description: "melihat tautan akun sosial media saya",
+    output: "instagram: @gibran\ngithub: github.com/gibran",
   }
 ];
 

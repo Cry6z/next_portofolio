@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { useCMS } from "@/context/CMSContext";
 import ThemeToggle from "./ThemeToggle";
-import { Menu, X, ArrowUpRight } from "lucide-react";
+import { Menu, X, ArrowUpRight, Terminal } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 
@@ -60,6 +60,17 @@ export default function Navbar() {
                 <span className="absolute bottom-0 left-0 w-0 h-[1.5px] bg-foreground transition-all duration-300 group-hover:w-full" />
               </a>
             ))}
+            
+            {/* Terminal Desktop Link (Blue & Icon) */}
+            <a
+              href="#terminal"
+              className="flex items-center gap-1.5 text-sm font-semibold text-blue-500 hover:text-blue-400 relative transition-colors duration-200 group py-1"
+            >
+              <Terminal className="h-4 w-4" />
+              <span>Terminal</span>
+              <span className="absolute bottom-0 left-0 w-0 h-[1.5px] bg-blue-500 transition-all duration-300 group-hover:w-full" />
+            </a>
+
             <ThemeToggle />
           </nav>
 
@@ -103,6 +114,22 @@ export default function Navbar() {
                 </motion.a>
               ))}
 
+              {/* Terminal Mobile Link (Blue & Icon) */}
+              <motion.a
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: navItems.length * 0.05 }}
+                key="terminal-mobile"
+                href="#terminal"
+                onClick={() => setMobileMenuOpen(false)}
+                className="text-blue-500 border-b border-blue-500/20 pb-2 flex justify-between items-center"
+              >
+                <span className="flex items-center gap-2">
+                  <Terminal className="h-6 w-6" />
+                  <span>Terminal</span>
+                </span>
+                <span className="text-sm font-normal text-blue-500">0{navItems.length + 1}</span>
+              </motion.a>
             </nav>
             <div className="text-xs text-accent-custom tracking-wider font-mono">
               PORTFOLIO v1.0.0
