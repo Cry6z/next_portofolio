@@ -183,94 +183,41 @@ export function CMSProvider({ children }: { children: React.ReactNode }) {
 
       if (supabase) {
         try {
-          // Fetch Profile
-          const { data: profileData, error: pError } = await supabase
-            .from("profile")
-            .select("*")
-            .eq("id", "default")
-            .maybeSingle();
+          const [
+            { data: profileData, error: pError },
+            { data: projectsData, error: prError },
+            { data: experiencesData, error: exError },
+            { data: skillsData, error: skError },
+            { data: messagesData, error: msgError },
+            { data: termConfigData, error: tcError },
+            { data: termCmdsData, error: tcmdError }
+          ] = await Promise.all([
+            supabase.from("profile").select("*").eq("id", "default").maybeSingle(),
+            supabase.from("projects").select("*").order("created_at", { ascending: true }),
+            supabase.from("experiences").select("*").order("created_at", { ascending: true }),
+            supabase.from("skills").select("*").order("created_at", { ascending: true }),
+            supabase.from("messages").select("*").order("created_at", { ascending: false }),
+            supabase.from("terminal_config").select("*").eq("id", "default").maybeSingle(),
+            supabase.from("terminal_commands").select("*").order("created_at", { ascending: true })
+          ]);
 
-          // Fetch Projects
-          const { data: projectsData, error: prError } = await supabase
-            .from("projects")
-            .select("*")
-            .order("created_at", { ascending: true });
+          // Check if it's a table missing error (PGRST205)
+          const isTableMissing = [pError, prError, exError, skError, msgError, tcError, tcmdError].some(
+            (err) => err?.code === 'PGRST205'
+          );
 
-          // Fetch Experiences
-          const { data: experiencesData, error: exError } = await supabase
-            .from("experiences")
-            .select("*")
-            .order("created_at", { ascending: true });
-
-          // Fetch Skills
-          const { data: skillsData, error: skError } = await supabase
-            .from("skills")
-            .select("*")
-            .order("created_at", { ascending: true });
-
-          // Fetch Messages
-          const { data: messagesData, error: msgError } = await supabase
-            .from("messages")
-            .select("*")
-            .order("created_at", { ascending: false });
-
-          // Fetch Terminal Config
-          const { data: termConfigData, error: tcError } = await supabase
-            .from("terminal_config")
-            .select("*")
-            .eq("id", "default")
-            .maybeSingle();
-
-          // Fetch Terminal Commands
-          const { data: termCmdsData, error: tcmdError } = await supabase
-            .from("terminal_commands")
-            .select("*")
-            .order("created_at", { ascending: true });
-
-          // Check if tables are missing or not created yet
-          if (pError || prError || exError || skError || msgError || tcError || tcmdError) {
-            console.warn("Supabase tables might not exist yet. Running in local fallback mode.", {
-              pError, prError, exError, skError, msgError, tcError, tcmdError
-            });
+          if (isTableMissing) {
+            console.warn("Beberapa tabel Supabase belum ada. Pastikan sudah menjalankan skrip SQL.");
           } else {
-            // Apply Profile
-            if (profileData) {
-              setProfile(profileData);
-            } else {
-              // Seed default profile if empty
-              await supabase.from("profile").upsert({ id: "default", ...defaultProfile });
-            }
-
-            // Apply Lists
+            // Apply Data, ignore minor network errors to avoid wiping screen
+            if (profileData) setProfile(profileData);
             if (projectsData) setProjects(projectsData);
             if (experiencesData) setExperiences(experiencesData);
             if (skillsData) setSkills(skillsData);
             if (messagesData) setMessages(messagesData);
-
-            // Apply Terminal Config
-            if (termConfigData) {
-              setTerminalConfig(termConfigData);
-            } else {
-              // Seed default config if empty
-              await supabase.from("terminal_config").upsert({ id: "default", ...defaultTerminalConfig });
-            }
-
-            // Apply Terminal Commands
-            if (termCmdsData && termCmdsData.length > 0) {
-              setTerminalCommands(termCmdsData);
-            } else {
-              // Seed default commands if empty
-              for (const cmd of defaultTerminalCommands) {
-                await supabase.from("terminal_commands").upsert(cmd);
-              }
-              // Fetch again after seeding
-              const { data: reCmds } = await supabase
-                .from("terminal_commands")
-                .select("*")
-                .order("created_at", { ascending: true });
-              if (reCmds) setTerminalCommands(reCmds);
-            }
-
+            if (termConfigData) setTerminalConfig(termConfigData);
+            if (termCmdsData && termCmdsData.length > 0) setTerminalCommands(termCmdsData);
+            
             isSupabaseLoaded = true;
           }
         } catch (e) {
@@ -361,7 +308,9 @@ export function CMSProvider({ children }: { children: React.ReactNode }) {
     saveProfile(newProfile);
     if (supabase) {
       try {
-        await supabase.from("profile").upsert({ id: "default", ...newProfile });
+        const { miniAvatarUrl, welcomeMessage, ...profileToSave } = newProfile;
+        const { error } = await supabase.from("profile").upsert({ id: "default", ...profileToSave });
+        if (error) console.error("Supabase profile update failed", error);
       } catch (e) {
         console.error("Supabase profile update failed", e);
       }
@@ -598,17 +547,22 @@ export function CMSProvider({ children }: { children: React.ReactNode }) {
       if (savedProfile) {
         const parsed = JSON.parse(savedProfile);
         setProfile(parsed);
-        await supabase.from("profile").upsert({ id: "default", ...parsed });
+        
+        // Buang field yang belum didukung di skema Supabase agar tidak error
+        const { miniAvatarUrl, welcomeMessage, ...profileToSave } = parsed;
+        
+        const { error } = await supabase.from("profile").upsert({ id: "default", ...profileToSave });
+        if (error) throw new Error("Gagal migrasi profil: " + error.message);
       }
 
       const savedProjects = localStorage.getItem("cms-projects");
       if (savedProjects) {
         const parsed = JSON.parse(savedProjects);
         setProjects(parsed);
-        // Hapus default
         await supabase.from("projects").delete().neq("id", "none");
         for (const p of parsed) {
-           await supabase.from("projects").upsert(p);
+           const { error } = await supabase.from("projects").upsert(p);
+           if (error) throw new Error("Gagal migrasi proyek: " + error.message);
         }
       }
 
@@ -618,7 +572,8 @@ export function CMSProvider({ children }: { children: React.ReactNode }) {
         setExperiences(parsed);
         await supabase.from("experiences").delete().neq("id", "none");
         for (const e of parsed) {
-           await supabase.from("experiences").upsert(e);
+           const { error } = await supabase.from("experiences").upsert(e);
+           if (error) throw new Error("Gagal migrasi pengalaman: " + error.message);
         }
       }
 
@@ -628,14 +583,15 @@ export function CMSProvider({ children }: { children: React.ReactNode }) {
         setSkills(parsed);
         await supabase.from("skills").delete().neq("id", "none");
         for (const s of parsed) {
-           await supabase.from("skills").upsert(s);
+           const { error } = await supabase.from("skills").upsert(s);
+           if (error) throw new Error("Gagal migrasi keahlian: " + error.message);
         }
       }
 
       alert("Penyelamatan data berhasil! Semua data lokal Anda telah dipindahkan ke Cloud.");
-    } catch (e) {
+    } catch (e: any) {
       console.error(e);
-      alert("Terjadi kesalahan saat migrasi data.");
+      alert("Terjadi kesalahan saat migrasi data: " + e.message);
     }
   };
 
