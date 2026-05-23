@@ -209,12 +209,53 @@ export function CMSProvider({ children }: { children: React.ReactNode }) {
           if (isTableMissing) {
             console.warn("Beberapa tabel Supabase belum ada. Pastikan sudah menjalankan skrip SQL.");
           } else {
-            // Apply Data, ignore minor network errors to avoid wiping screen
-            if (profileData) setProfile(profileData);
-            if (projectsData) setProjects(projectsData);
-            if (experiencesData) setExperiences(experiencesData);
-            if (skillsData) setSkills(skillsData);
+            // Apply Profile
+            if (profileData) {
+              setProfile(profileData);
+            } else {
+              // Seed default profile if empty
+              const { miniAvatarUrl, welcomeMessage, avatarUrl, resumeUrl, ...pToSave } = defaultProfile;
+              const payload = { ...pToSave, avatarurl: avatarUrl, resumeurl: resumeUrl };
+              await supabase.from("profile").upsert({ id: "default", ...payload });
+              setProfile(defaultProfile);
+            }
+
+            // Apply Projects
+            if (projectsData && projectsData.length > 0) {
+              setProjects(projectsData);
+            } else {
+              // Seed default projects
+              for (const p of defaultProjects) {
+                const { demoUrl, githubUrl, ...pToSave } = p;
+                await supabase.from("projects").upsert({ ...pToSave, demourl: demoUrl, githuburl: githubUrl });
+              }
+              setProjects(defaultProjects);
+            }
+
+            // Apply Experiences
+            if (experiencesData && experiencesData.length > 0) {
+              setExperiences(experiencesData);
+            } else {
+              for (const e of defaultExperiences) {
+                await supabase.from("experiences").upsert(e);
+              }
+              setExperiences(defaultExperiences);
+            }
+
+            // Apply Skills
+            if (skillsData && skillsData.length > 0) {
+              setSkills(skillsData);
+            } else {
+              for (const s of defaultSkills) {
+                await supabase.from("skills").upsert(s);
+              }
+              setSkills(defaultSkills);
+            }
+
+            // Apply Messages
             if (messagesData) setMessages(messagesData);
+
+            // Apply Terminal Config
             if (termConfigData) setTerminalConfig(termConfigData);
             if (termCmdsData && termCmdsData.length > 0) setTerminalCommands(termCmdsData);
             
