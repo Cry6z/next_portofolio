@@ -211,7 +211,14 @@ export function CMSProvider({ children }: { children: React.ReactNode }) {
           } else {
             // Apply Profile
             if (profileData) {
-              setProfile(profileData);
+              const mappedProfile = {
+                ...profileData,
+                avatarUrl: profileData.avatarurl || profileData.avatarUrl,
+                resumeUrl: profileData.resumeurl || profileData.resumeUrl,
+                miniAvatarUrl: profileData.avatarurl || profileData.avatarUrl,
+                welcomeMessage: defaultProfile.welcomeMessage,
+              };
+              setProfile(mappedProfile);
             } else {
               // Seed default profile if empty
               const { miniAvatarUrl, welcomeMessage, avatarUrl, resumeUrl, ...pToSave } = defaultProfile;
@@ -222,7 +229,12 @@ export function CMSProvider({ children }: { children: React.ReactNode }) {
 
             // Apply Projects
             if (projectsData && projectsData.length > 0) {
-              setProjects(projectsData);
+              const mappedProjects = projectsData.map((p: any) => ({
+                ...p,
+                demoUrl: p.demourl || p.demoUrl,
+                githubUrl: p.githuburl || p.githubUrl,
+              }));
+              setProjects(mappedProjects);
             } else {
               // Seed default projects
               for (const p of defaultProjects) {
@@ -256,7 +268,15 @@ export function CMSProvider({ children }: { children: React.ReactNode }) {
             if (messagesData) setMessages(messagesData);
 
             // Apply Terminal Config
-            if (termConfigData) setTerminalConfig(termConfigData);
+            if (termConfigData) {
+              const mappedTermConfig = {
+                ...termConfigData,
+                welcomeMessage: termConfigData.welcomemessage || termConfigData.welcomeMessage,
+                promptUser: termConfigData.promptuser || termConfigData.promptUser,
+                promptHost: termConfigData.prompthost || termConfigData.promptHost,
+              };
+              setTerminalConfig(mappedTermConfig);
+            }
             if (termCmdsData && termCmdsData.length > 0) setTerminalCommands(termCmdsData);
             
             isSupabaseLoaded = true;
