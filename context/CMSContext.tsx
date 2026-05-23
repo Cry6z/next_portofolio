@@ -474,12 +474,19 @@ export function CMSProvider({ children }: { children: React.ReactNode }) {
   };
 
   const updateTerminalConfig = async (config: TerminalConfig) => {
-    saveTerminalConfig(config);
+    setTerminalConfig(config);
+    localStorage.setItem("cms-terminal-config", JSON.stringify(config));
     if (supabase) {
       try {
-        await supabase.from("terminal_config").upsert({ id: "default", ...config });
+        const payload = {
+          id: "default",
+          welcomemessage: config.welcomeMessage,
+          promptuser: config.promptUser,
+          prompthost: config.promptHost
+        };
+        await supabase.from("terminal_config").upsert(payload);
       } catch (e) {
-        console.error("Supabase terminal config failed", e);
+        console.error("Supabase update terminal config failed", e);
       }
     }
   };
