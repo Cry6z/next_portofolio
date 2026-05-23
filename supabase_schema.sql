@@ -150,3 +150,29 @@ ON CONFLICT (id) DO NOTHING;
 
 -- PERBARUAN: Menambahkan kolom miniAvatarUrl untuk foto kecil di Profile Card
 ALTER TABLE profile ADD COLUMN IF NOT EXISTS "miniAvatarUrl" TEXT;
+
+-- 8. TABEL TAG GLOBAL
+CREATE TABLE IF NOT EXISTS tags (
+  id TEXT PRIMARY KEY,
+  name TEXT NOT NULL UNIQUE,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now())
+);
+
+-- Kebijakan RLS Tag (Buka Akses)
+ALTER TABLE tags ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Buka akses baca tag untuk publik" ON tags FOR SELECT USING (true);
+CREATE POLICY "Buka akses modifikasi tag untuk publik" ON tags FOR ALL USING (true) WITH CHECK (true);
+
+-- Isi tag awal jika belum ada
+INSERT INTO tags (id, name) VALUES
+('tag-react', 'React'),
+('tag-nextjs', 'Next.js'),
+('tag-typescript', 'TypeScript'),
+('tag-tailwind-css', 'Tailwind CSS'),
+('tag-figma', 'Figma'),
+('tag-nodejs', 'Node.js'),
+('tag-python', 'Python')
+ON CONFLICT (id) DO NOTHING;
+
+-- PERBARUAN: Menambahkan kolom screenshots untuk galeri gambar di Projects
+ALTER TABLE projects ADD COLUMN IF NOT EXISTS screenshots TEXT[] DEFAULT '{}';
