@@ -2,25 +2,106 @@
 
 :root {
   --background: #ffffff;
-  --foreground: #171717;
+  --foreground: #000000;
+  --accent: #71717a;
+  --border: #e4e4e7;
+  --card-bg: #fafafa;
+  --accent-light: #f4f4f5;
+  --accent-hover: #18181b;
 }
 
-@theme inline {
+html.dark {
+  --background: #000000;
+  --foreground: #ffffff;
+  --accent: #a1a1aa;
+  --border: #27272a;
+  --card-bg: #09090b;
+  --accent-light: #18181b;
+  --accent-hover: #f4f4f5;
+}
+
+@theme {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --color-border-custom: var(--border);
+  --color-card-custom: var(--card-bg);
+  --color-accent-custom: var(--accent);
+  --color-accent-light: var(--accent-light);
+  --color-accent-hover: var(--accent-hover);
+  --font-sans: var(--font-anonymous-pro);
+  --font-mono: var(--font-anonymous-pro);
+  --font-hero: var(--font-geist-sans);
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-anonymous-pro), Courier New, monospace;
+  overflow-x: hidden;
+}
+
+/* Universal transition for theme swapping */
+body, header, footer, main, section, nav, button, input, textarea, select, a {
+  transition: background-color 0.4s cubic-bezier(0.4, 0, 0.2, 1), 
+              color 0.4s cubic-bezier(0.4, 0, 0.2, 1), 
+              border-color 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+              box-shadow 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Modern minimalist selection styling */
+::selection {
+  background-color: var(--foreground);
+  color: var(--background);
+}
+
+/* Custom minimal scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--background);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent);
+}
+
+/* Smooth scroll behavior */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Custom cursor specific styles */
+@media (pointer: fine) {
+  .custom-cursor-active, 
+  .custom-cursor-active a, 
+  .custom-cursor-active button,
+  .custom-cursor-active input,
+  .custom-cursor-active textarea,
+  .custom-cursor-active [role="button"] {
+    cursor: none !important;
+  }
+}
+
+/* Custom utilities */
+.glassmorphism {
+  background: rgba(var(--background), 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.text-stroke {
+  -webkit-text-stroke: 1px var(--foreground);
+  color: transparent;
+}
+
+.grid-bg {
+  background-size: 40px 40px;
+  background-image: 
+    linear-gradient(to right, var(--color-border-custom) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--color-border-custom) 1px, transparent 1px);
 }
