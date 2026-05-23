@@ -308,8 +308,13 @@ export function CMSProvider({ children }: { children: React.ReactNode }) {
     saveProfile(newProfile);
     if (supabase) {
       try {
-        const { miniAvatarUrl, welcomeMessage, ...profileToSave } = newProfile;
-        const { error } = await supabase.from("profile").upsert({ id: "default", ...profileToSave });
+        const { miniAvatarUrl, welcomeMessage, avatarUrl, resumeUrl, ...profileToSave } = newProfile;
+        const supabasePayload = {
+          ...profileToSave,
+          avatarurl: avatarUrl,
+          resumeurl: resumeUrl,
+        };
+        const { error } = await supabase.from("profile").upsert({ id: "default", ...supabasePayload });
         if (error) console.error("Supabase profile update failed", error);
       } catch (e) {
         console.error("Supabase profile update failed", e);
@@ -322,7 +327,10 @@ export function CMSProvider({ children }: { children: React.ReactNode }) {
     saveProjects([...projects, newProj]);
     if (supabase) {
       try {
-        await supabase.from("projects").insert(newProj);
+        const { demoUrl, githubUrl, ...pToSave } = newProj;
+        const pPayload = { ...pToSave, demourl: demoUrl, githuburl: githubUrl };
+        const { error } = await supabase.from("projects").insert(pPayload);
+        if (error) console.error("Supabase add project failed", error);
       } catch (e) {
         console.error("Supabase add project failed", e);
       }
@@ -334,7 +342,11 @@ export function CMSProvider({ children }: { children: React.ReactNode }) {
     saveProjects(newProjs);
     if (supabase) {
       try {
-        await supabase.from("projects").update(updated).eq("id", id);
+        const payload: any = { ...updated };
+        if (payload.demoUrl !== undefined) { payload.demourl = payload.demoUrl; delete payload.demoUrl; }
+        if (payload.githubUrl !== undefined) { payload.githuburl = payload.githubUrl; delete payload.githubUrl; }
+        const { error } = await supabase.from("projects").update(payload).eq("id", id);
+        if (error) console.error("Supabase update project failed", error);
       } catch (e) {
         console.error("Supabase update project failed", e);
       }
@@ -547,11 +559,9 @@ export function CMSProvider({ children }: { children: React.ReactNode }) {
       if (savedProfile) {
         const parsed = JSON.parse(savedProfile);
         setProfile(parsed);
-        
-        // Buang field yang belum didukung di skema Supabase agar tidak error
-        const { miniAvatarUrl, welcomeMessage, ...profileToSave } = parsed;
-        
-        const { error } = await supabase.from("profile").upsert({ id: "default", ...profileToSave });
+        const { miniAvatarUrl, welcomeMessage, avatarUrl, resumeUrl, ...profileToSave } = parsed;
+        const supabasePayload = { ...profileToSave, avatarurl: avatarUrl, resumeurl: resumeUrl };
+        const { error } = await supabase.from("profile").upsert({ id: "default", ...supabasePayload });
         if (error) throw new Error("Gagal migrasi profil: " + error.message);
       }
 
@@ -561,7 +571,9 @@ export function CMSProvider({ children }: { children: React.ReactNode }) {
         setProjects(parsed);
         await supabase.from("projects").delete().neq("id", "none");
         for (const p of parsed) {
-           const { error } = await supabase.from("projects").upsert(p);
+           const { demoUrl, githubUrl, ...pToSave } = p;
+           const pPayload = { ...pToSave, demourl: demoUrl, githuburl: githubUrl };
+           const { error } = await supabase.from("projects").upsert(pPayload);
            if (error) throw new Error("Gagal migrasi proyek: " + error.message);
         }
       }
