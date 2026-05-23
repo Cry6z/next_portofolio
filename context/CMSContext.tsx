@@ -27,6 +27,7 @@ export interface Project {
   demoUrl: string;
   githubUrl: string;
   featured: boolean;
+  screenshots?: string[];
 }
 
 export interface Experience {
@@ -76,11 +77,16 @@ interface CMSContextType {
   terminalCommands: TerminalCommand[];
   adminPassword: string;
   isPortfolioOpen: boolean;
+  tags: string[];
   
   // Update Profile
   updateProfile: (profile: Partial<Profile>) => void;
   updateAdminPassword: (password: string) => void;
   togglePortfolioStatus: (isOpen: boolean) => void;
+  
+  // Global Tags CRUD
+  addTag: (name: string) => Promise<void>;
+  deleteTag: (name: string) => Promise<void>;
   
   // Project CRUD
   addProject: (project: Omit<Project, "id">) => void;
@@ -136,6 +142,7 @@ const defaultProjects: Project[] = [];
 const defaultExperiences: Experience[] = [];
 const defaultSkills: Skill[] = [];
 const defaultMessages: Message[] = [];
+const defaultTags: string[] = ["React", "Next.js", "TypeScript", "Tailwind CSS", "Figma", "Node.js", "Python"];
 
 const defaultTerminalConfig: TerminalConfig = {
   welcomeMessage: "==================================================\nPORTFOLIO INTERACTIVE SHELL v1.0.0\nKetik 'help' untuk melihat daftar perintah.\n==================================================",
@@ -174,6 +181,7 @@ export function CMSProvider({ children }: { children: React.ReactNode }) {
   const [terminalCommands, setTerminalCommands] = useState<TerminalCommand[]>(defaultTerminalCommands);
   const [adminPassword, setAdminPassword] = useState<string>("admin123");
   const [isPortfolioOpen, setIsPortfolioOpen] = useState<boolean>(true);
+  const [tags, setTags] = useState<string[]>(defaultTags);
   const [mounted, setMounted] = useState(false);
 
   // Load from Supabase (with fallback to localStorage)
@@ -190,7 +198,8 @@ export function CMSProvider({ children }: { children: React.ReactNode }) {
             { data: skillsData, error: skError },
             { data: messagesData, error: msgError },
             { data: termConfigData, error: tcError },
-            { data: termCmdsData, error: tcmdError }
+            { data: termCmdsData, error: tcmdError },
+            { data: tagsData, error: tError }
           ] = await Promise.all([
             supabase.from("profile").select("*").eq("id", "default").maybeSingle(),
             supabase.from("projects").select("*").order("created_at", { ascending: true }),
@@ -198,11 +207,12 @@ export function CMSProvider({ children }: { children: React.ReactNode }) {
             supabase.from("skills").select("*").order("created_at", { ascending: true }),
             supabase.from("messages").select("*").order("created_at", { ascending: false }),
             supabase.from("terminal_config").select("*").eq("id", "default").maybeSingle(),
-            supabase.from("terminal_commands").select("*").order("created_at", { ascending: true })
+            supabase.from("terminal_commands").select("*").order("created_at", { ascending: true }),
+            supabase.from("tags").select("*").order("name", { ascending: true })
           ]);
 
           // Check if it's a table missing error (PGRST205)
-          const isTableMissing = [pError, prError, exError, skError, msgError, tcError, tcmdError].some(
+          const isTableMissing = [pError, prError, exError, skError, msgError, tcError, tcmdError, tError].some(
             (err) => err?.code === 'PGRST205'
           );
 
@@ -233,6 +243,7 @@ export function CMSProvider({ children }: { children: React.ReactNode }) {
                 ...p,
                 demoUrl: p.demourl || p.demoUrl,
                 githubUrl: p.githuburl || p.githubUrl,
+                screenshots: p.screenshots || [],
               }));
               setProjects(mappedProjects);
             } else {
@@ -278,6 +289,17 @@ export function CMSProvider({ children }: { children: React.ReactNode }) {
               setTerminalConfig(mappedTermConfig);
             }
             if (termCmdsData && termCmdsData.length > 0) setTerminalCommands(termCmdsData);
+
+            // Apply Tags
+            if (tagsData && tagsData.length > 0) {
+              setTags(tagsData.map((t: any) => t.name));
+            } else {
+              // Seed default tags if empty
+              for (const name of defaultTags) {
+                await supabase.from("tags").upsert({ id: `tag-${name.toLowerCase().replace(/\s+/g, '-')}`, name });
+              }
+              setTags(defaultTags);
+            }
             
             isSupabaseLoaded = true;
           }
@@ -297,6 +319,7 @@ export function CMSProvider({ children }: { children: React.ReactNode }) {
           const savedTerminalCommands = localStorage.getItem("cms-terminal-commands");
           const savedPassword = localStorage.getItem("cms-admin-password");
           const savedPortfolioOpen = localStorage.getItem("cms-portfolio-open");
+          const savedTags = localStorage.getItem("cms-tags");
 
           setTimeout(() => {
             if (savedProfile) setProfile(JSON.parse(savedProfile));
@@ -308,6 +331,7 @@ export function CMSProvider({ children }: { children: React.ReactNode }) {
             if (savedTerminalCommands) setTerminalCommands(JSON.parse(savedTerminalCommands));
             if (savedPassword) setAdminPassword(savedPassword);
             if (savedPortfolioOpen) setIsPortfolioOpen(JSON.parse(savedPortfolioOpen));
+            if (savedTags) setTags(JSON.parse(savedTags));
           }, 0);
         } catch (e) {
           console.error("Failed to load local CMS data", e);
@@ -323,6 +347,11 @@ export function CMSProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   // Save helpers (saves locally as secondary backup)
+  const saveTags = (newTags: string[]) => {
+    setTags(newTags);
+    localStorage.setItem("cms-tags", JSON.stringify(newTags));
+  };
+
   const saveProfile = (newProfile: Profile) => {
     setProfile(newProfile);
     localStorage.setItem("cms-profile", JSON.stringify(newProfile));
@@ -364,6 +393,32 @@ export function CMSProvider({ children }: { children: React.ReactNode }) {
   };
 
   // CRUD actions with Supabase write synchronization
+  const addTag = async (name: string) => {
+    const trimmed = name.trim();
+    if (!trimmed || tags.includes(trimmed)) return;
+    const newTags = [...tags, trimmed];
+    saveTags(newTags);
+    if (supabase) {
+      try {
+        await supabase.from("tags").upsert({ id: `tag-${trimmed.toLowerCase().replace(/\s+/g, '-')}`, name: trimmed });
+      } catch (e) {
+        console.error("Supabase add tag failed", e);
+      }
+    }
+  };
+
+  const deleteTag = async (name: string) => {
+    const newTags = tags.filter((t) => t !== name);
+    saveTags(newTags);
+    if (supabase) {
+      try {
+        await supabase.from("tags").delete().eq("name", name);
+      } catch (e) {
+        console.error("Supabase delete tag failed", e);
+      }
+    }
+  };
+
   const updateProfile = async (updated: Partial<Profile>) => {
     const newProfile = { ...profile, ...updated };
     saveProfile(newProfile);
@@ -595,6 +650,7 @@ export function CMSProvider({ children }: { children: React.ReactNode }) {
     saveMessages(defaultMessages);
     saveTerminalConfig(defaultTerminalConfig);
     saveTerminalCommands(defaultTerminalCommands);
+    saveTags(defaultTags);
     
     if (supabase) {
       try {
@@ -607,6 +663,10 @@ export function CMSProvider({ children }: { children: React.ReactNode }) {
         await supabase.from("terminal_commands").delete().neq("id", "none");
         for (const cmd of defaultTerminalCommands) {
           await supabase.from("terminal_commands").upsert(cmd);
+        }
+        await supabase.from("tags").delete().neq("id", "none");
+        for (const name of defaultTags) {
+          await supabase.from("tags").upsert({ id: `tag-${name.toLowerCase().replace(/\s+/g, '-')}`, name });
         }
       } catch (e) {
         console.error("Supabase reset all data failed", e);
@@ -668,6 +728,17 @@ export function CMSProvider({ children }: { children: React.ReactNode }) {
         }
       }
 
+      const savedTags = localStorage.getItem("cms-tags");
+      if (savedTags) {
+        const parsed = JSON.parse(savedTags);
+        setTags(parsed);
+        await supabase.from("tags").delete().neq("id", "none");
+        for (const name of parsed) {
+          const { error } = await supabase.from("tags").upsert({ id: `tag-${name.toLowerCase().replace(/\s+/g, '-')}`, name });
+          if (error) throw new Error("Gagal migrasi tag: " + error.message);
+        }
+      }
+
       alert("Penyelamatan data berhasil! Semua data lokal Anda telah dipindahkan ke Cloud.");
     } catch (e: any) {
       console.error(e);
@@ -691,9 +762,12 @@ export function CMSProvider({ children }: { children: React.ReactNode }) {
         terminalCommands,
         adminPassword,
         isPortfolioOpen,
+        tags,
         updateProfile,
         updateAdminPassword,
         togglePortfolioStatus,
+        addTag,
+        deleteTag,
         addProject,
         updateProject,
         deleteProject,
