@@ -121,7 +121,7 @@ CREATE POLICY "Buka akses modifikasi terminal config untuk publik" ON terminal_c
 INSERT INTO terminal_config (id, welcomeMessage, promptUser, promptHost)
 VALUES (
   'default',
-  '==================================================\nPORTFOLIO INTERACTIVE SHELL v1.0.0\nKetik ''help'' untuk melihat daftar perintah.\n==================================================',
+  '==================================================\nportfolio interactive shell v1.0.0\nketik ''help'' untuk melihat daftar perintah.\n==================================================',
   'guest',
   'gibran'
 ) ON CONFLICT (id) DO NOTHING;
@@ -143,9 +143,9 @@ CREATE POLICY "Buka akses modifikasi terminal command untuk publik" ON terminal_
 
 -- Isi perintah awal jika belum ada
 INSERT INTO terminal_commands (id, command, description, output) VALUES
-('tc-1', 'about', 'Menampilkan bio singkat dari saya', 'Saya adalah seorang developer yang mendedikasikan diri untuk menciptakan pengalaman digital yang minimalis, modern, dan interaktif. Berfokus pada detail estetika, tipografi yang kuat, serta performa web yang optimal.'),
-('tc-2', 'skills', 'Menampilkan ringkasan keahlian', 'Keahlian Utama:\n- Frontend: React, Next.js, TypeScript, Tailwind CSS\n- UI/UX: Figma, Wireframing, Prototyping'),
-('tc-3', 'contact', 'Menampilkan informasi kontak saya', 'Hubungi saya melalui:\n- Email: gibran@example.com\n- Dashboard Admin: Tab Inbox Kontak\n- Instagram: @gibran')
+('tc-1', 'about', 'menampilkan bio singkat dari saya', 'saya adalah seorang developer yang mendedikasikan diri untuk menciptakan pengalaman digital yang minimalis, modern, dan interaktif. berfokus pada detail estetika, tipografi yang kuat, serta performa web yang optimal.'),
+('tc-2', 'skills', 'menampilkan ringkasan keahlian', 'keahlian utama:\n- frontend: react, next.js, typescript, tailwind css\n- ui/ux: figma, wireframing, prototyping'),
+('tc-3', 'contact', 'menampilkan informasi kontak saya', 'hubungi saya melalui:\n- email: gibran@example.com\n- dashboard admin: tab inbox kontak\n- instagram: @gibran')
 ON CONFLICT (id) DO NOTHING;
 
 -- PERBARUAN: Menambahkan kolom miniAvatarUrl untuk foto kecil di Profile Card
