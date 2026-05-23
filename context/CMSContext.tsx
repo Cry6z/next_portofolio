@@ -110,6 +110,9 @@ interface CMSContextType {
 
   // Restore Defaults
   resetAllData: () => void;
+  
+  // Migration
+  migrateLocalData: () => Promise<void>;
 }
 
 const CMSContext = createContext<CMSContextType | undefined>(undefined);
@@ -587,6 +590,55 @@ export function CMSProvider({ children }: { children: React.ReactNode }) {
     localStorage.setItem("cms-portfolio-open", JSON.stringify(isOpen));
   };
 
+  const migrateLocalData = async () => {
+    if (!supabase) return;
+    
+    try {
+      const savedProfile = localStorage.getItem("cms-profile");
+      if (savedProfile) {
+        const parsed = JSON.parse(savedProfile);
+        setProfile(parsed);
+        await supabase.from("profile").upsert({ id: "default", ...parsed });
+      }
+
+      const savedProjects = localStorage.getItem("cms-projects");
+      if (savedProjects) {
+        const parsed = JSON.parse(savedProjects);
+        setProjects(parsed);
+        // Hapus default
+        await supabase.from("projects").delete().neq("id", "none");
+        for (const p of parsed) {
+           await supabase.from("projects").upsert(p);
+        }
+      }
+
+      const savedExperiences = localStorage.getItem("cms-experiences");
+      if (savedExperiences) {
+        const parsed = JSON.parse(savedExperiences);
+        setExperiences(parsed);
+        await supabase.from("experiences").delete().neq("id", "none");
+        for (const e of parsed) {
+           await supabase.from("experiences").upsert(e);
+        }
+      }
+
+      const savedSkills = localStorage.getItem("cms-skills");
+      if (savedSkills) {
+        const parsed = JSON.parse(savedSkills);
+        setSkills(parsed);
+        await supabase.from("skills").delete().neq("id", "none");
+        for (const s of parsed) {
+           await supabase.from("skills").upsert(s);
+        }
+      }
+
+      alert("Penyelamatan data berhasil! Semua data lokal Anda telah dipindahkan ke Cloud.");
+    } catch (e) {
+      console.error(e);
+      alert("Terjadi kesalahan saat migrasi data.");
+    }
+  };
+
   if (!mounted) {
     return null;
   }
@@ -623,6 +675,7 @@ export function CMSProvider({ children }: { children: React.ReactNode }) {
         updateTerminalCommand,
         deleteTerminalCommand,
         resetAllData,
+        migrateLocalData,
       }}
     >
       {children}

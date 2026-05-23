@@ -17,7 +17,7 @@ export default function OverviewTab({
   handleResetData,
   unreadCount,
 }: OverviewTabProps) {
-  const { profile, projects, skills, experiences, messages } = useCMS();
+  const { profile, projects, skills, experiences, messages, migrateLocalData } = useCMS();
 
   return (
     <div className="flex flex-col gap-8">
@@ -163,6 +163,28 @@ export default function OverviewTab({
                 {supabase ? "SUPABASE CLOUD (AKTIF)" : "LOCAL STORAGE MODE"}
               </span>
             </div>
+            
+            {/* Tombol Migrasi Darurat */}
+            {supabase && (
+              <div className="bg-yellow-500/5 border border-yellow-500/20 p-3 rounded-xl mt-[-4px]">
+                <span className="text-[9px] font-mono text-yellow-500/80 uppercase block tracking-wider mb-1">Penyelamatan Data Lokal</span>
+                <p className="text-[9px] text-accent-custom mb-2">Jika data Anda hilang setelah terhubung ke Supabase, klik tombol ini untuk memindahkan data dari memori browser lama Anda ke Cloud.</p>
+                <button
+                  onClick={async (e) => {
+                    const btn = e.currentTarget;
+                    btn.disabled = true;
+                    btn.innerHTML = "Memigrasikan...";
+                    await migrateLocalData();
+                    btn.innerHTML = "Selesai!";
+                    setTimeout(() => window.location.reload(), 1500);
+                  }}
+                  className="mt-1 flex items-center gap-2 border border-yellow-500/30 bg-yellow-500/10 hover:bg-yellow-500 hover:text-black text-yellow-500 px-3 py-1.5 rounded-lg text-[10px] font-bold transition-all duration-300 w-full justify-center"
+                >
+                  Migrasikan Data Lama ke Cloud
+                </button>
+              </div>
+            )}
+
             <div>
               <span className="text-[9px] font-mono text-accent-custom uppercase block tracking-wider">Host Database</span>
               <span className="font-bold text-foreground text-xs font-mono mt-0.5 block truncate max-w-full">
