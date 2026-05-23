@@ -99,7 +99,7 @@ export default function ContactSection({ profile, sendMessage }: ContactSectionP
               <div className="flex h-10 w-10 items-center justify-center rounded-full border border-border-custom bg-card-custom">
                 <Grid className="h-4 w-4" />
               </div>
-              <span>Berbasis di Jakarta, Indonesia</span>
+              <span>Bengkulu, Indonesia</span>
             </div>
           </div>
         </motion.div>
@@ -210,7 +210,7 @@ export default function ContactSection({ profile, sendMessage }: ContactSectionP
                     Pesan Berhasil Terkirim!
                   </h4>
                   <p className="text-sm text-accent-custom max-w-sm leading-relaxed font-sans">
-                    Terima kasih! Pesan Anda telah terekam di sistem kami dan masuk ke Admin Dashboard. Saya akan segera membalasnya.
+                    Terima kasih! Pesan Anda telah terekam di sistem kami. Saya akan segera membalas pesan Anda lewat email.
                   </p>
                 </motion.div>
               )}

@@ -12,25 +12,33 @@ import TerminalSection from "@/components/TerminalSection";
 import SkillsSection from "@/components/SkillsSection";
 import ExperienceSection from "@/components/ExperienceSection";
 import ContactSection from "@/components/ContactSection";
+import MaintenanceScreen from "@/components/MaintenanceScreen";
 import WelcomeScreen from "@/components/WelcomeScreen";
 import { useState, useEffect } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 
 export default function Home() {
-  const { profile, projects, experiences, skills, sendMessage } = useCMS();
+  const { profile, projects, experiences, skills, sendMessage, isPortfolioOpen } = useCMS();
   const [showWelcome, setShowWelcome] = useState(false);
 
   useEffect(() => {
+    // Only show welcome if the portfolio is open
+    if (!isPortfolioOpen) return;
+
     const hasVisited = sessionStorage.getItem("portfolio-visited");
     if (!hasVisited) {
       setShowWelcome(true);
       sessionStorage.setItem("portfolio-visited", "true");
     }
-  }, []);
+  }, [isPortfolioOpen]);
 
   const handleWelcomeComplete = () => {
     setShowWelcome(false);
   };
+
+  if (!isPortfolioOpen) {
+    return <MaintenanceScreen />;
+  }
 
   return (
     <>

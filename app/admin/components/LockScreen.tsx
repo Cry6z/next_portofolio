@@ -1,8 +1,8 @@
 "use client";
 
-import React from "react";
-import { Lock } from "lucide-react";
-import { motion } from "framer-motion";
+import React, { useState, useEffect } from "react";
+import { Lock, Unlock } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import ThemeToggle from "@/components/ThemeToggle";
 
@@ -19,9 +19,21 @@ export default function LockScreen({
   handleLogin,
   authError,
 }: LockScreenProps) {
+  const [isTyping, setIsTyping] = useState(false);
+
+  useEffect(() => {
+    setIsTyping(passwordInput.length > 0);
+  }, [passwordInput]);
+
   return (
     <div className="min-h-screen bg-background flex flex-col items-center justify-center p-6 relative overflow-hidden">
-      <div className="absolute inset-0 grid-bg opacity-10 pointer-events-none" />
+      {/* Animated Grid Background */}
+      <motion.div 
+        initial={{ y: 0 }}
+        animate={{ y: 40 }}
+        transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+        className="absolute inset-[-40px] grid-bg opacity-10 pointer-events-none" 
+      />
 
       {/* Floating Top Controls */}
       <div className="absolute top-6 right-6 flex items-center gap-4 z-20">
@@ -35,61 +47,110 @@ export default function LockScreen({
       </div>
 
       <motion.div
-        initial={{ opacity: 0, scale: 0.95 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.5 }}
-        className="w-full max-w-md border border-border-custom bg-card-custom p-8 rounded-2xl relative z-10"
+        initial={{ opacity: 0, y: 40, filter: "blur(10px)" }}
+        animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+        transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+        className="w-full max-w-md border border-border-custom glassmorphism bg-card-custom/70 p-8 rounded-2xl relative z-10 overflow-hidden shadow-2xl"
       >
-        <div className="flex flex-col items-center gap-4 text-center mb-6">
-          <div className="h-12 w-12 rounded-full border border-foreground/15 flex items-center justify-center bg-background">
-            <Lock className="h-5 w-5 text-foreground" />
-          </div>
-          <div>
-            <h1 className="text-2xl font-black tracking-tight uppercase text-foreground">
-              Dashboard Admin
-            </h1>
-            <p className="text-xs text-accent-custom mt-1 font-mono">
-              AMANKAN KREDENSIAL MASUK ANDA
-            </p>
+        {/* Subtle moving scan line */}
+        <motion.div 
+          animate={{ top: ["-10%", "110%"] }}
+          transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
+          className="absolute left-0 w-full h-px bg-linear-to-r from-transparent via-foreground/30 to-transparent pointer-events-none"
+        />
+
+        <div className="flex flex-col items-center gap-4 text-center mb-8 relative">
+          <motion.div 
+            animate={{ 
+              scale: isTyping ? 1.1 : 1,
+              borderColor: isTyping ? "var(--foreground)" : "rgba(128,128,128,0.2)"
+            }}
+            transition={{ duration: 0.3 }}
+            className="h-16 w-16 rounded-full border-2 flex items-center justify-center bg-background shadow-inner relative overflow-hidden"
+          >
+            <AnimatePresence mode="wait">
+              {isTyping ? (
+                <motion.div
+                  key="unlock"
+                  initial={{ opacity: 0, scale: 0.5, rotate: -90 }}
+                  animate={{ opacity: 1, scale: 1, rotate: 0 }}
+                  exit={{ opacity: 0, scale: 0.5, rotate: 90 }}
+                  transition={{ duration: 0.3, ease: "backOut" }}
+                >
+                  <Unlock className="h-6 w-6 text-foreground" />
+                </motion.div>
+              ) : (
+                <motion.div
+                  key="lock"
+                  initial={{ opacity: 0, scale: 0.5, rotate: 90 }}
+                  animate={{ opacity: 1, scale: 1, rotate: 0 }}
+                  exit={{ opacity: 0, scale: 0.5, rotate: -90 }}
+                  transition={{ duration: 0.3, ease: "backOut" }}
+                >
+                  <Lock className="h-6 w-6 text-foreground" />
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </motion.div>
+          
+          <div className="overflow-hidden">
+            <motion.h1 
+              initial={{ y: "100%" }}
+              animate={{ y: 0 }}
+              transition={{ duration: 0.6, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
+              className="text-3xl font-black tracking-tight uppercase text-foreground font-hero"
+            >
+              System Admin
+            </motion.h1>
+            <motion.p 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.6, delay: 0.4 }}
+              className="text-[10px] text-accent-custom mt-2 font-mono tracking-widest uppercase"
+            >
+              Akses Kredensial Diperlukan
+            </motion.p>
           </div>
         </div>
 
-        <form onSubmit={handleLogin} className="flex flex-col gap-4">
-          {authError && (
-            <div className="text-xs font-semibold text-red-500 border border-red-500/20 bg-red-500/5 px-4 py-2.5 rounded-lg font-mono text-center">
-              {authError}
-            </div>
-          )}
+        <form onSubmit={handleLogin} className="flex flex-col gap-5 relative">
+          <AnimatePresence>
+            {authError && (
+              <motion.div 
+                initial={{ opacity: 0, y: -10, height: 0 }}
+                animate={{ opacity: 1, y: 0, height: "auto" }}
+                exit={{ opacity: 0, y: -10, height: 0 }}
+                className="text-xs font-semibold text-red-500 border border-red-500/30 bg-red-500/10 px-4 py-3 rounded-lg font-mono text-center overflow-hidden"
+              >
+                {authError}
+              </motion.div>
+            )}
+          </AnimatePresence>
 
-          <div className="flex flex-col gap-1.5">
-            <label
-              htmlFor="password"
-              className="text-xs font-bold tracking-widest font-mono text-accent-custom uppercase"
-            >
-              Kata Sandi Admin
-            </label>
+          <div className="flex flex-col gap-2 group">
             <input
               type="password"
               id="password"
               value={passwordInput}
               onChange={(e) => setPasswordInput(e.target.value)}
               placeholder="Masukkan kata sandi..."
-              className="w-full bg-background border border-border-custom rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-foreground text-foreground text-center"
+              className="w-full bg-background/50 backdrop-blur-sm border border-border-custom rounded-xl px-4 py-4 text-sm font-mono tracking-widest focus:outline-none focus:border-foreground focus:ring-1 focus:ring-foreground transition-all text-foreground text-center placeholder:tracking-normal"
               autoFocus
             />
           </div>
 
-          <button
+          <motion.button
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
             type="submit"
-            className="flex items-center justify-center gap-2 bg-foreground text-background font-semibold rounded-lg py-3 hover:bg-accent-hover transition-all duration-300 w-full font-sans mt-2"
+            className="flex items-center justify-center gap-2 bg-foreground text-background font-bold tracking-wide rounded-xl py-4 hover:bg-accent-hover transition-all duration-300 w-full mt-2 relative overflow-hidden"
           >
-            Masuk Ke Panel
-          </button>
+            <span className="relative z-10">Buka Akses</span>
+            {/* Shimmer effect on hover */}
+            <div className="absolute inset-0 bg-white/20 -translate-x-full group-hover:animate-shimmer" />
+          </motion.button>
         </form>
 
-        <p className="text-[10px] text-center text-accent-custom mt-6 font-mono">
-          KATA SANDI BAWAAN: <span className="underline">admin123</span>
-        </p>
       </motion.div>
     </div>
   );

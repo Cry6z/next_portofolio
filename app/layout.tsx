@@ -16,8 +16,8 @@ const anonymousPro = Anonymous_Pro({
 });
 
 export const metadata: Metadata = {
-  title: "GIBRAN — Creative Frontend Developer & Designer",
-  description: "Website portofolio minimalis modern berfokus pada estetika tipografi, animasi interaktif, dan performa tinggi.",
+  title: "Portofolio",
+  description: "Welcome!",
 };
 
 export default function RootLayout({

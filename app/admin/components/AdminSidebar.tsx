@@ -220,7 +220,7 @@ export default function AdminSidebar({
             className="flex items-center justify-center gap-2 border border-border-custom hover:border-red-500/40 hover:text-red-500 rounded-xl py-3 text-xs font-bold transition-all duration-300"
           >
             <LogOut className="h-3.5 w-3.5" />
-            Keluar Panel
+            Log Out
           </button>
         </div>
         </div>

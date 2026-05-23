@@ -9,7 +9,7 @@ interface SettingsTabProps {
 }
 
 export default function SettingsTab({ handleResetData }: SettingsTabProps) {
-  const { profile, updateProfile, adminPassword, updateAdminPassword } = useCMS();
+  const { profile, updateProfile, adminPassword, updateAdminPassword, isPortfolioOpen, togglePortfolioStatus } = useCMS();
 
   const [profileFormData, setProfileFormData] = useState({
     name: "",
@@ -238,8 +238,47 @@ export default function SettingsTab({ handleResetData }: SettingsTabProps) {
           </form>
         </div>
 
-        {/* Password Config & Reset Panel */}
+        {/* Right Column */}
         <div className="lg:col-span-5 flex flex-col gap-6">
+
+          {/* Maintenance Toggle */}
+          <div className="border border-border-custom bg-card-custom p-6 rounded-2xl flex flex-col gap-4 relative overflow-hidden">
+            <div className={`absolute inset-0 opacity-10 transition-colors duration-500 pointer-events-none ${isPortfolioOpen ? 'bg-green-500' : 'bg-red-500'}`} />
+            
+            <h3 className="text-md font-bold uppercase tracking-tight border-b border-border-custom pb-2 relative z-10">
+              Status Portofolio
+            </h3>
+            
+            <div className="flex items-center justify-between mt-2 relative z-10">
+              <div className="flex flex-col">
+                <span className={`font-black tracking-widest text-sm ${isPortfolioOpen ? 'text-green-500' : 'text-red-500'}`}>
+                  {isPortfolioOpen ? 'ONLINE' : 'MAINTENANCE'}
+                </span>
+                <span className="text-[10px] text-accent-custom mt-1 max-w-[200px]">
+                  {isPortfolioOpen 
+                    ? "Situs dapat diakses oleh publik." 
+                    : "Situs ditutup dan menampilkan layar Maintenance."}
+                </span>
+              </div>
+              
+              <button 
+                onClick={() => {
+                  if (isPortfolioOpen) {
+                    if (confirm("Apakah Anda yakin ingin menutup portofolio? Pengunjung tidak akan bisa melihat konten Anda.")) {
+                      togglePortfolioStatus(false);
+                    }
+                  } else {
+                    togglePortfolioStatus(true);
+                  }
+                }}
+                className={`w-14 h-7 rounded-full relative transition-colors duration-300 ${isPortfolioOpen ? 'bg-green-500/20 border border-green-500/50' : 'bg-red-500/20 border border-red-500/50'}`}
+              >
+                <div 
+                  className={`absolute top-1 bottom-1 w-5 rounded-full transition-all duration-300 shadow-sm ${isPortfolioOpen ? 'left-8 bg-green-500' : 'left-1 bg-red-500'}`} 
+                />
+              </button>
+            </div>
+          </div>
           
           {/* Change Password Form */}
           <div className="border border-border-custom bg-card-custom p-6 rounded-2xl flex flex-col gap-4">

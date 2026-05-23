@@ -75,10 +75,12 @@ interface CMSContextType {
   terminalConfig: TerminalConfig;
   terminalCommands: TerminalCommand[];
   adminPassword: string;
+  isPortfolioOpen: boolean;
   
   // Update Profile
   updateProfile: (profile: Partial<Profile>) => void;
   updateAdminPassword: (password: string) => void;
+  togglePortfolioStatus: (isOpen: boolean) => void;
   
   // Project CRUD
   addProject: (project: Omit<Project, "id">) => void;
@@ -168,6 +170,7 @@ export function CMSProvider({ children }: { children: React.ReactNode }) {
   const [terminalConfig, setTerminalConfig] = useState<TerminalConfig>(defaultTerminalConfig);
   const [terminalCommands, setTerminalCommands] = useState<TerminalCommand[]>(defaultTerminalCommands);
   const [adminPassword, setAdminPassword] = useState<string>("admin123");
+  const [isPortfolioOpen, setIsPortfolioOpen] = useState<boolean>(true);
   const [mounted, setMounted] = useState(false);
 
   // Load from Supabase (with fallback to localStorage)
@@ -282,6 +285,7 @@ export function CMSProvider({ children }: { children: React.ReactNode }) {
           const savedTerminalConfig = localStorage.getItem("cms-terminal-config");
           const savedTerminalCommands = localStorage.getItem("cms-terminal-commands");
           const savedPassword = localStorage.getItem("cms-admin-password");
+          const savedPortfolioOpen = localStorage.getItem("cms-portfolio-open");
 
           setTimeout(() => {
             if (savedProfile) setProfile(JSON.parse(savedProfile));
@@ -292,6 +296,7 @@ export function CMSProvider({ children }: { children: React.ReactNode }) {
             if (savedTerminalConfig) setTerminalConfig(JSON.parse(savedTerminalConfig));
             if (savedTerminalCommands) setTerminalCommands(JSON.parse(savedTerminalCommands));
             if (savedPassword) setAdminPassword(savedPassword);
+            if (savedPortfolioOpen) setIsPortfolioOpen(JSON.parse(savedPortfolioOpen));
           }, 0);
         } catch (e) {
           console.error("Failed to load local CMS data", e);
@@ -577,6 +582,11 @@ export function CMSProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
+  const togglePortfolioStatus = (isOpen: boolean) => {
+    setIsPortfolioOpen(isOpen);
+    localStorage.setItem("cms-portfolio-open", JSON.stringify(isOpen));
+  };
+
   if (!mounted) {
     return null;
   }
@@ -592,8 +602,10 @@ export function CMSProvider({ children }: { children: React.ReactNode }) {
         terminalConfig,
         terminalCommands,
         adminPassword,
+        isPortfolioOpen,
         updateProfile,
         updateAdminPassword,
+        togglePortfolioStatus,
         addProject,
         updateProject,
         deleteProject,

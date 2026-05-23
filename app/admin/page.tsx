@@ -7,6 +7,7 @@ import { useCMS } from "@/context/CMSContext";
 import { useTheme } from "@/context/ThemeContext";
 
 import LockScreen from "./components/LockScreen";
+import AdminWelcomeScreen from "./components/AdminWelcomeScreen";
 import AdminSidebar from "./components/AdminSidebar";
 import OverviewTab from "./components/OverviewTab";
 import ProjectsTab from "./components/ProjectsTab";
@@ -55,14 +56,7 @@ export default function AdminDashboard() {
     }
   }, []);
 
-  useEffect(() => {
-    if (showGreeting) {
-      const timer = setTimeout(() => {
-        setShowGreeting(false);
-      }, 2000);
-      return () => clearTimeout(timer);
-    }
-  }, [showGreeting]);
+
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
@@ -124,82 +118,44 @@ export default function AdminDashboard() {
       transition={{ duration: 0.5 }}
       className="min-h-screen md:h-screen md:overflow-hidden bg-background flex flex-col md:flex-row relative"
     >
-      <AnimatePresence>
-        {showGreeting && (
-          <motion.div
-            initial={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.5, ease: "easeInOut" }}
-            className={`fixed inset-0 z-50 flex flex-col items-center justify-center font-mono select-none transition-colors duration-300 ${
-              isDark ? "bg-black text-white" : "bg-white text-zinc-900"
-            }`}
-          >
-            <div className="flex flex-col items-center gap-4">
-              <motion.div
-                initial={{ scale: 0.8, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                transition={{ duration: 0.5, ease: "easeOut" }}
-                className={`h-16 w-16 rounded-full border flex items-center justify-center mb-2 shadow-sm transition-colors duration-300 ${
-                  isDark ? "border-zinc-800 bg-zinc-900 text-white" : "border-zinc-900/10 bg-zinc-50 text-zinc-900"
-                }`}
-              >
-                <Lock className="h-6 w-6" />
-              </motion.div>
-              
-              <motion.h1
-                initial={{ y: 20, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                transition={{ delay: 0.3, duration: 0.6, ease: "easeOut" }}
-                className="text-3xl md:text-5xl font-black tracking-tight flex items-center"
-              >
-                hallo admin<span>!</span>
-                <span className={`h-6 w-2.5 ml-1.5 animate-pulse ${
-                  isDark ? "bg-white" : "bg-zinc-900"
-                }`} />
-              </motion.h1>
-              
-              <motion.p
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 0.4 }}
-                transition={{ delay: 0.8, duration: 0.5 }}
-                className={`text-xs tracking-widest uppercase font-mono mt-2 ${
-                  isDark ? "text-zinc-400" : "text-zinc-500"
-                }`}
-              >
-                MEMULAI SESI AMAN...
-              </motion.p>
-            </div>
-          </motion.div>
-        )}
+      <AnimatePresence mode="wait">
+        {showGreeting && <AdminWelcomeScreen onComplete={() => setShowGreeting(false)} />}
       </AnimatePresence>
 
-      <AdminSidebar
-        activeTab={activeTab}
-        setActiveTab={setActiveTab}
-        isMobileMenuOpen={isMobileMenuOpen}
-        setIsMobileMenuOpen={setIsMobileMenuOpen}
-        handleLogout={handleLogout}
-        unreadCount={unreadCount}
-      />
-
-      {/* Main Panel Content */}
-      <motion.main
-        initial={{ opacity: 0, y: 15 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.7, delay: 0.3, ease: "easeOut" }}
-        className="flex-1 p-6 md:p-12 overflow-y-auto w-full z-10 relative md:max-w-none"
+      <motion.div
+        initial={false}
+        animate={showGreeting ? { opacity: 0, scale: 0.95, filter: "blur(10px)" } : { opacity: 1, scale: 1, filter: "blur(0px)" }}
+        transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: showGreeting ? 0 : 0.4 }}
+        className={`flex-1 flex flex-col md:flex-row w-full h-full ${showGreeting ? "pointer-events-none" : ""}`}
       >
-        {activeTab === "overview" && (
-          <OverviewTab setActiveTab={setActiveTab} handleResetData={handleResetData} unreadCount={unreadCount} />
-        )}
-        {activeTab === "projects" && <ProjectsTab />}
-        {activeTab === "skills" && <SkillsTab />}
-        {activeTab === "experience" && <ExperienceTab />}
-        {activeTab === "messages" && <MessagesTab />}
-        {activeTab === "terminal" && <TerminalTab />}
-        {activeTab === "settings" && <SettingsTab handleResetData={handleResetData} />}
-        {activeTab === "photos" && <PhotosTab />}
-      </motion.main>
+        <AdminSidebar
+          activeTab={activeTab}
+          setActiveTab={setActiveTab}
+          isMobileMenuOpen={isMobileMenuOpen}
+          setIsMobileMenuOpen={setIsMobileMenuOpen}
+          handleLogout={handleLogout}
+          unreadCount={unreadCount}
+        />
+
+        {/* Main Panel Content */}
+        <motion.main
+          initial={{ opacity: 0, y: 15 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, delay: 0.3, ease: "easeOut" }}
+          className="flex-1 p-6 md:p-12 overflow-y-auto w-full z-10 relative md:max-w-none"
+        >
+          {activeTab === "overview" && (
+            <OverviewTab setActiveTab={setActiveTab} handleResetData={handleResetData} unreadCount={unreadCount} />
+          )}
+          {activeTab === "projects" && <ProjectsTab />}
+          {activeTab === "skills" && <SkillsTab />}
+          {activeTab === "experience" && <ExperienceTab />}
+          {activeTab === "messages" && <MessagesTab />}
+          {activeTab === "terminal" && <TerminalTab />}
+          {activeTab === "photos" && <PhotosTab />}
+          {activeTab === "settings" && <SettingsTab handleResetData={handleResetData} />}
+        </motion.main>
+      </motion.div>
     </motion.div>
   );
 }
