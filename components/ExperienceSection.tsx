@@ -44,29 +44,34 @@ export default function ExperienceSection({ experiences }: ExperienceSectionProp
               viewport={{ once: true, margin: "-100px" }}
               transition={{ duration: 0.6, delay: idx * 0.1 }}
               key={exp.id}
-              className="relative flex flex-col gap-2"
+              className="relative flex flex-col gap-2 group cursor-pointer"
             >
-              {/* Circle Indicator on Timeline Line */}
-              <div className="absolute -left-31px md:-left-39px top-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-background border-2 border-foreground z-10 shadow-sm" />
-
-              <div className="flex flex-col md:flex-row md:items-baseline justify-between gap-2">
-                <div className="flex flex-col">
-                  <span className="text-xs font-mono font-bold tracking-wider text-accent-custom uppercase flex items-center gap-1.5">
-                    <Briefcase className="h-3 w-3" />
-                    {exp.company}
-                  </span>
-                  <h4 className="text-xl md:text-2xl font-bold tracking-tight text-foreground">
-                    {exp.role}
-                  </h4>
-                </div>
-                <span className="text-xs font-mono font-medium border border-border-custom px-3 py-1 rounded-full bg-accent-light self-start">
-                  {exp.period}
-                </span>
+              {/* Interactive Circle Indicator on Timeline Line */}
+              <div className="absolute -left-8 md:-left-10 top-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-background border-2 border-border-custom z-10 shadow-sm transition-all duration-300 group-hover:scale-125 group-hover:border-foreground group-hover:bg-foreground">
+                <div className="h-1.5 w-1.5 rounded-full bg-background scale-0 transition-transform duration-300 group-hover:scale-100" />
               </div>
 
-              <p className="text-sm md:text-base text-accent-custom leading-relaxed font-sans max-w-3xl mt-2">
-                {exp.description}
-              </p>
+              {/* Slid-on-hover Content Container */}
+              <div className="flex flex-col gap-2 transition-transform duration-300 ease-out group-hover:translate-x-2 pl-2">
+                <div className="flex flex-col md:flex-row md:items-baseline justify-between gap-2">
+                  <div className="flex flex-col">
+                    <span className="text-xs font-mono font-bold tracking-wider text-accent-custom uppercase flex items-center gap-1.5 group-hover:text-foreground transition-colors duration-300">
+                      <Briefcase className="h-3 w-3" />
+                      {exp.company}
+                    </span>
+                    <h4 className="text-xl md:text-2xl font-bold tracking-tight text-foreground transition-colors duration-300">
+                      {exp.role}
+                    </h4>
+                  </div>
+                  <span className="text-xs font-mono font-medium border border-border-custom px-3 py-1 rounded-full bg-accent-light self-start transition-all duration-300 group-hover:border-foreground group-hover:bg-foreground group-hover:text-background">
+                    {exp.period}
+                  </span>
+                </div>
+
+                <p className="text-sm md:text-base text-accent-custom leading-relaxed font-sans max-w-3xl mt-2 transition-colors duration-300 group-hover:text-foreground/90">
+                  {exp.description}
+                </p>
+              </div>
             </motion.div>
           ))}
         </div>
