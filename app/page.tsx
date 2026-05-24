@@ -24,6 +24,7 @@ export default function Home() {
   const [showWelcome, setShowWelcome] = useState(false);
   const [isCheckingWelcome, setIsCheckingWelcome] = useState(true);
   const [showTerminal, setShowTerminal] = useState(false);
+  const [showWidgets, setShowWidgets] = useState(false);
 
   useEffect(() => {
     // Only show welcome if the portfolio is open
@@ -33,12 +34,20 @@ export default function Home() {
     if (!hasVisited) {
       setShowWelcome(true);
       sessionStorage.setItem("portfolio-visited", "true");
+    } else {
+      // If returning visitor, load widgets instantly
+      setShowWidgets(true);
     }
     setIsCheckingWelcome(false);
   }, [isPortfolioOpen]);
 
   const handleWelcomeComplete = () => {
     setShowWelcome(false);
+    // Delay mounting of resource-heavy background widgets (lo-fi player, floating button)
+    // to give the entry screen-slide and fade transition 100% CPU priority.
+    setTimeout(() => {
+      setShowWidgets(true);
+    }, 1200);
   };
 
   if (!isPortfolioOpen) {
@@ -63,8 +72,9 @@ export default function Home() {
 
         <motion.main 
           initial={false}
-          animate={showWelcome ? { y: 60, opacity: 0, filter: "blur(4px)" } : { y: 0, opacity: 1, filter: "blur(0px)" }}
-          transition={{ duration: 1.2, ease: [0.76, 0, 0.24, 1], delay: showWelcome ? 0 : 0.4 }}
+          animate={showWelcome ? { y: 20, opacity: 0 } : { y: 0, opacity: 1 }}
+          transition={{ duration: 1.0, ease: [0.16, 1, 0.3, 1], delay: showWelcome ? 0 : 0.35 }}
+          style={{ willChange: "transform, opacity" }}
           className="flex-1 w-full mx-auto max-w-7xl px-6 md:px-12 pt-28 pb-16"
         >
           <HeroSection profile={profile} />
@@ -106,7 +116,7 @@ export default function Home() {
 
       {/* Floating siber terminal launch button */}
       <AnimatePresence>
-        {!showWelcome && !showTerminal && (
+        {showWidgets && !showTerminal && (
           <motion.button
             initial={{ scale: 0, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
@@ -123,7 +133,7 @@ export default function Home() {
       </AnimatePresence>
 
       {/* Floating Lo-Fi Music Player */}
-      {!showWelcome && <LofiPlayer />}
+      {showWidgets && <LofiPlayer />}
     </>
   );
 }

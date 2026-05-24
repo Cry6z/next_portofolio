@@ -28,11 +28,8 @@ export default function LockScreen({
   return (
     <div className="min-h-screen bg-background flex flex-col items-center justify-center p-6 relative overflow-hidden">
       {/* Animated Grid Background */}
-      <motion.div 
-        initial={{ y: 0 }}
-        animate={{ y: 40 }}
-        transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-        className="absolute inset-[-40px] grid-bg opacity-10 pointer-events-none" 
+      <div 
+        className="absolute inset-[-40px] grid-bg opacity-10 pointer-events-none animate-grid-move" 
       />
 
       {/* Floating Top Controls */}

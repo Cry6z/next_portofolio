@@ -106,6 +106,20 @@ html {
     linear-gradient(to bottom, var(--color-border-custom) 1px, transparent 1px);
 }
 
+@keyframes grid-move {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(40px);
+  }
+}
+
+.animate-grid-move {
+  animation: grid-move 20s linear infinite;
+  will-change: transform;
+}
+
 @keyframes shimmer {
   100% {
     transform: translateX(100%);

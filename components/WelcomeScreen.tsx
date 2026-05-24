@@ -122,11 +122,8 @@ export default function WelcomeScreen({ onComplete }: WelcomeScreenProps) {
       className="fixed inset-0 z-100 flex flex-col justify-between bg-background text-foreground overflow-hidden"
     >
       {/* Animated Grid Background */}
-      <motion.div 
-        initial={{ y: 0 }}
-        animate={{ y: 40 }}
-        transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-        className="absolute inset-[-40px] grid-bg opacity-30 pointer-events-none" 
+      <div 
+        className="absolute inset-[-40px] grid-bg opacity-30 pointer-events-none animate-grid-move" 
       />
 
       <AnimatePresence mode="wait">

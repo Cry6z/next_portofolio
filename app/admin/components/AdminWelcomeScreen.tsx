@@ -92,11 +92,8 @@ export default function AdminWelcomeScreen({ onComplete }: AdminWelcomeScreenPro
       className="fixed inset-0 z-200 bg-background text-foreground flex flex-col items-center justify-center overflow-hidden font-mono select-none"
     >
       {/* Animated Scanline Laser Grid Background */}
-      <motion.div 
-        initial={{ y: 0 }}
-        animate={{ y: 40 }}
-        transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-        className="absolute inset-[-40px] grid-bg opacity-20 pointer-events-none" 
+      <div 
+        className="absolute inset-[-40px] grid-bg opacity-20 pointer-events-none animate-grid-move" 
       />
       
       {/* Sweeping Laser Scan Line */}

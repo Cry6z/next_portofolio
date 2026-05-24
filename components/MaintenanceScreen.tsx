@@ -36,11 +36,8 @@ export default function MaintenanceScreen() {
   return (
     <div className="fixed inset-0 z-100 bg-black text-white flex flex-col items-center justify-center overflow-hidden font-mono">
       {/* Animated Grid */}
-      <motion.div 
-        initial={{ y: 0 }}
-        animate={{ y: 40 }}
-        transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-        className="absolute inset-[-40px] grid-bg opacity-10 pointer-events-none" 
+      <div 
+        className="absolute inset-[-40px] grid-bg opacity-10 pointer-events-none animate-grid-move" 
       />
 
       {/* Content */}

@@ -37,11 +37,8 @@ export default function HeroSection({ profile }: HeroSectionProps) {
       className="min-h-[85vh] flex flex-col justify-center py-20 relative overflow-hidden w-screen left-1/2 -translate-x-1/2"
     >
       {/* Minimalist animated background grid effect - Full Screen Width */}
-      <motion.div 
-        initial={{ y: 0 }}
-        animate={{ y: 40 }}
-        transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-        className="absolute inset-[-40px] grid-bg opacity-50 pointer-events-none" 
+      <div 
+        className="absolute inset-[-40px] grid-bg opacity-50 pointer-events-none animate-grid-move" 
       />
 
       {/* Inner container to keep content aligned with the rest of the site */}
