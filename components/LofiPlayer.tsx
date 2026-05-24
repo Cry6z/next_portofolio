@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { Play, Pause, SkipForward, SkipBack, Volume2, Music, Disc, ChevronUp, ChevronDown } from "lucide-react";
 import { motion, AnimatePresence, Variants } from "framer-motion";
 
@@ -58,7 +58,7 @@ export default function LofiPlayer() {
   }, [volume]);
 
   // Handle play/pause toggle
-  const togglePlay = () => {
+  const togglePlay = useCallback(() => {
     if (!audioRef.current) return;
     
     if (isPlaying) {
@@ -73,10 +73,10 @@ export default function LofiPlayer() {
         }
       });
     }
-  };
+  }, [isPlaying]);
 
   // Change Track
-  const changeTrack = (direction: "next" | "prev") => {
+  const changeTrack = useCallback((direction: "next" | "prev") => {
     let nextIndex = currentTrackIndex;
     if (direction === "next") {
       nextIndex = (currentTrackIndex + 1) % TRACKS.length;
@@ -112,10 +112,10 @@ export default function LofiPlayer() {
         });
       }
     }, 50);
-  };
+  }, [currentTrackIndex]);
 
   // Track Time Update
-  const handleTimeUpdate = () => {
+  const handleTimeUpdate = useCallback(() => {
     if (!audioRef.current) return;
     const current = audioRef.current.currentTime;
     const total = audioRef.current.duration || 0;
@@ -123,36 +123,36 @@ export default function LofiPlayer() {
     if (total > 0) {
       setTrackProgress((current / total) * 100);
     }
-  };
+  }, []);
 
   // Track Loaded Metadata
-  const handleLoadedMetadata = () => {
+  const handleLoadedMetadata = useCallback(() => {
     if (audioRef.current) {
       setDuration(audioRef.current.duration || 0);
     }
-  };
+  }, []);
 
   // Track Ended
-  const handleTrackEnded = () => {
+  const handleTrackEnded = useCallback(() => {
     changeTrack("next");
-  };
+  }, [changeTrack]);
 
   // Drag Progress Slider
-  const handleProgressChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleProgressChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     if (!audioRef.current || duration === 0) return;
     const newProgress = Number(e.target.value);
     const newTime = (newProgress / 100) * duration;
     audioRef.current.currentTime = newTime;
     setCurrentTime(newTime);
     setTrackProgress(newProgress);
-  };
+  }, [duration]);
 
   // Format Time (MM:SS)
-  const formatTime = (time: number) => {
+  const formatTime = useCallback((time: number) => {
     const mins = Math.floor(time / 60);
     const secs = Math.floor(time % 60);
     return `${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
-  };
+  }, []);
 
   // Equalizer animation variants
   const eqBarVariants: Variants = {

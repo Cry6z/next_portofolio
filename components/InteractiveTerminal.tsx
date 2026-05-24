@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { Trophy } from "lucide-react";
 import { useCMS } from "@/context/CMSContext";
 import { useTheme } from "@/context/ThemeContext";
@@ -55,7 +55,7 @@ export default function InteractiveTerminal({ onClose }: InteractiveTerminalProp
     : `${terminalConfig.promptUser || "guest"}@${terminalConfig.promptHost || "gibran"}:~$ `;
 
   // Helper to parse text and make links (URLs and emails) clickable
-  const renderTextWithLinks = (text: string) => {
+  const renderTextWithLinks = useCallback((text: string) => {
     const regex = /((?:https?:\/\/|www\.)[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}(?:\/[^\s]*)?)|([a-zA-Z0-9.-]+\.(?:com|org|net|dev|id|io|me)(?:\/[^\s]*)?)|([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6})/gi;
 
     const parts = [];
@@ -118,7 +118,7 @@ export default function InteractiveTerminal({ onClose }: InteractiveTerminalProp
     }
 
     return parts.length > 0 ? <>{parts}</> : text;
-  };
+  }, []);
 
   // Initialize with welcome message
   useEffect(() => {
@@ -397,9 +397,9 @@ export default function InteractiveTerminal({ onClose }: InteractiveTerminalProp
     setIsPlayerTurn(true);
   };
 
-  const focusInput = () => {
+  const focusInput = useCallback(() => {
     inputRef.current?.focus();
-  };
+  }, []);
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
