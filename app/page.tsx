@@ -22,6 +22,7 @@ import { Terminal } from "lucide-react";
 export default function Home() {
   const { profile, projects, experiences, skills, sendMessage, isPortfolioOpen } = useCMS();
   const [showWelcome, setShowWelcome] = useState(false);
+  const [hadWelcome, setHadWelcome] = useState(false);
   const [isCheckingWelcome, setIsCheckingWelcome] = useState(true);
   const [showTerminal, setShowTerminal] = useState(false);
   const [showWidgets, setShowWidgets] = useState(false);
@@ -33,6 +34,7 @@ export default function Home() {
     const hasVisited = sessionStorage.getItem("portfolio-visited");
     if (!hasVisited) {
       setShowWelcome(true);
+      setHadWelcome(true);
       sessionStorage.setItem("portfolio-visited", "true");
     } else {
       // If returning visitor, load widgets instantly
@@ -47,7 +49,7 @@ export default function Home() {
     // to give the entry screen-slide and fade transition 100% CPU priority.
     setTimeout(() => {
       setShowWidgets(true);
-    }, 1200);
+    }, 7000);
   };
 
   if (!isPortfolioOpen) {
@@ -67,13 +69,27 @@ export default function Home() {
       </AnimatePresence>
 
       {/* Render the actual site behind the welcome screen or when finished */}
-      <div className={`flex flex-col flex-1 min-h-screen ${showWelcome ? 'h-screen overflow-hidden' : ''}`}>
+      <motion.div 
+        initial={{ opacity: 0 }}
+        animate={showWelcome ? { opacity: 0 } : { opacity: 1 }}
+        transition={{ 
+          duration: 1.5, 
+          ease: [0.76, 0, 0.24, 1],
+          delay: hadWelcome ? (showWelcome ? 0 : 2.0) : 0
+        }}
+        className={`flex flex-col flex-1 min-h-screen ${showWelcome ? 'h-screen overflow-hidden' : ''}`}
+      >
         <Navbar onTerminalClick={() => setShowTerminal(true)} />
 
         <motion.main 
           initial={false}
-          animate={showWelcome ? { y: 20, opacity: 0 } : { y: 0, opacity: 1 }}
-          transition={{ duration: 1.0, ease: [0.16, 1, 0.3, 1], delay: showWelcome ? 0 : 0.35 }}
+          animate={showWelcome ? { scale: 0.96, opacity: 0, y: 12 } : { scale: 1, opacity: 1, y: 0 }}
+          transition={{ 
+            type: "tween", 
+            duration: 2.0, 
+            ease: [0.76, 0, 0.24, 1],
+            delay: hadWelcome ? (showWelcome ? 0 : 2.0) : 0
+          }}
           style={{ willChange: "transform, opacity" }}
           className="flex-1 w-full mx-auto max-w-7xl px-6 md:px-12 pt-28 pb-16"
         >
@@ -85,7 +101,7 @@ export default function Home() {
         </motion.main>
 
         <Footer />
-      </div>
+      </motion.div>
 
       {/* Floating Terminal Overlay Modal */}
       <AnimatePresence>

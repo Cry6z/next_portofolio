@@ -35,7 +35,15 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     }, 0);
   }, []);
 
+  const startThemeTransition = () => {
+    document.documentElement.classList.add("theme-transitioning");
+    setTimeout(() => {
+      document.documentElement.classList.remove("theme-transitioning");
+    }, 400);
+  };
+
   const setTheme = (newTheme: Theme) => {
+    startThemeTransition();
     setThemeState(newTheme);
     localStorage.setItem("portfolio-theme", newTheme);
     

@@ -13,15 +13,13 @@ interface ProjectCardProps {
 export default function ProjectCard({ project, onClick }: ProjectCardProps) {
   return (
     <motion.div
-      layout
       initial={{ opacity: 0, y: 40 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, scale: 0.9 }}
       viewport={{ once: true }}
       transition={{ duration: 0.5 }}
       onClick={onClick}
-      className="group flex flex-col gap-4 border border-border-custom p-5 rounded-2xl bg-card-custom hover:border-foreground/35 transition-all duration-500 relative overflow-hidden cursor-pointer hover:shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:hover:shadow-[0_8px_30px_rgb(255,255,255,0.015)]"
-      whileHover={{ y: -6 }}
+      className="group flex flex-col gap-4 border border-border-custom p-5 rounded-2xl bg-card-custom hover:border-foreground/35 hover:-translate-y-1.5 transition-[border-color,background-color,box-shadow,transform] duration-300 relative overflow-hidden cursor-pointer hover:shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:hover:shadow-[0_8px_30px_rgb(255,255,255,0.015)]"
     >
       {/* Featured Star/Tag */}
       {project.featured && (

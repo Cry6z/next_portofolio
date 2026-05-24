@@ -37,7 +37,7 @@ export default function WelcomeScreen({ onComplete }: WelcomeScreenProps) {
       y: "-100%",
       opacity: 0,
       transition: {
-        duration: 1.0,
+        duration: 2.0,
         ease: [0.76, 0, 0.24, 1]
       }
     }
@@ -46,7 +46,7 @@ export default function WelcomeScreen({ onComplete }: WelcomeScreenProps) {
   // Phase 1: Welcome linear counter & bottom bar
   useEffect(() => {
     let start = Date.now();
-    const duration = 2000;
+    const duration = 3000;
     let animationFrameId: number;
 
     const updateCounter = () => {
@@ -78,7 +78,7 @@ export default function WelcomeScreen({ onComplete }: WelcomeScreenProps) {
     if (phase !== "loading") return;
 
     let start = Date.now();
-    const duration = 3000;
+    const duration = 2000;
     let animationFrameId: number;
 
     const updateCircleCounter = () => {
@@ -162,7 +162,7 @@ export default function WelcomeScreen({ onComplete }: WelcomeScreenProps) {
             <div className="flex flex-col items-center justify-center flex-1">
               <div className="overflow-hidden py-2">
                 <motion.h1 
-                  initial={{ y: "100%", opacity: 0 }} 
+                  initial={{ y: 80, opacity: 0 }} 
                   animate={{ y: 0, opacity: 1 }} 
                   transition={{ duration: 1.2, ease: [0.76, 0, 0.24, 1], delay: 0.3 }} 
                   className="text-5xl md:text-8xl lg:text-[10rem] font-black uppercase font-hero leading-none tracking-tighter"
@@ -185,10 +185,11 @@ export default function WelcomeScreen({ onComplete }: WelcomeScreenProps) {
             {/* Bottom Loading Bar */}
             <div className="w-full h-[2px] bg-border-custom relative overflow-hidden mt-auto">
               <motion.div
-                initial={{ width: "0%" }}
-                animate={{ width: "100%" }}
-                transition={{ duration: 2, ease: "easeOut", delay: 0.2 }}
-                className="absolute top-0 left-0 h-full bg-foreground"
+                initial={{ scaleX: 0 }}
+                animate={{ scaleX: 1 }}
+                style={{ originX: 0 }}
+                transition={{ duration: 3.0, ease: "easeOut", delay: 0 }}
+                className="absolute inset-0 bg-foreground"
               />
             </div>
           </motion.div>

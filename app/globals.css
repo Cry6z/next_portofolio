@@ -40,12 +40,16 @@ body {
   overflow-x: hidden;
 }
 
-/* Universal transition for theme swapping */
-body, header, footer, main, section, nav, button, input, textarea, select, a {
+/* Universal transition ONLY for active theme swapping to prevent conflicts with Framer Motion */
+.theme-transitioning,
+.theme-transitioning *,
+.theme-transitioning ::before,
+.theme-transitioning ::after {
   transition: background-color 0.4s cubic-bezier(0.4, 0, 0.2, 1), 
               color 0.4s cubic-bezier(0.4, 0, 0.2, 1), 
               border-color 0.4s cubic-bezier(0.4, 0, 0.2, 1),
-              box-shadow 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+              box-shadow 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  transition-delay: 0s !important;
 }
 
 /* Modern minimalist selection styling */
@@ -108,10 +112,10 @@ html {
 
 @keyframes grid-move {
   from {
-    transform: translateY(0);
+    transform: translate3d(0, 0, 0);
   }
   to {
-    transform: translateY(40px);
+    transform: translate3d(0, 40px, 0);
   }
 }
 

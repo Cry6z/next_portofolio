@@ -77,7 +77,6 @@ export default function ProjectsSection({ projects }: ProjectsSectionProps) {
 
         {/* Projects Grid */}
         <motion.div
-          layout
           variants={staggerContainer}
           initial="hidden"
           whileInView="visible"

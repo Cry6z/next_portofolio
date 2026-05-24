@@ -501,7 +501,7 @@ const ProfileCardComponent: React.FC<ProfileCardProps> = ({
 
             {/* Avatar content */}
             <div
-              className="overflow-visible mix-blend-luminosity group-hover:mix-blend-normal transition-all duration-500"
+              className="overflow-visible mix-blend-luminosity group-hover:mix-blend-normal transition-[mix-blend-mode,opacity] duration-500"
               style={{
                 transform: 'translateZ(2px)',
                 gridArea: '1 / -1',
@@ -511,7 +511,7 @@ const ProfileCardComponent: React.FC<ProfileCardProps> = ({
               }}
             >
               <img
-                className="w-full absolute left-1/2 bottom-0 h-[110%] object-cover object-top will-change-transform grayscale contrast-110 group-hover:grayscale-0 group-hover:contrast-100 transition-all duration-500 ease-out"
+                className="w-full absolute left-1/2 bottom-0 h-[110%] object-cover object-top will-change-transform grayscale contrast-110 group-hover:grayscale-0 group-hover:contrast-100 transition-[filter,opacity] duration-500 ease-out"
                 src={avatarUrl}
                 alt={`${name || 'User'} avatar`}
                 loading="lazy"
@@ -549,7 +549,7 @@ const ProfileCardComponent: React.FC<ProfileCardProps> = ({
                       style={{ width: '48px', height: '48px' }}
                     >
                       <img
-                        className="w-full h-full object-cover rounded-full grayscale contrast-110 group-hover:grayscale-0 group-hover:contrast-100 transition-all duration-500"
+                        className="w-full h-full object-cover rounded-full grayscale contrast-110 group-hover:grayscale-0 group-hover:contrast-100 transition-[filter,opacity] duration-500"
                         src={miniAvatarUrl || avatarUrl}
                         alt={`${name || 'User'} mini avatar`}
                         loading="lazy"
