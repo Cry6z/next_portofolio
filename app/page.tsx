@@ -14,6 +14,7 @@ import ContactSection from "@/components/ContactSection";
 import MaintenanceScreen from "@/components/MaintenanceScreen";
 import WelcomeScreen from "@/components/WelcomeScreen";
 import InteractiveTerminal from "@/components/InteractiveTerminal";
+import LofiPlayer from "@/components/LofiPlayer";
 import { useState, useEffect } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Terminal } from "lucide-react";
@@ -120,6 +121,9 @@ export default function Home() {
           </motion.button>
         )}
       </AnimatePresence>
+
+      {/* Floating Lo-Fi Music Player */}
+      {!showWelcome && <LofiPlayer />}
     </>
   );
 }

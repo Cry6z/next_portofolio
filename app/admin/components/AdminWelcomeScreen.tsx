@@ -89,7 +89,7 @@ export default function AdminWelcomeScreen({ onComplete }: AdminWelcomeScreenPro
       initial="initial"
       animate="animate"
       exit="exit"
-      className="fixed inset-0 z-[200] bg-background text-foreground flex flex-col items-center justify-center overflow-hidden font-mono select-none"
+      className="fixed inset-0 z-200 bg-background text-foreground flex flex-col items-center justify-center overflow-hidden font-mono select-none"
     >
       {/* Animated Scanline Laser Grid Background */}
       <motion.div 
