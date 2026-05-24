@@ -63,17 +63,17 @@ export default function Home() {
   return (
     <>
       <CustomCursor />
-      
+
       <AnimatePresence mode="wait">
         {showWelcome && <WelcomeScreen onComplete={handleWelcomeComplete} />}
       </AnimatePresence>
 
       {/* Render the actual site behind the welcome screen or when finished */}
-      <motion.div 
+      <motion.div
         initial={{ opacity: 0 }}
         animate={showWelcome ? { opacity: 0 } : { opacity: 1 }}
-        transition={{ 
-          duration: 1.5, 
+        transition={{
+          duration: 1.5,
           ease: [0.76, 0, 0.24, 1],
           delay: hadWelcome ? (showWelcome ? 0 : 2.0) : 0
         }}
@@ -81,12 +81,12 @@ export default function Home() {
       >
         <Navbar onTerminalClick={() => setShowTerminal(true)} />
 
-        <motion.main 
+        <motion.main
           initial={false}
           animate={showWelcome ? { scale: 0.96, opacity: 0, y: 12 } : { scale: 1, opacity: 1, y: 0 }}
-          transition={{ 
-            type: "tween", 
-            duration: 2.0, 
+          transition={{
+            type: "tween",
+            duration: 2.0,
             ease: [0.76, 0, 0.24, 1],
             delay: hadWelcome ? (showWelcome ? 0 : 2.0) : 0
           }}
