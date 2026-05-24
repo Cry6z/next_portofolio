@@ -147,10 +147,15 @@ export default function ProjectDetailModal({ project, isOpen, onClose }: Project
             <div className="w-full md:w-2/5 p-6 md:p-8 flex flex-col gap-6 overflow-y-auto max-h-none md:max-h-[90vh]">
               {/* Header Meta */}
               <div className="flex flex-col gap-2">
-                <div className="flex items-center gap-2">
+                <div className="flex flex-wrap items-center gap-2">
                   <span className="text-[10px] font-mono font-bold tracking-widest text-accent-custom uppercase">
                     DETAIL PROYEK
                   </span>
+                  {project.tags[0] && (
+                    <span className="text-[9px] font-mono font-bold tracking-wider px-2 py-0.5 bg-foreground/5 border border-foreground/10 text-foreground rounded uppercase">
+                      📁 {project.tags[0]}
+                    </span>
+                  )}
                   {project.featured && (
                     <span className="text-[9px] font-mono font-bold tracking-wider px-2 py-0.5 bg-foreground text-background rounded uppercase">
                       Featured
@@ -164,7 +169,7 @@ export default function ProjectDetailModal({ project, isOpen, onClose }: Project
 
               {/* Tags pills */}
               <div className="flex flex-wrap gap-1.5 border-b border-border-custom/50 pb-4">
-                {project.tags.map((tag) => (
+                {project.tags.slice(1).map((tag) => (
                   <span
                     key={tag}
                     className="text-[9px] font-mono tracking-wider px-2.5 py-1 border border-border-custom bg-background rounded-full text-foreground"

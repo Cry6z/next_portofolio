@@ -117,7 +117,7 @@ export default function ProjectsTab() {
                     )}
                   </div>
                   <span className="text-[10px] text-accent-custom font-mono truncate mt-1">
-                    {project.tags.join(" • ")}
+                    Kategori: <span className="font-bold text-foreground">{project.tags[0] || "-"}</span> • Tech: {project.tags.slice(1).join(", ") || "-"}
                   </span>
                 </div>
               </div>

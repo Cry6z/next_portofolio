@@ -16,6 +16,7 @@ interface ProjectFormProps {
 
 export default function ProjectForm({ isOpen, onClose, editingProject, onSave, tags, addTag }: ProjectFormProps) {
   const [inlineNewTag, setInlineNewTag] = useState("");
+  const [category, setCategory] = useState("");
   const [projectFormData, setProjectFormData] = useState<{
     title: string;
     description: string;
@@ -45,12 +46,13 @@ export default function ProjectForm({ isOpen, onClose, editingProject, onSave, t
         description: editingProject.description || "",
         details: editingProject.details || "",
         image: editingProject.image || "",
-        tags: editingProject.tags || [],
+        tags: editingProject.tags ? editingProject.tags.slice(1) : [],
         demoUrl: editingProject.demoUrl || "",
         githubUrl: editingProject.githubUrl || "",
         featured: editingProject.featured || false,
         screenshots: editingProject.screenshots || [],
       });
+      setCategory(editingProject.tags && editingProject.tags[0] ? editingProject.tags[0] : "");
     } else {
       setProjectFormData({
         title: "",
@@ -63,6 +65,7 @@ export default function ProjectForm({ isOpen, onClose, editingProject, onSave, t
         featured: false,
         screenshots: [],
       });
+      setCategory("");
     }
   }, [editingProject, isOpen]);
 
@@ -136,7 +139,11 @@ export default function ProjectForm({ isOpen, onClose, editingProject, onSave, t
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSave(projectFormData);
+    const finalCategory = category.trim() || "Website";
+    onSave({
+      ...projectFormData,
+      tags: [finalCategory, ...projectFormData.tags],
+    });
   };
 
   return (
@@ -201,6 +208,21 @@ export default function ProjectForm({ isOpen, onClose, editingProject, onSave, t
                   />
                 </label>
               </div>
+            </div>
+
+            {/* Project Category Input */}
+            <div className="flex flex-col gap-1 md:col-span-2">
+              <label className="text-[10px] font-bold font-mono text-accent-custom uppercase">
+                Kategori Proyek * (Contoh: Website, Application/Android, Design - Akan digunakan sebagai Filter utama)
+              </label>
+              <input
+                type="text"
+                required
+                value={category}
+                onChange={(e) => setCategory(e.target.value)}
+                placeholder="Masukkan kategori proyek (e.g. Website, Application/Android, Design...)"
+                className="bg-background border border-border-custom rounded-lg px-3 py-2 text-xs focus:outline-none text-foreground w-full"
+              />
             </div>
 
             {/* Tags Multi-select Panel */}

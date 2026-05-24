@@ -49,7 +49,14 @@ export default function ProjectCard({ project, onClick }: ProjectCardProps) {
       {/* Project Meta Info */}
       <div className="flex flex-col gap-2 flex-1 mt-1">
         <div className="flex flex-wrap gap-1.5">
-          {project.tags.slice(0, 3).map((tag) => (
+          {/* Project Category Tag */}
+          {project.tags[0] && (
+            <span className="text-[9px] font-mono font-bold tracking-wider px-2.5 py-0.5 border border-foreground/15 bg-foreground/5 rounded-md text-foreground">
+              📁 {project.tags[0]}
+            </span>
+          )}
+          {/* Tech stack tags */}
+          {project.tags.slice(1, 4).map((tag) => (
             <span
               key={tag}
               className="text-[9px] font-mono tracking-wider px-2 py-0.5 border border-border-custom bg-background rounded-md text-accent-custom"
@@ -57,9 +64,9 @@ export default function ProjectCard({ project, onClick }: ProjectCardProps) {
               {tag}
             </span>
           ))}
-          {project.tags.length > 3 && (
+          {project.tags.length > 4 && (
             <span className="text-[9px] font-mono tracking-wider px-2 py-0.5 border border-border-custom bg-background rounded-md text-accent-custom">
-              +{project.tags.length - 3}
+              +{project.tags.length - 4}
             </span>
           )}
         </div>

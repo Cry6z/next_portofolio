@@ -14,12 +14,12 @@ export default function ProjectsSection({ projects }: ProjectsSectionProps) {
   const [activeFilter, setActiveFilter] = useState("Semua");
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
 
-  // Filter projects tags
-  const allTags = ["Semua", ...Array.from(new Set(projects.flatMap((p) => p.tags)))];
+  // Filter projects by category (stored as the first tag index: tags[0])
+  const allTags = ["Semua", ...Array.from(new Set(projects.map((p) => p.tags[0]).filter(Boolean)))];
   const filteredProjects =
     activeFilter === "Semua"
       ? projects
-      : projects.filter((p) => p.tags.includes(activeFilter));
+      : projects.filter((p) => p.tags[0] === activeFilter);
 
   const fadeInUp = {
     hidden: { opacity: 0, y: 30 },
