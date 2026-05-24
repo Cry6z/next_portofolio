@@ -11,7 +11,11 @@ interface TerminalLine {
   prompt?: string;
 }
 
-export default function InteractiveTerminal() {
+interface InteractiveTerminalProps {
+  onClose?: () => void;
+}
+
+export default function InteractiveTerminal({ onClose }: InteractiveTerminalProps) {
   const { terminalConfig, terminalCommands } = useCMS();
   const { theme, setTheme } = useTheme();
 
@@ -556,26 +560,47 @@ export default function InteractiveTerminal() {
       {/* Window Titlebar */}
       <div className="flex items-center justify-between bg-zinc-900 border-b border-border-custom/30 px-4 py-3 shrink-0 select-none">
         <div className="flex gap-2">
-          <div className="h-3 w-3 rounded-full bg-zinc-700 hover:bg-red-500 transition-colors" />
+          <button 
+            type="button" 
+            onClick={(e) => {
+              e.stopPropagation();
+              if (onClose) onClose();
+            }}
+            className={`h-3 w-3 rounded-full ${onClose ? 'bg-red-500 hover:bg-red-650' : 'bg-zinc-700 hover:bg-red-500'} transition-colors cursor-pointer border-none outline-none`}
+            aria-label="Close terminal"
+          />
           <div className="h-3 w-3 rounded-full bg-zinc-700 hover:bg-yellow-500 transition-colors" />
           <div className="h-3 w-3 rounded-full bg-zinc-700 hover:bg-green-500 transition-colors" />
         </div>
         <span className="text-xs text-zinc-400 font-semibold select-none">portfolio-shell.sh</span>
-        <div className="w-12" /> {/* empty space spacer */}
+        {onClose ? (
+          <button 
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              if (onClose) onClose();
+            }}
+            className="text-xs text-zinc-500 hover:text-zinc-300 font-mono transition-colors cursor-pointer mr-1"
+          >
+            [close]
+          </button>
+        ) : (
+          <div className="w-12" />
+        )}
       </div>
 
       {/* Terminal Screen Console */}
-      <div ref={consoleRef} className="h-96 overflow-y-auto p-4 md:p-6 flex flex-col gap-2 bg-black/95 relative justify-start">
+      <div ref={consoleRef} className="h-80 md:h-96 overflow-y-auto p-4 md:p-6 flex flex-col gap-2 bg-black/95 relative justify-start">
         {terminalMode === "snake" && (
           <div className="flex flex-col items-center justify-center h-full gap-4 text-emerald-400 select-none my-auto">
-            <div className="flex justify-between w-full max-w-xs text-[10px] font-mono border-b border-emerald-950 pb-1">
+            <div className="flex justify-between w-full max-w-xs text-[10px] font-mono border-b border-emerald-950 pb-1 shrink-0">
               <span className="flex items-center gap-1 font-bold text-yellow-500"><Trophy className="h-3.5 w-3.5" /> high: {snakeHighScore}</span>
               <span className="font-bold">score: {snakeScore}</span>
             </div>
             
             {/* The 15x15 pixel grid */}
             <div 
-              className="bg-zinc-950 border border-emerald-900/60 p-1 rounded shadow-inner"
+              className="bg-zinc-950 border border-emerald-900/60 p-1 rounded shadow-inner shrink-0"
               style={{
                 display: "grid",
                 gridTemplateColumns: "repeat(15, 1fr)",
@@ -608,8 +633,8 @@ export default function InteractiveTerminal() {
                 );
               })}
             </div>
-            
-            <div className="flex items-center gap-4 text-xs font-mono">
+
+            <div className="flex items-center gap-4 text-xs font-mono mt-2 shrink-0">
               {snakeGameOver ? (
                 <div className="flex flex-col items-center gap-1.5">
                   <span className="text-red-400 font-bold animate-bounce text-sm">game over!</span>
@@ -636,7 +661,8 @@ export default function InteractiveTerminal() {
                 </div>
               ) : (
                 <div className="flex flex-col items-center gap-1 text-[9px] text-zinc-500">
-                  <span>kontrol: <b>w/a/s/d</b> atau <b>arrow keys</b></span>
+                  <span className="hidden md:inline">kontrol: <b>w/a/s/d</b> atau <b>arrow keys</b></span>
+                  <span className="md:hidden">kontrol: gunakan <b>gamepad</b> di bawah</span>
                   <div className="flex gap-2 mt-1">
                     <button
                       onClick={() => setSnakeIsRunning(!snakeIsRunning)}
@@ -791,6 +817,57 @@ export default function InteractiveTerminal() {
           </div>
         )}
       </div>
+      {/* Touch D-pad Touchscreen Gamepad Panel - Rendered outside the console screen to prevent vertical compression */}
+      {terminalMode === "snake" && (
+        <div className={`bg-zinc-950 border-t border-border-custom/30 py-6 flex flex-col items-center justify-center select-none md:hidden transition-all duration-300 ${(!snakeIsRunning || snakeGameOver) ? "opacity-40 pointer-events-none animate-pulse" : "opacity-100"}`}>
+          <div className="flex flex-col items-center gap-1.5">
+            {/* UP */}
+            <button
+              type="button"
+              onTouchStart={(e) => { e.preventDefault(); if (dir.y !== 1) setDir({ x: 0, y: -1 }); }}
+              onClick={(e) => { e.preventDefault(); if (dir.y !== 1) setDir({ x: 0, y: -1 }); }}
+              className="w-14 h-11 bg-zinc-900 border border-emerald-500/30 text-emerald-400 active:bg-emerald-500 active:text-black rounded-lg flex items-center justify-center font-bold text-lg select-none cursor-pointer transition-colors shadow-md"
+              aria-label="Snake Up"
+            >
+              ▲
+            </button>
+            {/* LEFT, D-PAD CENTER, RIGHT */}
+            <div className="flex items-center gap-4">
+              <button
+                type="button"
+                onTouchStart={(e) => { e.preventDefault(); if (dir.x !== 1) setDir({ x: -1, y: 0 }); }}
+                onClick={(e) => { e.preventDefault(); if (dir.x !== 1) setDir({ x: -1, y: 0 }); }}
+                className="w-14 h-11 bg-zinc-900 border border-emerald-500/30 text-emerald-400 active:bg-emerald-500 active:text-black rounded-lg flex items-center justify-center font-bold text-lg select-none cursor-pointer transition-colors shadow-md"
+                aria-label="Snake Left"
+              >
+                ◀
+              </button>
+              <div className="w-10 h-10 rounded-full border border-emerald-950 bg-black flex items-center justify-center text-xs text-emerald-500/20 select-none">
+                🕹️
+              </div>
+              <button
+                type="button"
+                onTouchStart={(e) => { e.preventDefault(); if (dir.x !== -1) setDir({ x: 1, y: 0 }); }}
+                onClick={(e) => { e.preventDefault(); if (dir.x !== -1) setDir({ x: 1, y: 0 }); }}
+                className="w-14 h-11 bg-zinc-900 border border-emerald-500/30 text-emerald-400 active:bg-emerald-500 active:text-black rounded-lg flex items-center justify-center font-bold text-lg select-none cursor-pointer transition-colors shadow-md"
+                aria-label="Snake Right"
+              >
+                ▶
+              </button>
+            </div>
+            {/* DOWN */}
+            <button
+              type="button"
+              onTouchStart={(e) => { e.preventDefault(); if (dir.y !== -1) setDir({ x: 0, y: 1 }); }}
+              onClick={(e) => { e.preventDefault(); if (dir.y !== -1) setDir({ x: 0, y: 1 }); }}
+              className="w-14 h-11 bg-zinc-900 border border-emerald-500/30 text-emerald-400 active:bg-emerald-500 active:text-black rounded-lg flex items-center justify-center font-bold text-lg select-none cursor-pointer transition-colors shadow-md"
+              aria-label="Snake Down"
+            >
+              ▼
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
