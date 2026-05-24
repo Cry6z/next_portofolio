@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { ExternalLink, X, ChevronLeft, ChevronRight } from "lucide-react";
 import { Project } from "@/context/CMSContext";
@@ -20,6 +21,11 @@ interface ProjectDetailModalProps {
 
 export default function ProjectDetailModal({ project, isOpen, onClose }: ProjectDetailModalProps) {
   const [screenshotIndex, setScreenshotIndex] = useState(0);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   // Lock scroll when open
   useEffect(() => {
@@ -49,7 +55,7 @@ export default function ProjectDetailModal({ project, isOpen, onClose }: Project
     setScreenshotIndex(0);
   }, [project]);
 
-  if (!project) return null;
+  if (!mounted || !project) return null;
 
   const activeProjectImages = [project.image, ...(project.screenshots || [])].filter(Boolean);
 
@@ -63,7 +69,7 @@ export default function ProjectDetailModal({ project, isOpen, onClose }: Project
     setScreenshotIndex((prev) => (prev === activeProjectImages.length - 1 ? 0 : prev + 1));
   };
 
-  return (
+  return createPortal(
     <AnimatePresence>
       {isOpen && (
         <motion.div
@@ -235,6 +241,7 @@ export default function ProjectDetailModal({ project, isOpen, onClose }: Project
           </motion.div>
         </motion.div>
       )}
-    </AnimatePresence>
+    </AnimatePresence>,
+    document.body
   );
 }
