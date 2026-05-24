@@ -70,7 +70,7 @@ export default function ProjectDetailModal({ project, isOpen, onClose }: Project
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 md:p-6 bg-background/80 backdrop-blur-md overflow-y-auto"
+          className="fixed inset-0 z-50 overflow-y-auto bg-background/80 backdrop-blur-md flex justify-center items-start md:items-center p-4 md:p-6"
           onClick={onClose}
         >
           <motion.div
@@ -78,7 +78,7 @@ export default function ProjectDetailModal({ project, isOpen, onClose }: Project
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 15 }}
             transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-            className="relative w-full max-w-5xl bg-card-custom border border-border-custom rounded-3xl shadow-2xl overflow-hidden max-h-[90vh] flex flex-col md:flex-row focus:outline-none"
+            className="relative my-auto w-full max-w-5xl bg-card-custom border border-border-custom rounded-3xl shadow-2xl overflow-hidden flex flex-col md:flex-row focus:outline-none md:max-h-[90vh]"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Close Button */}
@@ -91,7 +91,7 @@ export default function ProjectDetailModal({ project, isOpen, onClose }: Project
             </button>
 
             {/* Gallery Column (Left/Top) */}
-            <div className="w-full md:w-3/5 bg-accent-light/30 relative flex flex-col items-center justify-center border-b md:border-b-0 md:border-r border-border-custom h-[35vh] md:h-auto min-h-[300px]">
+            <div className="w-full md:w-3/5 bg-accent-light/30 relative flex flex-col items-center justify-center border-b md:border-b-0 md:border-r border-border-custom h-[35vh] md:h-auto min-h-[300px] shrink-0">
               {activeProjectImages.length > 0 ? (
                 <div className="w-full h-full relative flex items-center justify-center p-6 md:p-8">
                   <AnimatePresence mode="wait">
@@ -138,7 +138,7 @@ export default function ProjectDetailModal({ project, isOpen, onClose }: Project
             </div>
 
             {/* Content Column (Right/Bottom) */}
-            <div className="w-full md:w-2/5 p-6 md:p-8 overflow-y-auto flex flex-col gap-6 max-h-[55vh] md:max-h-[90vh]">
+            <div className="w-full md:w-2/5 p-6 md:p-8 flex flex-col gap-6 overflow-y-auto max-h-none md:max-h-[90vh]">
               {/* Header Meta */}
               <div className="flex flex-col gap-2">
                 <div className="flex items-center gap-2">
