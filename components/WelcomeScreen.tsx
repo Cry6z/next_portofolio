@@ -26,19 +26,16 @@ export default function WelcomeScreen({ onComplete }: WelcomeScreenProps) {
   // Separate variants typed explicitly to satisfy TypeScript compiler
   const screenVariants: Variants = {
     initial: {
-      opacity: 1,
-      y: 0
+      opacity: 1
     },
     animate: {
-      opacity: 1,
-      y: 0
+      opacity: 1
     },
     exit: {
-      y: "-100%",
       opacity: 0,
       transition: {
-        duration: 2.0,
-        ease: [0.76, 0, 0.24, 1]
+        duration: 1.2,
+        ease: "easeInOut"
       }
     }
   };
@@ -52,11 +49,11 @@ export default function WelcomeScreen({ onComplete }: WelcomeScreenProps) {
     const updateCounter = () => {
       let elapsed = Date.now() - start;
       if (elapsed > duration) elapsed = duration;
-      
+
       // Cubic ease-out mathematical formula
       let progress = elapsed / duration;
       let easeOutProgress = 1 - Math.pow(1 - progress, 3);
-      
+
       setCount(Math.floor(easeOutProgress * 100));
 
       if (elapsed < duration) {
@@ -78,7 +75,7 @@ export default function WelcomeScreen({ onComplete }: WelcomeScreenProps) {
     if (phase !== "loading") return;
 
     let start = Date.now();
-    const duration = 2000;
+    const duration = 3000;
     let animationFrameId: number;
 
     const updateCircleCounter = () => {
@@ -87,8 +84,8 @@ export default function WelcomeScreen({ onComplete }: WelcomeScreenProps) {
 
       let progress = elapsed / duration;
       // Quadratic ease-in-out progress
-      let easeInOutProgress = progress < 0.5 
-        ? 2 * progress * progress 
+      let easeInOutProgress = progress < 0.5
+        ? 2 * progress * progress
         : 1 - Math.pow(-2 * progress + 2, 2) / 2;
 
       setCircleCount(Math.floor(easeInOutProgress * 100));
@@ -121,11 +118,6 @@ export default function WelcomeScreen({ onComplete }: WelcomeScreenProps) {
       exit="exit"
       className="fixed inset-0 z-100 flex flex-col justify-between bg-background text-foreground overflow-hidden"
     >
-      {/* Animated Grid Background */}
-      <div 
-        className="absolute inset-[-40px] grid-bg opacity-30 pointer-events-none animate-grid-move" 
-      />
-
       <AnimatePresence mode="wait">
         {phase === "welcome" ? (
           <motion.div
@@ -138,9 +130,9 @@ export default function WelcomeScreen({ onComplete }: WelcomeScreenProps) {
           >
             {/* Top Info Header */}
             <div className="flex justify-between items-start">
-              <motion.div 
-                initial={{ opacity: 0, x: -20 }} 
-                animate={{ opacity: 1, x: 0 }} 
+              <motion.div
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
                 className="font-mono text-[10px] md:text-xs text-accent-custom uppercase flex flex-col gap-1 tracking-widest"
               >
@@ -148,9 +140,9 @@ export default function WelcomeScreen({ onComplete }: WelcomeScreenProps) {
                 <span>Loading_Assets...</span>
               </motion.div>
 
-              <motion.div 
-                initial={{ opacity: 0, x: 20 }} 
-                animate={{ opacity: 1, x: 0 }} 
+              <motion.div
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
                 className="font-mono text-sm md:text-lg font-bold tracking-widest text-foreground"
               >
@@ -161,16 +153,16 @@ export default function WelcomeScreen({ onComplete }: WelcomeScreenProps) {
             {/* Center Main Text */}
             <div className="flex flex-col items-center justify-center flex-1">
               <div className="overflow-hidden py-2">
-                <motion.h1 
-                  initial={{ y: 80, opacity: 0 }} 
-                  animate={{ y: 0, opacity: 1 }} 
-                  transition={{ duration: 1.2, ease: [0.76, 0, 0.24, 1], delay: 0.3 }} 
+                <motion.h1
+                  initial={{ y: 80, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  transition={{ duration: 1.2, ease: [0.76, 0, 0.24, 1], delay: 0.3 }}
                   className="text-5xl md:text-8xl lg:text-[10rem] font-black uppercase font-hero leading-none tracking-tighter"
                 >
                   WELCOME
                 </motion.h1>
               </div>
-              
+
               <motion.div
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -219,7 +211,7 @@ export default function WelcomeScreen({ onComplete }: WelcomeScreenProps) {
 
             {/* Circular Spinner UI */}
             <div className="relative w-64 h-64 flex items-center justify-center">
-              
+
               {/* Outer Dashed Rotating HUD Ring */}
               <motion.svg
                 className="absolute w-full h-full text-accent-custom opacity-20"
@@ -340,7 +332,7 @@ export default function WelcomeScreen({ onComplete }: WelcomeScreenProps) {
                       <span className="font-mono text-base font-black tracking-[0.2em] translate-x-[0.1em]">
                         ENTER
                       </span>
-                      <motion.div 
+                      <motion.div
                         animate={{ y: [0, 4, 0] }}
                         transition={{ repeat: Infinity, duration: 1.5, ease: "easeInOut" }}
                         className="text-[9px] mt-1.5 opacity-55 group-hover:opacity-100 transition-opacity"
@@ -369,7 +361,7 @@ export default function WelcomeScreen({ onComplete }: WelcomeScreenProps) {
                   </motion.div>
                 </AnimatePresence>
               </div>
-              
+
               <div className="flex items-center gap-1.5 font-mono text-[9px] md:text-[10px] text-accent-custom uppercase tracking-widest mt-2">
                 <span className={`inline-block w-1.5 h-1.5 rounded-full animate-pulse ${isReady ? 'bg-emerald-500' : 'bg-amber-500'}`} />
                 <span>{isReady ? "PORTAL_READY_FOR_INJECTION" : "LINK_ESTABLISHED_SSL"}</span>
