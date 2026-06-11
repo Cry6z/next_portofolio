@@ -21,6 +21,9 @@ export default function SettingsTab({ handleResetData }: SettingsTabProps) {
     linkedin: "",
     instagram: "",
     welcomeMessage: "",
+    handle: "",
+    status: "",
+    contactText: "",
   });
 
   const [passwordChangeData, setPasswordChangeData] = useState({
@@ -45,6 +48,9 @@ export default function SettingsTab({ handleResetData }: SettingsTabProps) {
           linkedin: profile.linkedin || "",
           instagram: profile.instagram || "",
           welcomeMessage: profile.welcomeMessage || "",
+          handle: profile.handle || "",
+          status: profile.status || "",
+          contactText: profile.contactText || "",
         });
       }, 0);
     }
@@ -222,6 +228,55 @@ export default function SettingsTab({ handleResetData }: SettingsTabProps) {
                 value={profileFormData.welcomeMessage}
                 onChange={(e) =>
                   setProfileFormData({ ...profileFormData, welcomeMessage: e.target.value })
+                }
+                className="bg-background border border-border-custom rounded-lg px-3 py-2 text-xs focus:outline-none text-foreground"
+              />
+            </div>
+
+            {/* Profile Card Customization */}
+            <div className="md:col-span-2 border-t border-border-custom/40 pt-4 mt-2">
+              <h4 className="text-xs font-bold uppercase tracking-wider text-accent-custom mb-1">
+                Kustomisasi Kartu Profil (Profile Card)
+              </h4>
+            </div>
+
+            <div className="flex flex-col gap-1">
+              <label className="text-[10px] font-bold font-mono text-accent-custom uppercase">
+                Username Handle Kartu (contoh: gibran)
+              </label>
+              <input
+                type="text"
+                value={profileFormData.handle}
+                onChange={(e) =>
+                  setProfileFormData({ ...profileFormData, handle: e.target.value })
+                }
+                className="bg-background border border-border-custom rounded-lg px-3 py-2 text-xs focus:outline-none text-foreground"
+              />
+            </div>
+
+            <div className="flex flex-col gap-1">
+              <label className="text-[10px] font-bold font-mono text-accent-custom uppercase">
+                Status Kartu (contoh: Tersedia untuk proyek)
+              </label>
+              <input
+                type="text"
+                value={profileFormData.status}
+                onChange={(e) =>
+                  setProfileFormData({ ...profileFormData, status: e.target.value })
+                }
+                className="bg-background border border-border-custom rounded-lg px-3 py-2 text-xs focus:outline-none text-foreground"
+              />
+            </div>
+
+            <div className="flex flex-col gap-1 md:col-span-2">
+              <label className="text-[10px] font-bold font-mono text-accent-custom uppercase">
+                Teks Tombol Kontak Kartu (contoh: Sapa Saya)
+              </label>
+              <input
+                type="text"
+                value={profileFormData.contactText}
+                onChange={(e) =>
+                  setProfileFormData({ ...profileFormData, contactText: e.target.value })
                 }
                 className="bg-background border border-border-custom rounded-lg px-3 py-2 text-xs focus:outline-none text-foreground"
               />

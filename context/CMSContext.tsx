@@ -15,6 +15,9 @@ export interface Profile {
   avatarUrl: string;
   miniAvatarUrl: string;
   welcomeMessage?: string;
+  handle?: string;
+  status?: string;
+  contactText?: string;
 }
 
 export interface Project {
@@ -136,6 +139,9 @@ const defaultProfile: Profile = {
   avatarUrl: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=400",
   miniAvatarUrl: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=400",
   welcomeMessage: "To my portfolio",
+  handle: "gibran",
+  status: "Tersedia untuk proyek",
+  contactText: "Sapa Saya",
 };
 
 const defaultProjects: Project[] = [];
@@ -225,14 +231,25 @@ export function CMSProvider({ children }: { children: React.ReactNode }) {
                 ...profileData,
                 avatarUrl: profileData.avatarurl || profileData.avatarUrl,
                 resumeUrl: profileData.resumeurl || profileData.resumeUrl,
-                miniAvatarUrl: profileData.avatarurl || profileData.avatarUrl,
+                miniAvatarUrl: profileData.miniAvatarUrl || profileData.miniavatarurl || profileData.avatarurl || profileData.avatarUrl,
                 welcomeMessage: defaultProfile.welcomeMessage,
+                handle: profileData.handle || defaultProfile.handle,
+                status: profileData.status || defaultProfile.status,
+                contactText: profileData.contactText || profileData.contacttext || defaultProfile.contactText,
               };
               setProfile(mappedProfile);
             } else {
               // Seed default profile if empty
-              const { miniAvatarUrl, welcomeMessage, avatarUrl, resumeUrl, ...pToSave } = defaultProfile;
-              const payload = { ...pToSave, avatarurl: avatarUrl, resumeurl: resumeUrl };
+              const { miniAvatarUrl, welcomeMessage, avatarUrl, resumeUrl, handle, status, contactText, ...pToSave } = defaultProfile;
+              const payload = { 
+                ...pToSave, 
+                avatarurl: avatarUrl, 
+                resumeurl: resumeUrl,
+                miniAvatarUrl: miniAvatarUrl,
+                handle: handle,
+                status: status,
+                contactText: contactText
+              };
               await supabase.from("profile").upsert({ id: "default", ...payload });
               setProfile(defaultProfile);
             }
@@ -424,14 +441,20 @@ export function CMSProvider({ children }: { children: React.ReactNode }) {
     saveProfile(newProfile);
     if (supabase) {
       try {
-        const { miniAvatarUrl, welcomeMessage, avatarUrl, resumeUrl, ...profileToSave } = newProfile;
+        const { miniAvatarUrl, welcomeMessage, avatarUrl, resumeUrl, handle, status, contactText, ...profileToSave } = newProfile;
         const supabasePayload = {
           ...profileToSave,
           avatarurl: avatarUrl,
           resumeurl: resumeUrl,
+          miniAvatarUrl: miniAvatarUrl,
+          handle: handle,
+          status: status,
+          contactText: contactText,
         };
         const { error } = await supabase.from("profile").upsert({ id: "default", ...supabasePayload });
-        if (error) console.error("Supabase profile update failed", error);
+        if (error) {
+          console.error("Supabase profile update failed:", error.message, "| Details:", error.details, "| Hint:", error.hint);
+        }
       } catch (e) {
         console.error("Supabase profile update failed", e);
       }
@@ -654,7 +677,17 @@ export function CMSProvider({ children }: { children: React.ReactNode }) {
     
     if (supabase) {
       try {
-        await supabase.from("profile").upsert({ id: "default", ...defaultProfile });
+        const { miniAvatarUrl, welcomeMessage, avatarUrl, resumeUrl, handle, status, contactText, ...pToSave } = defaultProfile;
+        const payload = {
+          ...pToSave,
+          avatarurl: avatarUrl,
+          resumeurl: resumeUrl,
+          miniAvatarUrl: miniAvatarUrl,
+          handle: handle,
+          status: status,
+          contactText: contactText
+        };
+        await supabase.from("profile").upsert({ id: "default", ...payload });
         await supabase.from("projects").delete().neq("id", "none");
         await supabase.from("experiences").delete().neq("id", "none");
         await supabase.from("skills").delete().neq("id", "none");
@@ -687,8 +720,16 @@ export function CMSProvider({ children }: { children: React.ReactNode }) {
       if (savedProfile) {
         const parsed = JSON.parse(savedProfile);
         setProfile(parsed);
-        const { miniAvatarUrl, welcomeMessage, avatarUrl, resumeUrl, ...profileToSave } = parsed;
-        const supabasePayload = { ...profileToSave, avatarurl: avatarUrl, resumeurl: resumeUrl };
+        const { miniAvatarUrl, welcomeMessage, avatarUrl, resumeUrl, handle, status, contactText, ...profileToSave } = parsed;
+        const supabasePayload = { 
+          ...profileToSave, 
+          avatarurl: avatarUrl, 
+          resumeurl: resumeUrl,
+          miniAvatarUrl: miniAvatarUrl,
+          handle: handle,
+          status: status,
+          contactText: contactText,
+        };
         const { error } = await supabase.from("profile").upsert({ id: "default", ...supabasePayload });
         if (error) throw new Error("Gagal migrasi profil: " + error.message);
       }

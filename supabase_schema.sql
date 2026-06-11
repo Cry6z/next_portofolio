@@ -176,3 +176,8 @@ ON CONFLICT (id) DO NOTHING;
 
 -- PERBARUAN: Menambahkan kolom screenshots untuk galeri gambar di Projects
 ALTER TABLE projects ADD COLUMN IF NOT EXISTS screenshots TEXT[] DEFAULT '{}';
+
+-- PERBARUAN: Menambahkan kolom kustomisasi untuk Profile Card (handle, status, contactText)
+ALTER TABLE profile ADD COLUMN IF NOT EXISTS handle TEXT DEFAULT 'gibran';
+ALTER TABLE profile ADD COLUMN IF NOT EXISTS status TEXT DEFAULT 'Tersedia untuk proyek';
+ALTER TABLE profile ADD COLUMN IF NOT EXISTS "contactText" TEXT DEFAULT 'Sapa Saya';

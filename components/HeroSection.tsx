@@ -112,9 +112,9 @@ export default function HeroSection({ profile }: HeroSectionProps) {
               <ProfileCard
                 name={profile.name || "GIBRAN"}
                 title={profile.title || "Creative Developer"}
-                handle="gibran"
-                status="Tersedia untuk proyek"
-                contactText="Sapa Saya"
+                handle={profile.handle || "gibran"}
+                status={profile.status || "Tersedia untuk proyek"}
+                contactText={profile.contactText || "Sapa Saya"}
                 avatarUrl={profile.avatarUrl}
                 miniAvatarUrl={profile.miniAvatarUrl}
                 showUserInfo={true}
