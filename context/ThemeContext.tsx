@@ -39,7 +39,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     document.documentElement.classList.add("theme-transitioning");
     setTimeout(() => {
       document.documentElement.classList.remove("theme-transitioning");
-    }, 400);
+    }, 700); // Keep class active longer than CSS transition to avoid visual snapping
   };
 
   const setTheme = (newTheme: Theme) => {

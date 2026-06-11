@@ -18,6 +18,7 @@ export interface Profile {
   handle?: string;
   status?: string;
   contactText?: string;
+  heroBgUrl?: string;
 }
 
 export interface Project {
@@ -142,6 +143,7 @@ const defaultProfile: Profile = {
   handle: "gibran",
   status: "Tersedia untuk proyek",
   contactText: "Sapa Saya",
+  heroBgUrl: "",
 };
 
 const defaultProjects: Project[] = [];
@@ -227,6 +229,17 @@ export function CMSProvider({ children }: { children: React.ReactNode }) {
           } else {
             // Apply Profile
             if (profileData) {
+              let localHeroBg = "";
+              try {
+                const savedProfile = localStorage.getItem("cms-profile");
+                if (savedProfile) {
+                  const parsed = JSON.parse(savedProfile);
+                  localHeroBg = parsed.heroBgUrl || "";
+                }
+              } catch (e) {
+                console.error("Failed to parse local profile for heroBgUrl fallback", e);
+              }
+
               const mappedProfile = {
                 ...profileData,
                 avatarUrl: profileData.avatarurl || profileData.avatarUrl,
@@ -236,11 +249,12 @@ export function CMSProvider({ children }: { children: React.ReactNode }) {
                 handle: profileData.handle || defaultProfile.handle,
                 status: profileData.status || defaultProfile.status,
                 contactText: profileData.contactText || profileData.contacttext || defaultProfile.contactText,
+                heroBgUrl: profileData.heroBgUrl || profileData.herobgurl || localHeroBg || "",
               };
               setProfile(mappedProfile);
             } else {
               // Seed default profile if empty
-              const { miniAvatarUrl, welcomeMessage, avatarUrl, resumeUrl, handle, status, contactText, ...pToSave } = defaultProfile;
+              const { miniAvatarUrl, welcomeMessage, avatarUrl, resumeUrl, handle, status, contactText, heroBgUrl, ...pToSave } = defaultProfile;
               const payload = { 
                 ...pToSave, 
                 avatarurl: avatarUrl, 
@@ -248,9 +262,15 @@ export function CMSProvider({ children }: { children: React.ReactNode }) {
                 miniAvatarUrl: miniAvatarUrl,
                 handle: handle,
                 status: status,
-                contactText: contactText
+                contactText: contactText,
+                heroBgUrl: heroBgUrl
               };
-              await supabase.from("profile").upsert({ id: "default", ...payload });
+              const { error } = await supabase.from("profile").upsert({ id: "default", ...payload });
+              if (error) {
+                console.warn("Seeding default profile failed, retrying without heroBgUrl:", error.message);
+                const { heroBgUrl: _, ...retryPayload } = payload;
+                await supabase.from("profile").upsert({ id: "default", ...retryPayload });
+              }
               setProfile(defaultProfile);
             }
 
@@ -441,7 +461,7 @@ export function CMSProvider({ children }: { children: React.ReactNode }) {
     saveProfile(newProfile);
     if (supabase) {
       try {
-        const { miniAvatarUrl, welcomeMessage, avatarUrl, resumeUrl, handle, status, contactText, ...profileToSave } = newProfile;
+        const { miniAvatarUrl, welcomeMessage, avatarUrl, resumeUrl, handle, status, contactText, heroBgUrl, ...profileToSave } = newProfile;
         const supabasePayload = {
           ...profileToSave,
           avatarurl: avatarUrl,
@@ -450,10 +470,16 @@ export function CMSProvider({ children }: { children: React.ReactNode }) {
           handle: handle,
           status: status,
           contactText: contactText,
+          heroBgUrl: heroBgUrl,
         };
         const { error } = await supabase.from("profile").upsert({ id: "default", ...supabasePayload });
         if (error) {
-          console.error("Supabase profile update failed:", error.message, "| Details:", error.details, "| Hint:", error.hint);
+          console.warn("First upsert attempt failed, retrying without heroBgUrl:", error.message);
+          const { heroBgUrl: _, ...retryPayload } = supabasePayload;
+          const { error: retryError } = await supabase.from("profile").upsert({ id: "default", ...retryPayload });
+          if (retryError) {
+            console.error("Supabase profile update failed:", retryError.message, "| Details:", retryError.details, "| Hint:", retryError.hint);
+          }
         }
       } catch (e) {
         console.error("Supabase profile update failed", e);
@@ -677,7 +703,7 @@ export function CMSProvider({ children }: { children: React.ReactNode }) {
     
     if (supabase) {
       try {
-        const { miniAvatarUrl, welcomeMessage, avatarUrl, resumeUrl, handle, status, contactText, ...pToSave } = defaultProfile;
+        const { miniAvatarUrl, welcomeMessage, avatarUrl, resumeUrl, handle, status, contactText, heroBgUrl, ...pToSave } = defaultProfile;
         const payload = {
           ...pToSave,
           avatarurl: avatarUrl,
@@ -685,9 +711,15 @@ export function CMSProvider({ children }: { children: React.ReactNode }) {
           miniAvatarUrl: miniAvatarUrl,
           handle: handle,
           status: status,
-          contactText: contactText
+          contactText: contactText,
+          heroBgUrl: heroBgUrl
         };
-        await supabase.from("profile").upsert({ id: "default", ...payload });
+        const { error } = await supabase.from("profile").upsert({ id: "default", ...payload });
+        if (error) {
+          console.warn("Reset profile failed, retrying without heroBgUrl:", error.message);
+          const { heroBgUrl: _, ...retryPayload } = payload;
+          await supabase.from("profile").upsert({ id: "default", ...retryPayload });
+        }
         await supabase.from("projects").delete().neq("id", "none");
         await supabase.from("experiences").delete().neq("id", "none");
         await supabase.from("skills").delete().neq("id", "none");
@@ -720,7 +752,7 @@ export function CMSProvider({ children }: { children: React.ReactNode }) {
       if (savedProfile) {
         const parsed = JSON.parse(savedProfile);
         setProfile(parsed);
-        const { miniAvatarUrl, welcomeMessage, avatarUrl, resumeUrl, handle, status, contactText, ...profileToSave } = parsed;
+        const { miniAvatarUrl, welcomeMessage, avatarUrl, resumeUrl, handle, status, contactText, heroBgUrl, ...profileToSave } = parsed;
         const supabasePayload = { 
           ...profileToSave, 
           avatarurl: avatarUrl, 
@@ -729,9 +761,15 @@ export function CMSProvider({ children }: { children: React.ReactNode }) {
           handle: handle,
           status: status,
           contactText: contactText,
+          heroBgUrl: heroBgUrl,
         };
         const { error } = await supabase.from("profile").upsert({ id: "default", ...supabasePayload });
-        if (error) throw new Error("Gagal migrasi profil: " + error.message);
+        if (error) {
+          console.warn("Migration profile failed, retrying without heroBgUrl:", error.message);
+          const { heroBgUrl: _, ...retryPayload } = supabasePayload;
+          const { error: retryError } = await supabase.from("profile").upsert({ id: "default", ...retryPayload });
+          if (retryError) throw new Error("Gagal migrasi profil: " + retryError.message);
+        }
       }
 
       const savedProjects = localStorage.getItem("cms-projects");

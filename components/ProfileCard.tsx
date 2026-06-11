@@ -65,9 +65,9 @@ const ProfileCardComponent: React.FC<ProfileCardProps> = ({
   iconUrl = '',
   grainUrl = '',
   innerGradient,
-  behindGlowEnabled = true,
-  behindGlowColor = 'rgba(255, 255, 255, 0.2)', // Adjusted for a minimal B&W look
-  behindGlowSize = '50%',
+  behindGlowEnabled = false,
+  behindGlowColor = 'transparent',
+  behindGlowSize = '0%',
   className = '',
   enableTilt = true,
   enableMobileTilt = true, // Enabled for mobile as well
@@ -465,12 +465,13 @@ const ProfileCardComponent: React.FC<ProfileCardProps> = ({
             width: '100%',
             aspectRatio: '0.718',
             borderRadius: cardRadius,
-            backgroundBlendMode: 'color-dodge, normal, normal, normal',
+            backgroundBlendMode: 'normal',
             boxShadow:
-              'rgba(0, 0, 0, 0.8) calc((var(--pointer-from-left) * 10px) - 3px) calc((var(--pointer-from-top) * 20px) - 6px) 20px -5px',
+              'rgba(0, 0, 0, 0.15) 0px 10px 30px',
             transition: 'transform 1s ease',
             transform: 'translateZ(0) rotateX(0deg) rotateY(0deg)',
-            background: 'rgba(0, 0, 0, 0.9)',
+            background: 'var(--card-bg)',
+            border: '1px solid var(--border)',
             backfaceVisibility: 'hidden'
           }}
           onMouseEnter={e => {
@@ -529,7 +530,7 @@ const ProfileCardComponent: React.FC<ProfileCardProps> = ({
               />
               {showUserInfo && (
                 <div
-                  className="absolute z-2 flex items-center justify-between gap-4 backdrop-blur-[30px] border border-white/10 pointer-events-auto"
+                  className="absolute z-2 flex items-center justify-between gap-4 border border-border-custom pointer-events-auto bg-card-custom shadow-md"
                   style={
                     {
                       '--ui-inset': '16px',
@@ -537,7 +538,6 @@ const ProfileCardComponent: React.FC<ProfileCardProps> = ({
                       bottom: 'var(--ui-inset)',
                       left: 'var(--ui-inset)',
                       right: 'var(--ui-inset)',
-                      background: 'rgba(0, 0, 0, 0.4)',
                       borderRadius: 'calc(max(0px, var(--card-radius) - var(--ui-inset) + var(--ui-radius-bias)))',
                       padding: '16px 20px'
                     } as React.CSSProperties
@@ -545,7 +545,7 @@ const ProfileCardComponent: React.FC<ProfileCardProps> = ({
                 >
                   <div className="flex items-center gap-4 min-w-0 flex-1">
                     <div
-                      className="rounded-full overflow-hidden border border-white/20 shrink-0"
+                      className="rounded-full overflow-hidden border border-border-custom shrink-0"
                       style={{ width: '48px', height: '48px' }}
                     >
                       <img
@@ -562,12 +562,12 @@ const ProfileCardComponent: React.FC<ProfileCardProps> = ({
                       />
                     </div>
                     <div className="flex flex-col items-start gap-1.5 min-w-0 flex-1">
-                      <div className="text-sm font-semibold text-white leading-tight truncate w-full">@{handle}</div>
-                      <div className="text-xs text-white/70 leading-tight truncate w-full">{status}</div>
+                      <div className="text-sm font-semibold text-foreground leading-tight truncate w-full">@{handle}</div>
+                      <div className="text-xs text-accent-custom leading-tight truncate w-full">{status}</div>
                     </div>
                   </div>
                   <button
-                    className="shrink-0 border border-white/20 rounded-lg px-4 py-2.5 text-xs font-semibold text-white cursor-pointer backdrop-blur-[10px] transition-all duration-200 ease-out hover:bg-white hover:text-black"
+                    className="shrink-0 border border-border-custom rounded-lg px-4 py-2.5 text-xs font-semibold text-foreground cursor-pointer transition-all duration-200 ease-out hover:bg-foreground hover:text-background"
                     onClick={handleContactClick}
                     style={{ pointerEvents: 'auto', display: 'block', gridArea: 'auto', borderRadius: '8px' }}
                     type="button"

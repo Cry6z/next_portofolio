@@ -153,10 +153,10 @@ export default function ProjectForm({ isOpen, onClose, editingProject, onSave, t
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -10 }}
-          className="border border-foreground/15 bg-card-custom p-6 rounded-2xl flex flex-col gap-4 shadow-sm"
+          className="border border-border-custom bg-card-custom p-4 md:p-6 rounded-none flex flex-col gap-4 shadow-sm"
         >
           <div className="flex justify-between items-center border-b border-border-custom pb-2">
-            <h3 className="text-md font-bold uppercase tracking-tight">
+            <h3 className="text-sm font-black font-mono uppercase tracking-tight text-foreground">
               {editingProject ? "Edit Proyek" : "Tambah Proyek Baru"}
             </h3>
             <button
@@ -169,7 +169,7 @@ export default function ProjectForm({ isOpen, onClose, editingProject, onSave, t
 
           <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="flex flex-col gap-1">
-              <label className="text-[10px] font-bold font-mono text-accent-custom uppercase">
+              <label className="text-[9px] font-bold font-mono text-accent-custom uppercase">
                 Judul Proyek *
               </label>
               <input
@@ -180,12 +180,12 @@ export default function ProjectForm({ isOpen, onClose, editingProject, onSave, t
                   setProjectFormData({ ...projectFormData, title: e.target.value })
                 }
                 placeholder="Nama proyek..."
-                className="bg-background border border-border-custom rounded-lg px-3 py-2 text-xs focus:outline-none text-foreground"
+                className="bg-background border border-border-custom rounded-none px-3 py-2 text-xs focus:outline-none text-foreground font-mono"
               />
             </div>
 
             <div className="flex flex-col gap-1">
-              <label className="text-[10px] font-bold font-mono text-accent-custom uppercase">
+              <label className="text-[9px] font-bold font-mono text-accent-custom uppercase">
                 Gambar Mockup (Link URL / Upload Lokal)
               </label>
               <div className="flex gap-2">
@@ -196,9 +196,9 @@ export default function ProjectForm({ isOpen, onClose, editingProject, onSave, t
                     setProjectFormData({ ...projectFormData, image: e.target.value })
                   }
                   placeholder="https://unsplash.com/... atau Base64"
-                  className="flex-1 bg-background border border-border-custom rounded-lg px-3 py-2 text-xs focus:outline-none text-foreground"
+                  className="flex-1 bg-background border border-border-custom rounded-none px-3 py-2 text-xs focus:outline-none text-foreground font-mono"
                 />
-                <label className="border border-border-custom hover:border-foreground bg-background hover:bg-accent-light text-foreground text-xs font-bold rounded-lg px-3 py-1.5 cursor-pointer flex items-center justify-center shrink-0">
+                <label className="border border-border-custom hover:border-foreground bg-background hover:bg-foreground hover:text-background text-foreground text-[10px] font-mono uppercase font-bold rounded-none px-3 py-1.5 cursor-pointer flex items-center justify-center shrink-0 transition-colors">
                   <span>Pilih File</span>
                   <input
                     type="file"
@@ -212,27 +212,27 @@ export default function ProjectForm({ isOpen, onClose, editingProject, onSave, t
 
             {/* Project Category Input */}
             <div className="flex flex-col gap-1 md:col-span-2">
-              <label className="text-[10px] font-bold font-mono text-accent-custom uppercase">
-                Kategori Proyek * (Contoh: Website, Application/Android, Design - Akan digunakan sebagai Filter utama)
+              <label className="text-[9px] font-bold font-mono text-accent-custom uppercase">
+                Kategori Proyek * (Contoh: Website, Application, Design - Filter utama)
               </label>
               <input
                 type="text"
                 required
                 value={category}
                 onChange={(e) => setCategory(e.target.value)}
-                placeholder="Masukkan kategori proyek (e.g. Website, Application/Android, Design...)"
-                className="bg-background border border-border-custom rounded-lg px-3 py-2 text-xs focus:outline-none text-foreground w-full"
+                placeholder="Masukkan kategori proyek..."
+                className="bg-background border border-border-custom rounded-none px-3 py-2 text-xs focus:outline-none text-foreground w-full font-mono"
               />
             </div>
 
             {/* Tags Multi-select Panel */}
             <div className="flex flex-col gap-1 md:col-span-2">
-              <label className="text-[10px] font-bold font-mono text-accent-custom uppercase">
+              <label className="text-[9px] font-bold font-mono text-accent-custom uppercase">
                 Teknologi / Tags * (Pilih dari Pool Tag Global)
               </label>
-              <div className="flex flex-wrap gap-1.5 p-3 border border-border-custom rounded-lg bg-background min-h-[60px]">
+              <div className="flex flex-wrap gap-1.5 p-3 border border-border-custom rounded-none bg-background min-h-[60px]">
                 {tags.length === 0 ? (
-                  <span className="text-xs text-accent-custom italic">Tidak ada tag global. Tambah di bawah atau di Tag Manager.</span>
+                  <span className="text-xs text-accent-custom italic font-mono">Tidak ada tag global. Tambah di bawah atau di Tag Manager.</span>
                 ) : (
                   tags.map((t) => {
                     const isSelected = projectFormData.tags.includes(t);
@@ -241,10 +241,10 @@ export default function ProjectForm({ isOpen, onClose, editingProject, onSave, t
                         key={t}
                         type="button"
                         onClick={() => handleToggleTag(t)}
-                        className={`px-3 py-1 rounded-full text-xs font-mono transition-all border cursor-pointer ${
+                        className={`px-2.5 py-1 rounded-none text-[10px] font-mono transition-all border cursor-pointer uppercase ${
                           isSelected
                             ? "bg-foreground text-background border-foreground font-semibold"
-                            : "bg-background text-foreground border-border-custom hover:border-foreground/45"
+                            : "bg-background text-foreground border-border-custom hover:border-foreground"
                         }`}
                       >
                         {t}
@@ -258,10 +258,10 @@ export default function ProjectForm({ isOpen, onClose, editingProject, onSave, t
               <div className="flex gap-2 items-center mt-2 max-w-md">
                 <input
                   type="text"
-                  placeholder="Tag baru tak ada di daftar? Tambah instan..."
+                  placeholder="Tag baru tak ada di daftar? Tambah..."
                   value={inlineNewTag}
                   onChange={(e) => setInlineNewTag(e.target.value)}
-                  className="bg-background border border-border-custom rounded-lg px-3 py-1.5 text-[11px] focus:outline-none text-foreground flex-1"
+                  className="bg-background border border-border-custom rounded-none px-3 py-1.5 text-[11px] focus:outline-none text-foreground flex-1 font-mono"
                   onKeyDown={(e) => {
                     if (e.key === 'Enter') {
                       e.preventDefault();
@@ -272,7 +272,7 @@ export default function ProjectForm({ isOpen, onClose, editingProject, onSave, t
                 <button
                   type="button"
                   onClick={handleAddInlineTag}
-                  className="px-3 py-1.5 bg-accent-light hover:bg-border-custom rounded-lg border border-border-custom text-xs font-bold transition-all text-foreground cursor-pointer"
+                  className="px-3 py-1.5 bg-background hover:bg-foreground hover:text-background border border-border-custom text-[10px] font-mono uppercase font-bold transition-all text-foreground cursor-pointer"
                 >
                   Tambah Tag
                 </button>
@@ -280,7 +280,7 @@ export default function ProjectForm({ isOpen, onClose, editingProject, onSave, t
             </div>
 
             <div className="flex flex-col gap-1">
-              <label className="text-[10px] font-bold font-mono text-accent-custom uppercase">
+              <label className="text-[9px] font-bold font-mono text-accent-custom uppercase">
                 Link Live Demo
               </label>
               <input
@@ -290,12 +290,12 @@ export default function ProjectForm({ isOpen, onClose, editingProject, onSave, t
                   setProjectFormData({ ...projectFormData, demoUrl: e.target.value })
                 }
                 placeholder="https://example.com"
-                className="bg-background border border-border-custom rounded-lg px-3 py-2 text-xs focus:outline-none text-foreground"
+                className="bg-background border border-border-custom rounded-none px-3 py-2 text-xs focus:outline-none text-foreground font-mono"
               />
             </div>
 
             <div className="flex flex-col gap-1">
-              <label className="text-[10px] font-bold font-mono text-accent-custom uppercase">
+              <label className="text-[9px] font-bold font-mono text-accent-custom uppercase">
                 Link GitHub Repository
               </label>
               <input
@@ -305,11 +305,11 @@ export default function ProjectForm({ isOpen, onClose, editingProject, onSave, t
                   setProjectFormData({ ...projectFormData, githubUrl: e.target.value })
                 }
                 placeholder="https://github.com/..."
-                className="bg-background border border-border-custom rounded-lg px-3 py-2 text-xs focus:outline-none text-foreground"
+                className="bg-background border border-border-custom rounded-none px-3 py-2 text-xs focus:outline-none text-foreground font-mono"
               />
             </div>
 
-            <div className="flex items-center gap-2 mt-4 md:col-span-2">
+            <div className="flex items-center gap-2 mt-2 md:col-span-2">
               <input
                 type="checkbox"
                 id="featured"
@@ -317,15 +317,15 @@ export default function ProjectForm({ isOpen, onClose, editingProject, onSave, t
                 onChange={(e) =>
                   setProjectFormData({ ...projectFormData, featured: e.target.checked })
                 }
-                className="h-4 w-4 rounded bg-background border-border-custom accent-foreground"
+                className="h-4 w-4 rounded-none bg-background border-border-custom accent-foreground"
               />
-              <label htmlFor="featured" className="text-xs font-semibold text-foreground cursor-pointer">
+              <label htmlFor="featured" className="text-xs font-mono font-bold text-foreground cursor-pointer uppercase select-none">
                 Tandai Proyek Unggulan (Tampil di grid utama)
               </label>
             </div>
 
             <div className="flex flex-col gap-1 md:col-span-2">
-              <label className="text-[10px] font-bold font-mono text-accent-custom uppercase">
+              <label className="text-[9px] font-bold font-mono text-accent-custom uppercase">
                 Deskripsi Singkat (Tampil di kartu) *
               </label>
               <input
@@ -336,12 +336,12 @@ export default function ProjectForm({ isOpen, onClose, editingProject, onSave, t
                   setProjectFormData({ ...projectFormData, description: e.target.value })
                 }
                 placeholder="Ringkasan pendek proyek..."
-                className="bg-background border border-border-custom rounded-lg px-3 py-2 text-xs focus:outline-none text-foreground"
+                className="bg-background border border-border-custom rounded-none px-3 py-2 text-xs focus:outline-none text-foreground font-mono"
               />
             </div>
 
             <div className="flex flex-col gap-1 md:col-span-2">
-              <label className="text-[10px] font-bold font-mono text-accent-custom uppercase">
+              <label className="text-[9px] font-bold font-mono text-accent-custom uppercase">
                 Detail Proyek (Rich details / deskripsi panjang) *
               </label>
               <textarea
@@ -351,22 +351,22 @@ export default function ProjectForm({ isOpen, onClose, editingProject, onSave, t
                 onChange={(e) =>
                   setProjectFormData({ ...projectFormData, details: e.target.value })
                 }
-                placeholder="Uraikan detail fitur proyek, kontribusi Anda, dll..."
-                className="bg-background border border-border-custom rounded-lg px-3 py-2 text-xs focus:outline-none text-foreground resize-none"
+                placeholder="Uraikan detail fitur proyek..."
+                className="bg-background border border-border-custom rounded-none px-3 py-2 text-xs focus:outline-none text-foreground resize-none"
               />
             </div>
 
             {/* Screenshots Manager (Up to 10) */}
             <div className="flex flex-col gap-2 md:col-span-2 border-t border-border-custom pt-4 mt-2">
               <div className="flex justify-between items-center">
-                <label className="text-[10px] font-bold font-mono text-accent-custom uppercase">
+                <label className="text-[9px] font-bold font-mono text-accent-custom uppercase">
                   Screenshot Proyek ({projectFormData.screenshots.length} dari 10)
                 </label>
                 {projectFormData.screenshots.length < 10 && (
                   <button
                     type="button"
                     onClick={handleAddScreenshotSlot}
-                    className="text-xs font-bold text-foreground hover:underline flex items-center gap-1 cursor-pointer"
+                    className="text-[10px] font-mono font-bold text-foreground hover:underline flex items-center gap-1 cursor-pointer uppercase"
                   >
                     <Plus className="h-3 w-3" /> Tambah Screenshot
                   </button>
@@ -375,15 +375,15 @@ export default function ProjectForm({ isOpen, onClose, editingProject, onSave, t
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mt-1">
                 {projectFormData.screenshots.map((shot, idx) => (
-                  <div key={idx} className="border border-border-custom p-3 rounded-xl bg-background flex flex-col gap-2 relative">
+                  <div key={idx} className="border border-border-custom p-3 rounded-none bg-background flex flex-col gap-2 relative">
                     <div className="flex justify-between items-center">
-                      <span className="text-[10px] font-bold font-mono text-accent-custom uppercase">Screenshot #{idx + 1}</span>
+                      <span className="text-[9px] font-bold font-mono text-accent-custom uppercase">Screenshot #{idx + 1}</span>
                       <button
                         type="button"
                         onClick={() => handleRemoveScreenshotSlot(idx)}
-                        className="text-accent-custom hover:text-red-500 transition-colors cursor-pointer"
+                        className="text-accent-custom hover:text-red-500 transition-colors cursor-pointer text-[10px] font-mono uppercase"
                       >
-                        <X className="h-3.5 w-3.5" />
+                        Hapus
                       </button>
                     </div>
                     
@@ -393,9 +393,9 @@ export default function ProjectForm({ isOpen, onClose, editingProject, onSave, t
                         value={shot}
                         onChange={(e) => handleScreenshotChange(idx, e.target.value)}
                         placeholder="https://unsplash.com/... atau Base64"
-                        className="flex-1 bg-background border border-border-custom rounded-lg px-2.5 py-1.5 text-[11px] focus:outline-none text-foreground"
+                        className="flex-1 bg-background border border-border-custom rounded-none px-2.5 py-1.5 text-[11px] focus:outline-none text-foreground font-mono"
                       />
-                      <label className="border border-border-custom hover:border-foreground bg-background hover:bg-accent-light text-foreground text-[10px] font-bold rounded-lg px-2 py-1 cursor-pointer flex items-center justify-center shrink-0">
+                      <label className="border border-border-custom hover:border-foreground bg-background hover:bg-foreground hover:text-background text-foreground text-[10px] font-mono font-bold rounded-none px-2 py-1 cursor-pointer flex items-center justify-center shrink-0 transition-colors uppercase">
                         <span>Pilih</span>
                         <input
                           type="file"
@@ -407,7 +407,7 @@ export default function ProjectForm({ isOpen, onClose, editingProject, onSave, t
                     </div>
                     
                     {shot && (
-                      <div className="h-20 w-32 overflow-hidden rounded border border-border-custom bg-accent-light mt-1 self-start">
+                      <div className="h-20 w-32 overflow-hidden rounded-none border border-border-custom bg-accent-light mt-1 self-start">
                         <img src={shot} alt={`screenshot ${idx + 1}`} className="object-cover w-full h-full filter grayscale hover:grayscale-0 transition-all" />
                       </div>
                     )}
@@ -420,13 +420,13 @@ export default function ProjectForm({ isOpen, onClose, editingProject, onSave, t
               <button
                 type="button"
                 onClick={onClose}
-                className="border border-border-custom px-4 py-2 rounded-lg text-xs font-semibold hover:bg-accent-light cursor-pointer"
+                className="border border-border-custom px-4 py-2 rounded-none text-xs font-mono uppercase font-bold hover:bg-accent-light cursor-pointer text-foreground"
               >
                 Batal
               </button>
               <button
                 type="submit"
-                className="bg-foreground text-background px-5 py-2 rounded-lg text-xs font-semibold hover:bg-accent-hover cursor-pointer"
+                className="bg-foreground text-background border border-foreground hover:bg-background hover:text-foreground px-5 py-2 rounded-none text-xs font-mono uppercase font-bold transition-all cursor-pointer"
               >
                 Simpan Proyek
               </button>

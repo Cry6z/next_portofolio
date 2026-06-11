@@ -181,3 +181,6 @@ ALTER TABLE projects ADD COLUMN IF NOT EXISTS screenshots TEXT[] DEFAULT '{}';
 ALTER TABLE profile ADD COLUMN IF NOT EXISTS handle TEXT DEFAULT 'gibran';
 ALTER TABLE profile ADD COLUMN IF NOT EXISTS status TEXT DEFAULT 'Tersedia untuk proyek';
 ALTER TABLE profile ADD COLUMN IF NOT EXISTS "contactText" TEXT DEFAULT 'Sapa Saya';
+
+-- PERBARUAN: Menambahkan kolom heroBgUrl untuk background image Hero Section
+ALTER TABLE profile ADD COLUMN IF NOT EXISTS "heroBgUrl" TEXT;

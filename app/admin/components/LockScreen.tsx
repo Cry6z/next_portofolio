@@ -37,7 +37,7 @@ export default function LockScreen({
         <ThemeToggle />
         <Link
           href="/"
-          className="flex items-center gap-1.5 text-xs font-semibold border border-border-custom rounded-full px-4 py-1.5 hover:bg-foreground hover:text-background transition-all"
+          className="flex items-center gap-1.5 text-xs font-semibold border border-border-custom rounded-none px-4 py-1.5 hover:bg-foreground hover:text-background transition-all font-mono uppercase"
         >
           Lihat Portofolio
         </Link>
@@ -47,42 +47,35 @@ export default function LockScreen({
         initial={{ opacity: 0, y: 40, filter: "blur(10px)" }}
         animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
         transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-        className="w-full max-w-md border border-border-custom glassmorphism bg-card-custom/70 p-8 rounded-2xl relative z-10 overflow-hidden shadow-2xl"
+        className="w-full max-w-md border border-border-custom bg-card-custom p-8 rounded-none relative z-10 overflow-hidden"
       >
-        {/* Subtle moving scan line */}
-        <motion.div 
-          animate={{ top: ["-10%", "110%"] }}
-          transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
-          className="absolute left-0 w-full h-px bg-linear-to-r from-transparent via-foreground/30 to-transparent pointer-events-none"
-        />
-
         <div className="flex flex-col items-center gap-4 text-center mb-8 relative">
           <motion.div 
             animate={{ 
-              scale: isTyping ? 1.1 : 1,
+              scale: isTyping ? 1.05 : 1,
               borderColor: isTyping ? "var(--foreground)" : "rgba(128,128,128,0.2)"
             }}
             transition={{ duration: 0.3 }}
-            className="h-16 w-16 rounded-full border-2 flex items-center justify-center bg-background shadow-inner relative overflow-hidden"
+            className="h-16 w-16 rounded-none border flex items-center justify-center bg-background relative overflow-hidden"
           >
             <AnimatePresence mode="wait">
               {isTyping ? (
                 <motion.div
                   key="unlock"
-                  initial={{ opacity: 0, scale: 0.5, rotate: -90 }}
-                  animate={{ opacity: 1, scale: 1, rotate: 0 }}
-                  exit={{ opacity: 0, scale: 0.5, rotate: 90 }}
-                  transition={{ duration: 0.3, ease: "backOut" }}
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.8 }}
+                  transition={{ duration: 0.2 }}
                 >
                   <Unlock className="h-6 w-6 text-foreground" />
                 </motion.div>
               ) : (
                 <motion.div
                   key="lock"
-                  initial={{ opacity: 0, scale: 0.5, rotate: 90 }}
-                  animate={{ opacity: 1, scale: 1, rotate: 0 }}
-                  exit={{ opacity: 0, scale: 0.5, rotate: -90 }}
-                  transition={{ duration: 0.3, ease: "backOut" }}
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.8 }}
+                  transition={{ duration: 0.2 }}
                 >
                   <Lock className="h-6 w-6 text-foreground" />
                 </motion.div>
@@ -95,7 +88,7 @@ export default function LockScreen({
               initial={{ y: "100%" }}
               animate={{ y: 0 }}
               transition={{ duration: 0.6, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
-              className="text-3xl font-black tracking-tight uppercase text-foreground font-hero"
+              className="text-2xl font-black tracking-tight uppercase text-foreground font-mono"
             >
               System Admin
             </motion.h1>
@@ -117,7 +110,7 @@ export default function LockScreen({
                 initial={{ opacity: 0, y: -10, height: 0 }}
                 animate={{ opacity: 1, y: 0, height: "auto" }}
                 exit={{ opacity: 0, y: -10, height: 0 }}
-                className="text-xs font-semibold text-red-500 border border-red-500/30 bg-red-500/10 px-4 py-3 rounded-lg font-mono text-center overflow-hidden"
+                className="text-xs font-semibold text-red-500 border border-red-500/30 bg-red-500/5 px-4 py-3 rounded-none font-mono text-center overflow-hidden"
               >
                 {authError}
               </motion.div>
@@ -131,20 +124,17 @@ export default function LockScreen({
               value={passwordInput}
               onChange={(e) => setPasswordInput(e.target.value)}
               placeholder="Masukkan kata sandi..."
-              className="w-full bg-background/50 backdrop-blur-sm border border-border-custom rounded-xl px-4 py-4 text-sm font-mono tracking-widest focus:outline-none focus:border-foreground focus:ring-1 focus:ring-foreground transition-all text-foreground text-center placeholder:tracking-normal"
+              className="w-full bg-background border border-border-custom rounded-none px-4 py-3 text-xs font-mono tracking-widest focus:outline-none focus:border-foreground transition-all text-foreground text-center placeholder:tracking-normal placeholder:font-sans"
               autoFocus
             />
           </div>
 
           <motion.button
-            whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
             type="submit"
-            className="flex items-center justify-center gap-2 bg-foreground text-background font-bold tracking-wide rounded-xl py-4 hover:bg-accent-hover transition-all duration-300 w-full mt-2 relative overflow-hidden"
+            className="flex items-center justify-center gap-2 bg-foreground text-background font-bold tracking-wide rounded-none py-3 hover:bg-accent-hover hover:text-foreground border border-foreground transition-all duration-300 w-full mt-2 font-mono uppercase text-xs cursor-pointer"
           >
-            <span className="relative z-10">Buka Akses</span>
-            {/* Shimmer effect on hover */}
-            <div className="absolute inset-0 bg-white/20 -translate-x-full group-hover:animate-shimmer" />
+            <span>Buka Akses</span>
           </motion.button>
         </form>
 

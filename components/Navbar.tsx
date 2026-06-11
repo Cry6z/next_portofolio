@@ -39,9 +39,9 @@ export default function Navbar({ onTerminalClick }: NavbarProps) {
         initial={{ y: -50, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.5, ease: "easeOut" }}
-        className={`fixed top-0 left-0 right-0 z-40 transition-[padding,background-color,border-color] duration-300 ${scrolled
-            ? "py-4 bg-background/80 backdrop-blur-md border-b border-border-custom"
-            : "py-6 bg-transparent"
+        className={`fixed top-0 left-0 right-0 z-40 transition-[padding,background-color] duration-300 border-b border-border-custom bg-background/90 backdrop-blur-md ${scrolled
+            ? "py-4"
+            : "py-6"
           }`}
       >
         <div className="mx-auto max-w-7xl px-6 md:px-12 flex items-center justify-between">

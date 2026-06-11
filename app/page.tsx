@@ -14,7 +14,6 @@ import ContactSection from "@/components/ContactSection";
 import MaintenanceScreen from "@/components/MaintenanceScreen";
 import WelcomeScreen from "@/components/WelcomeScreen";
 import InteractiveTerminal from "@/components/InteractiveTerminal";
-import LofiPlayer from "@/components/LofiPlayer";
 import { useState, useEffect } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Terminal } from "lucide-react";
@@ -91,7 +90,7 @@ export default function Home() {
             delay: hadWelcome ? (showWelcome ? 0 : 2.0) : 0
           }}
           style={{ willChange: "transform, opacity" }}
-          className="flex-1 w-full mx-auto max-w-7xl px-6 md:px-12 pt-28 pb-16"
+          className="flex-1 w-full mx-auto max-w-7xl px-6 md:px-12 pt-0 pb-16"
         >
           <HeroSection profile={profile} />
           <ProjectsSection projects={projects} />
@@ -118,11 +117,11 @@ export default function Home() {
 
             {/* Glowing siber Terminal Window */}
             <motion.div
-              initial={{ scale: 0.9, opacity: 0, y: 20 }}
+              initial={{ scale: 0.95, opacity: 0, y: 15 }}
               animate={{ scale: 1, opacity: 1, y: 0 }}
-              exit={{ scale: 0.9, opacity: 0, y: 20 }}
+              exit={{ scale: 0.95, opacity: 0, y: 15 }}
               transition={{ type: "spring", stiffness: 300, damping: 25 }}
-              className="relative w-full max-w-4xl z-10 rounded-xl overflow-hidden border border-border-custom shadow-[0_0_50px_rgba(0,0,0,0.5)] md:shadow-[0_0_60px_rgba(34,197,94,0.15)] bg-black text-white"
+              className="relative w-full max-w-4xl z-10"
             >
               <InteractiveTerminal onClose={() => setShowTerminal(false)} />
             </motion.div>
@@ -137,19 +136,16 @@ export default function Home() {
             initial={{ scale: 0, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0, opacity: 0 }}
-            whileHover={{ scale: 1.1, y: -2 }}
+            whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={() => setShowTerminal(true)}
-            className="fixed bottom-6 right-6 z-40 h-14 w-14 rounded-full bg-zinc-900 border border-green-500/30 text-green-500 shadow-[0_0_15px_rgba(34,197,94,0.25)] hover:shadow-[0_0_25px_rgba(34,197,94,0.45)] flex items-center justify-center cursor-pointer transition-all duration-300 backdrop-blur-md"
+            className="fixed bottom-6 right-6 z-40 h-14 w-14 rounded-full bg-foreground border border-border-custom text-background shadow-md flex items-center justify-center cursor-pointer transition-all duration-300"
             title="Launch Interactive Terminal"
           >
             <Terminal className="h-6 w-6" />
           </motion.button>
         )}
       </AnimatePresence>
-
-      {/* Floating Lo-Fi Music Player */}
-      {showWidgets && <LofiPlayer />}
     </>
   );
 }

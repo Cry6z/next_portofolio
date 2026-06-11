@@ -154,7 +154,7 @@ export default function AdminDashboard() {
           initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, delay: 0.3, ease: "easeOut" }}
-          className="flex-1 p-6 md:p-12 overflow-y-auto w-full z-10 relative md:max-w-none"
+          className="flex-1 p-4 md:p-8 overflow-y-auto w-full z-10 relative md:max-w-none"
         >
           {activeTab === "overview" && (
             <OverviewTab setActiveTab={setActiveTab} handleResetData={handleResetData} unreadCount={unreadCount} />

@@ -29,10 +29,10 @@ export default function GlobalTagsManager({ tags, isOpen, onAddTag, onDeleteTag 
           initial={{ opacity: 0, height: 0 }}
           animate={{ opacity: 1, height: "auto" }}
           exit={{ opacity: 0, height: 0 }}
-          className="overflow-hidden border border-foreground/15 bg-card-custom p-6 rounded-2xl flex flex-col gap-4 shadow-sm"
+          className="overflow-hidden border border-border-custom bg-card-custom p-4 md:p-6 rounded-none flex flex-col gap-4 shadow-sm"
         >
           <div className="flex justify-between items-center border-b border-border-custom pb-2">
-            <h3 className="text-sm font-bold uppercase tracking-tight">Kelola Pool Tag Global</h3>
+            <h3 className="text-xs font-bold font-mono uppercase tracking-tight text-foreground">Kelola Pool Tag Global</h3>
           </div>
           
           <div className="flex flex-col gap-4">
@@ -40,7 +40,7 @@ export default function GlobalTagsManager({ tags, isOpen, onAddTag, onDeleteTag 
               {tags.map((tag) => (
                 <span
                   key={tag}
-                  className="flex items-center gap-1.5 text-xs font-mono px-3 py-1.5 bg-background border border-border-custom text-foreground rounded-full"
+                  className="flex items-center gap-1.5 text-xs font-mono px-3 py-1.5 bg-background border border-border-custom text-foreground rounded-none uppercase"
                 >
                   {tag}
                   <button
@@ -63,7 +63,7 @@ export default function GlobalTagsManager({ tags, isOpen, onAddTag, onDeleteTag 
                 value={newGlobalTag}
                 onChange={(e) => setNewGlobalTag(e.target.value)}
                 placeholder="Nama tag baru (misal: Svelte)..."
-                className="flex-1 bg-background border border-border-custom rounded-lg px-3 py-2 text-xs focus:outline-none text-foreground"
+                className="flex-1 bg-background border border-border-custom rounded-none px-3 py-2 text-xs focus:outline-none text-foreground font-mono"
                 onKeyDown={(e) => {
                   if (e.key === 'Enter') {
                     e.preventDefault();
@@ -73,7 +73,7 @@ export default function GlobalTagsManager({ tags, isOpen, onAddTag, onDeleteTag 
               />
               <button
                 onClick={handleAdd}
-                className="bg-foreground text-background text-xs font-semibold px-4 py-2 rounded-lg hover:bg-accent-hover transition-colors cursor-pointer"
+                className="bg-foreground text-background border border-foreground hover:bg-background hover:text-foreground text-xs font-mono font-bold uppercase px-4 py-2 rounded-none transition-colors cursor-pointer"
               >
                 Tambah
               </button>

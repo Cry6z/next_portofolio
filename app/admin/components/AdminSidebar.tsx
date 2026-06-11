@@ -85,9 +85,9 @@ export default function AdminSidebar({
       <>
         {/* Admin Profile Block */}
         <ItemWrapper {...(isMobile ? { variants: itemVariants } : {})}>
-          <div className="flex items-center gap-3 border border-border-custom/50 p-3 rounded-2xl bg-background/50 hover:bg-background transition-all duration-300">
+          <div className="flex items-center gap-3 border border-border-custom p-2.5 rounded-none bg-background/50 hover:bg-background transition-all duration-300">
             {profile.avatarUrl ? (
-              <div className="h-8 w-8 rounded-full overflow-hidden shrink-0 border border-border-custom/60 bg-background">
+              <div className="h-8 w-8 rounded-none overflow-hidden shrink-0 border border-border-custom bg-background">
                 <img
                   src={profile.avatarUrl}
                   alt={profile.name}
@@ -95,13 +95,13 @@ export default function AdminSidebar({
                 />
               </div>
             ) : (
-              <div className="h-8 w-8 rounded-full bg-foreground text-background font-black flex items-center justify-center text-xs shrink-0">
+              <div className="h-8 w-8 rounded-none bg-foreground text-background font-black flex items-center justify-center text-xs shrink-0 font-mono">
                 A
               </div>
             )}
             <div className="flex flex-col min-w-0">
-              <span className="text-xs font-bold text-foreground truncate">Administrator</span>
-              <span className="text-[10px] text-accent-custom font-mono truncate">{profile.email}</span>
+              <span className="text-[10px] font-mono font-bold text-foreground truncate uppercase">Administrator</span>
+              <span className="text-[9px] text-accent-custom font-mono truncate">{profile.email}</span>
             </div>
           </div>
         </ItemWrapper>
@@ -111,13 +111,13 @@ export default function AdminSidebar({
           {wrapItem(
             <button
               onClick={() => handleTabClick("overview")}
-              className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold tracking-tight transition-all duration-300 relative overflow-hidden group w-full ${
+              className={`flex items-center gap-2.5 px-3 py-2.5 rounded-none text-xs font-mono uppercase tracking-tight transition-all duration-200 relative overflow-hidden group w-full text-left ${
                 activeTab === "overview"
-                  ? "bg-foreground text-background shadow-md shadow-black/10 translate-x-1"
-                  : "text-accent-custom hover:bg-foreground/5 hover:text-foreground hover:translate-x-1"
+                  ? "bg-foreground text-background"
+                  : "text-accent-custom hover:bg-foreground/5 hover:text-foreground"
               }`}
             >
-              <Layers className="h-4 w-4" />
+              <Layers className="h-3.5 w-3.5" />
               <span>Ringkasan</span>
             </button>,
             "overview"
@@ -126,13 +126,13 @@ export default function AdminSidebar({
           {wrapItem(
             <button
               onClick={() => handleTabClick("projects")}
-              className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold tracking-tight transition-all duration-300 relative overflow-hidden group w-full ${
+              className={`flex items-center gap-2.5 px-3 py-2.5 rounded-none text-xs font-mono uppercase tracking-tight transition-all duration-200 relative overflow-hidden group w-full text-left ${
                 activeTab === "projects"
-                  ? "bg-foreground text-background shadow-md shadow-black/10 translate-x-1"
-                  : "text-accent-custom hover:bg-foreground/5 hover:text-foreground hover:translate-x-1"
+                  ? "bg-foreground text-background"
+                  : "text-accent-custom hover:bg-foreground/5 hover:text-foreground"
               }`}
             >
-              <FolderOpen className="h-4 w-4" />
+              <FolderOpen className="h-3.5 w-3.5" />
               <span>Kelola Proyek</span>
             </button>,
             "projects"
@@ -141,13 +141,13 @@ export default function AdminSidebar({
           {wrapItem(
             <button
               onClick={() => handleTabClick("skills")}
-              className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold tracking-tight transition-all duration-300 relative overflow-hidden group w-full ${
+              className={`flex items-center gap-2.5 px-3 py-2.5 rounded-none text-xs font-mono uppercase tracking-tight transition-all duration-200 relative overflow-hidden group w-full text-left ${
                 activeTab === "skills"
-                  ? "bg-foreground text-background shadow-md shadow-black/10 translate-x-1"
-                  : "text-accent-custom hover:bg-foreground/5 hover:text-foreground hover:translate-x-1"
+                  ? "bg-foreground text-background"
+                  : "text-accent-custom hover:bg-foreground/5 hover:text-foreground"
               }`}
             >
-              <Terminal className="h-4 w-4" />
+              <Terminal className="h-3.5 w-3.5" />
               <span>Keahlian</span>
             </button>,
             "skills"
@@ -156,13 +156,13 @@ export default function AdminSidebar({
           {wrapItem(
             <button
               onClick={() => handleTabClick("experience")}
-              className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold tracking-tight transition-all duration-300 relative overflow-hidden group w-full ${
+              className={`flex items-center gap-2.5 px-3 py-2.5 rounded-none text-xs font-mono uppercase tracking-tight transition-all duration-200 relative overflow-hidden group w-full text-left ${
                 activeTab === "experience"
-                  ? "bg-foreground text-background shadow-md shadow-black/10 translate-x-1"
-                  : "text-accent-custom hover:bg-foreground/5 hover:text-foreground hover:translate-x-1"
+                  ? "bg-foreground text-background"
+                  : "text-accent-custom hover:bg-foreground/5 hover:text-foreground"
               }`}
             >
-              <Briefcase className="h-4 w-4" />
+              <Briefcase className="h-3.5 w-3.5" />
               <span>Garis Waktu Karir</span>
             </button>,
             "experience"
@@ -171,19 +171,19 @@ export default function AdminSidebar({
           {wrapItem(
             <button
               onClick={() => handleTabClick("messages")}
-              className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold tracking-tight transition-all duration-300 relative overflow-hidden group justify-between w-full ${
+              className={`flex items-center gap-2.5 px-3 py-2.5 rounded-none text-xs font-mono uppercase tracking-tight transition-all duration-200 relative overflow-hidden group justify-between w-full text-left ${
                 activeTab === "messages"
-                  ? "bg-foreground text-background shadow-md shadow-black/10 translate-x-1"
-                  : "text-accent-custom hover:bg-foreground/5 hover:text-foreground hover:translate-x-1"
+                  ? "bg-foreground text-background"
+                  : "text-accent-custom hover:bg-foreground/5 hover:text-foreground"
               }`}
             >
-              <div className="flex items-center gap-3">
-                <Mail className="h-4 w-4" />
+              <div className="flex items-center gap-2.5">
+                <Mail className="h-3.5 w-3.5" />
                 <span>Inbox Pesan</span>
               </div>
               {unreadCount > 0 && (
-                <span className={`text-[9px] font-bold font-mono px-2 py-0.5 rounded-full transition-colors ${
-                  activeTab === "messages" ? "bg-background text-foreground" : "bg-red-500 text-white animate-pulse"
+                <span className={`text-[8px] font-bold font-mono px-1.5 py-0.5 rounded-none transition-colors ${
+                  activeTab === "messages" ? "bg-background text-foreground" : "bg-red-500 text-white"
                 }`}>
                   {unreadCount}
                 </span>
@@ -195,13 +195,13 @@ export default function AdminSidebar({
           {wrapItem(
             <button
               onClick={() => handleTabClick("terminal")}
-              className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold tracking-tight transition-all duration-300 relative overflow-hidden group w-full ${
+              className={`flex items-center gap-2.5 px-3 py-2.5 rounded-none text-xs font-mono uppercase tracking-tight transition-all duration-200 relative overflow-hidden group w-full text-left ${
                 activeTab === "terminal"
-                  ? "bg-foreground text-background shadow-md shadow-black/10 translate-x-1"
-                  : "text-accent-custom hover:bg-foreground/5 hover:text-foreground hover:translate-x-1"
+                  ? "bg-foreground text-background"
+                  : "text-accent-custom hover:bg-foreground/5 hover:text-foreground"
               }`}
             >
-              <Terminal className="h-4 w-4" />
+              <Terminal className="h-3.5 w-3.5" />
               <span>Kelola Terminal</span>
             </button>,
             "terminal"
@@ -210,13 +210,13 @@ export default function AdminSidebar({
           {wrapItem(
             <button
               onClick={() => handleTabClick("settings")}
-              className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold tracking-tight transition-all duration-300 relative overflow-hidden group w-full ${
+              className={`flex items-center gap-2.5 px-3 py-2.5 rounded-none text-xs font-mono uppercase tracking-tight transition-all duration-200 relative overflow-hidden group w-full text-left ${
                 activeTab === "settings"
-                  ? "bg-foreground text-background shadow-md shadow-black/10 translate-x-1"
-                  : "text-accent-custom hover:bg-foreground/5 hover:text-foreground hover:translate-x-1"
+                  ? "bg-foreground text-background"
+                  : "text-accent-custom hover:bg-foreground/5 hover:text-foreground"
               }`}
             >
-              <Settings className="h-4 w-4" />
+              <Settings className="h-3.5 w-3.5" />
               <span>Pengaturan</span>
             </button>,
             "settings"
@@ -225,13 +225,13 @@ export default function AdminSidebar({
           {wrapItem(
             <button
               onClick={() => handleTabClick("photos")}
-              className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold tracking-tight transition-all duration-300 relative overflow-hidden group w-full ${
+              className={`flex items-center gap-2.5 px-3 py-2.5 rounded-none text-xs font-mono uppercase tracking-tight transition-all duration-200 relative overflow-hidden group w-full text-left ${
                 activeTab === "photos"
-                  ? "bg-foreground text-background shadow-md shadow-black/10 translate-x-1"
-                  : "text-accent-custom hover:bg-foreground/5 hover:text-foreground hover:translate-x-1"
+                  ? "bg-foreground text-background"
+                  : "text-accent-custom hover:bg-foreground/5 hover:text-foreground"
               }`}
             >
-              <Star className="h-4 w-4" />
+              <Star className="h-3.5 w-3.5" />
               <span>Foto Profil</span>
             </button>,
             "photos"
@@ -240,15 +240,15 @@ export default function AdminSidebar({
 
         {/* Sidebar Footer Controls */}
         <ItemWrapper {...(isMobile ? { variants: itemVariants } : {})}>
-          <div className="flex flex-col gap-3 mt-auto border-t border-border-custom/40 pt-4 z-10 w-full">
-            <div className="hidden md:flex items-center justify-between">
-              <span className="text-[10px] text-accent-custom font-mono">TEMA</span>
+          <div className="flex flex-col gap-2 mt-auto border-t border-border-custom/40 pt-4 z-10 w-full">
+            <div className="hidden md:flex items-center justify-between mb-1">
+              <span className="text-[9px] text-accent-custom font-mono">TEMA</span>
               <ThemeToggle />
             </div>
 
             <Link
               href="/"
-              className="flex items-center justify-center gap-2 border border-border-custom hover:border-foreground rounded-xl py-3 text-xs font-bold transition-all duration-300 w-full bg-background hover:shadow-sm"
+              className="flex items-center justify-center gap-2 border border-border-custom hover:border-foreground rounded-none py-2.5 text-xs font-mono uppercase tracking-tight transition-all duration-200 w-full bg-background"
             >
               <HomeIcon className="h-3.5 w-3.5" />
               Lihat Portofolio
@@ -256,7 +256,7 @@ export default function AdminSidebar({
 
             <button
               onClick={handleLogout}
-              className="flex items-center justify-center gap-2 border border-border-custom hover:border-red-500/40 hover:text-red-500 rounded-xl py-3 text-xs font-bold transition-all duration-300 w-full"
+              className="flex items-center justify-center gap-2 border border-border-custom hover:border-red-500/40 hover:text-red-500 rounded-none py-2.5 text-xs font-mono uppercase tracking-tight transition-all duration-200 w-full cursor-pointer"
             >
               <LogOut className="h-3.5 w-3.5" />
               Log Out
@@ -277,7 +277,7 @@ export default function AdminSidebar({
         initial={{ opacity: 0, x: -20 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.6, delay: 0.2, ease: "easeOut" }}
-        className={`w-full md:w-64 border-b md:border-b-0 md:border-r border-border-custom/60 flex flex-col p-4 md:p-6 gap-6 z-30 shadow-sm ${
+        className={`w-full md:w-60 border-b md:border-b-0 md:border-r border-border-custom/60 flex flex-col p-3 md:p-4 gap-4 z-30 ${
           isMobileMenuOpen 
             ? "fixed inset-0 h-screen bg-background" 
             : "sticky top-0 h-16 md:h-screen justify-center md:justify-start bg-card-custom/80 backdrop-blur-lg"
@@ -285,7 +285,7 @@ export default function AdminSidebar({
       >
         {/* Sidebar Header Logo & Burger Button */}
         <div className="flex items-center justify-between shrink-0 w-full">
-          <Link href="/" className="group flex items-center text-2xl font-black text-foreground transition-all hover:opacity-90">
+          <Link href="/" className="group flex items-center text-xl font-black text-foreground transition-all hover:opacity-90">
             <span className="text-accent-custom transition-transform duration-300 group-hover:-translate-x-1 group-hover:text-foreground">&lt;</span>
             <span className="transition-colors duration-300 group-hover:text-accent-custom">/</span>
             <span className="text-accent-custom transition-transform duration-300 group-hover:translate-x-1 group-hover:text-foreground">&gt;</span>
@@ -294,7 +294,7 @@ export default function AdminSidebar({
             <ThemeToggle />
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="relative w-10 h-10 border border-border-custom rounded-lg bg-background hover:bg-accent-light transition-colors text-foreground flex items-center justify-center overflow-hidden cursor-pointer"
+              className="relative w-8 h-8 border border-border-custom rounded-none bg-background hover:bg-accent-light transition-colors text-foreground flex items-center justify-center overflow-hidden cursor-pointer"
               aria-label="Toggle mobile menu"
             >
               {/* Custom Animated Hamburger / X lines */}

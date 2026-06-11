@@ -34,28 +34,28 @@ export default function ProjectsTab() {
   };
 
   return (
-    <div className="flex flex-col gap-8">
-      <div className="flex justify-between items-center">
+    <div className="flex flex-col gap-6">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-border-custom/50 pb-4">
         <div>
-          <h2 className="text-3xl font-black tracking-tight text-foreground">KELOLA PROYEK</h2>
+          <h2 className="text-2xl font-black tracking-tight text-foreground font-mono">KELOLA PROYEK</h2>
           <p className="text-xs text-accent-custom font-mono uppercase mt-1">
             Atur Galeri Portofolio Anda
           </p>
         </div>
-        <div className="flex gap-2">
+        <div className="flex gap-2 w-full sm:w-auto">
           <button
             onClick={() => setShowTagsManager(!showTagsManager)}
-            className={`flex items-center gap-1.5 text-xs font-semibold rounded-full px-4 py-2 border transition-all cursor-pointer ${
+            className={`flex-1 sm:flex-initial flex items-center justify-center gap-1.5 text-xs font-mono uppercase rounded-none px-3.5 py-2 border transition-all cursor-pointer ${
               showTagsManager 
-                ? "bg-accent-light text-foreground border-foreground" 
-                : "border-border-custom hover:border-foreground text-foreground"
+                ? "bg-foreground text-background border-foreground" 
+                : "border-border-custom hover:border-foreground text-foreground bg-card-custom"
             }`}
           >
-            {showTagsManager ? "Tutup Tag Manager" : "Kelola Tag Global"}
+            {showTagsManager ? "Tutup Tag" : "Tag Global"}
           </button>
           <button
             onClick={handleOpenProjectAdd}
-            className="flex items-center gap-1.5 text-xs font-semibold bg-foreground text-background rounded-full px-4 py-2 hover:bg-accent-hover transition-all cursor-pointer"
+            className="flex-1 sm:flex-initial flex items-center justify-center gap-1.5 text-xs font-mono uppercase bg-foreground text-background rounded-none px-3.5 py-2 hover:bg-accent-hover hover:border-accent-hover transition-all cursor-pointer border border-foreground"
           >
             <Plus className="h-3.5 w-3.5" />
             Tambah Proyek
@@ -87,17 +87,17 @@ export default function ProjectsTab() {
       {/* Projects Table/List */}
       <div className="flex flex-col gap-3">
         {projects.length === 0 ? (
-          <p className="text-sm text-accent-custom py-10 text-center border border-border-custom rounded-xl bg-card-custom">
-            Tidak ada proyek. Klik &quot;Tambah Proyek&quot; untuk membuat proyek baru.
+          <p className="text-xs text-accent-custom py-10 text-center border border-border-custom rounded-none bg-card-custom font-mono">
+            Tidak ada proyek. Klik "Tambah Proyek" untuk membuat proyek baru.
           </p>
         ) : (
           projects.map((project) => (
             <div
               key={project.id}
-              className="border border-border-custom bg-card-custom p-4 rounded-xl flex items-center justify-between gap-4 hover:border-foreground/20 transition-all"
+              className="border border-border-custom bg-card-custom p-3 rounded-none flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:border-foreground/30 transition-all duration-200"
             >
               <div className="flex items-center gap-4 min-w-0">
-                <div className="h-12 w-20 overflow-hidden rounded bg-accent-light shrink-0">
+                <div className="h-12 w-20 overflow-hidden rounded-none bg-accent-light shrink-0 border border-border-custom">
                   <img
                     src={project.image || "https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=800"}
                     alt={project.title}
@@ -106,11 +106,11 @@ export default function ProjectsTab() {
                 </div>
                 <div className="flex flex-col min-w-0">
                   <div className="flex items-center gap-2">
-                    <span className="font-bold text-sm text-foreground truncate">
+                    <span className="font-bold text-sm text-foreground truncate font-mono">
                       {project.title}
                     </span>
                     {project.featured && (
-                      <span className="flex items-center gap-0.5 text-[8px] font-bold font-mono tracking-wider px-1.5 py-0.5 bg-foreground text-background rounded">
+                      <span className="flex items-center gap-0.5 text-[8px] font-bold font-mono tracking-wider px-1.5 py-0.5 bg-foreground text-background rounded-none">
                         <Star className="h-2 w-2 fill-background stroke-none" />
                         UNGGULAN
                       </span>
@@ -122,13 +122,13 @@ export default function ProjectsTab() {
                 </div>
               </div>
 
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 self-end sm:self-auto shrink-0">
                 <button
                   onClick={() => handleOpenProjectEdit(project)}
-                  className="h-8 w-8 rounded-full border border-border-custom flex items-center justify-center hover:bg-accent-light text-foreground cursor-pointer"
+                  className="h-8 px-3 rounded-none border border-border-custom flex items-center justify-center hover:bg-foreground hover:text-background text-foreground cursor-pointer font-mono text-xs uppercase"
                   title="Edit Proyek"
                 >
-                  <Edit2 className="h-3.5 w-3.5" />
+                  Edit
                 </button>
                 <button
                   onClick={() => {
@@ -136,10 +136,10 @@ export default function ProjectsTab() {
                       deleteProject(project.id);
                     }
                   }}
-                  className="h-8 w-8 rounded-full border border-border-custom flex items-center justify-center hover:bg-red-500/10 hover:border-red-500/30 hover:text-red-500 cursor-pointer"
+                  className="h-8 px-3 rounded-none border border-border-custom flex items-center justify-center hover:bg-red-500 hover:text-white hover:border-red-500 text-foreground cursor-pointer font-mono text-xs uppercase"
                   title="Hapus Proyek"
                 >
-                  <Trash2 className="h-3.5 w-3.5" />
+                  Hapus
                 </button>
               </div>
             </div>

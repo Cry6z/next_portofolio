@@ -3,21 +3,21 @@
 :root {
   --background: #ffffff;
   --foreground: #000000;
-  --accent: #71717a;
-  --border: #e4e4e7;
-  --card-bg: #fafafa;
-  --accent-light: #f4f4f5;
-  --accent-hover: #18181b;
+  --accent: #555555;
+  --border: #000000;
+  --card-bg: #ffffff;
+  --accent-light: #f5f5f5;
+  --accent-hover: #000000;
 }
 
 html.dark {
   --background: #000000;
   --foreground: #ffffff;
-  --accent: #a1a1aa;
-  --border: #27272a;
-  --card-bg: #09090b;
-  --accent-light: #18181b;
-  --accent-hover: #f4f4f5;
+  --accent: #aaaaaa;
+  --border: #ffffff;
+  --card-bg: #000000;
+  --accent-light: #1c1c1e;
+  --accent-hover: #ffffff;
 }
 
 @theme {
@@ -30,7 +30,7 @@ html.dark {
   --color-accent-hover: var(--accent-hover);
   --font-sans: var(--font-anonymous-pro);
   --font-mono: var(--font-anonymous-pro);
-  --font-hero: var(--font-geist-sans);
+  --font-hero: var(--font-anonymous-pro);
 }
 
 body {
@@ -40,15 +40,31 @@ body {
   overflow-x: hidden;
 }
 
-/* Universal transition ONLY for active theme swapping to prevent conflicts with Framer Motion */
-.theme-transitioning,
-.theme-transitioning *,
-.theme-transitioning ::before,
-.theme-transitioning ::after {
-  transition: background-color 0.4s cubic-bezier(0.4, 0, 0.2, 1), 
-              color 0.4s cubic-bezier(0.4, 0, 0.2, 1), 
-              border-color 0.4s cubic-bezier(0.4, 0, 0.2, 1),
-              box-shadow 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
+/* Targeted transitions to avoid '*' wildcard bottlenecks and maintain high 60fps rendering */
+.theme-transitioning body,
+.theme-transitioning aside,
+.theme-transitioning main,
+.theme-transitioning header,
+.theme-transitioning button,
+.theme-transitioning input,
+.theme-transitioning select,
+.theme-transitioning textarea,
+.theme-transitioning h1,
+.theme-transitioning h2,
+.theme-transitioning h3,
+.theme-transitioning h4,
+.theme-transitioning p,
+.theme-transitioning a,
+.theme-transitioning .border,
+.theme-transitioning .border-border-custom,
+.theme-transitioning .bg-background,
+.theme-transitioning .bg-card-custom,
+.theme-transitioning .text-foreground,
+.theme-transitioning .text-accent-custom {
+  transition: background-color 0.4s ease-in-out, 
+              color 0.4s ease-in-out, 
+              border-color 0.4s ease-in-out,
+              box-shadow 0.4s ease-in-out !important;
   transition-delay: 0s !important;
 }
 
@@ -93,9 +109,7 @@ html {
 
 /* Custom utilities */
 .glassmorphism {
-  background: rgba(var(--background), 0.7);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  background: var(--background);
 }
 
 .text-stroke {
@@ -104,24 +118,7 @@ html {
 }
 
 .grid-bg {
-  background-size: 40px 40px;
-  background-image: 
-    linear-gradient(to right, var(--color-border-custom) 1px, transparent 1px),
-    linear-gradient(to bottom, var(--color-border-custom) 1px, transparent 1px);
-}
-
-@keyframes grid-move {
-  from {
-    transform: translate3d(0, 0, 0);
-  }
-  to {
-    transform: translate3d(0, 40px, 0);
-  }
-}
-
-.animate-grid-move {
-  animation: grid-move 20s linear infinite;
-  will-change: transform;
+  display: none;
 }
 
 @keyframes shimmer {
