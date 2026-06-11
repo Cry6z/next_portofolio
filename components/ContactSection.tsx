@@ -89,14 +89,14 @@ export default function ContactSection({ profile, sendMessage }: ContactSectionP
                 href={`mailto:${profile.email}`}
                 className="flex items-center gap-3 text-foreground hover:underline group"
               >
-                <div className="flex h-10 w-10 items-center justify-center rounded-full border border-border-custom bg-card-custom group-hover:border-foreground transition-all">
+                <div className="flex h-10 w-10 items-center justify-center rounded-none border border-border-custom bg-card-custom group-hover:border-foreground transition-all">
                   <Mail className="h-4 w-4" />
                 </div>
                 <span>{profile.email}</span>
               </a>
             )}
             <div className="flex items-center gap-3 text-accent-custom">
-              <div className="flex h-10 w-10 items-center justify-center rounded-full border border-border-custom bg-card-custom">
+              <div className="flex h-10 w-10 items-center justify-center rounded-none border border-border-custom bg-card-custom">
                 <Grid className="h-4 w-4" />
               </div>
               <span>Bengkulu, Indonesia</span>
@@ -112,7 +112,7 @@ export default function ContactSection({ profile, sendMessage }: ContactSectionP
           transition={{ duration: 0.6, delay: 0.1 }}
           className="lg:col-span-7"
         >
-          <div className="border border-border-custom bg-card-custom p-8 md:p-10 rounded-2xl">
+          <div className="border border-border-custom bg-card-custom p-8 md:p-10 rounded-none">
             <AnimatePresence mode="wait">
               {!formSubmitted ? (
                 <motion.form
@@ -124,7 +124,7 @@ export default function ContactSection({ profile, sendMessage }: ContactSectionP
                   className="flex flex-col gap-6"
                 >
                   {formError && (
-                    <div className="text-xs font-semibold text-red-500 border border-red-500/20 bg-red-500/5 px-4 py-2.5 rounded-lg font-mono">
+                    <div className="text-xs font-semibold text-red-500 border border-red-500/20 bg-red-500/5 px-4 py-2.5 rounded-none font-mono">
                       {formError}
                     </div>
                   )}
@@ -143,7 +143,7 @@ export default function ContactSection({ profile, sendMessage }: ContactSectionP
                       value={formData.name}
                       onChange={handleInputChange}
                       placeholder="Tulis nama Anda..."
-                      className="w-full bg-background border border-border-custom rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-foreground text-foreground placeholder:text-accent-custom/50"
+                      className="w-full bg-background border border-border-custom rounded-none px-4 py-3 text-sm focus:outline-none focus:border-foreground text-foreground placeholder:text-accent-custom/50"
                     />
                   </div>
 
@@ -161,7 +161,7 @@ export default function ContactSection({ profile, sendMessage }: ContactSectionP
                       value={formData.email}
                       onChange={handleInputChange}
                       placeholder="nama@email.com"
-                      className="w-full bg-background border border-border-custom rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-foreground text-foreground placeholder:text-accent-custom/50"
+                      className="w-full bg-background border border-border-custom rounded-none px-4 py-3 text-sm focus:outline-none focus:border-foreground text-foreground placeholder:text-accent-custom/50"
                     />
                   </div>
 
@@ -179,13 +179,13 @@ export default function ContactSection({ profile, sendMessage }: ContactSectionP
                       onChange={handleInputChange}
                       rows={5}
                       placeholder="Apa yang ingin Anda bicarakan?..."
-                      className="w-full bg-background border border-border-custom rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-foreground text-foreground placeholder:text-accent-custom/50 resize-none"
+                      className="w-full bg-background border border-border-custom rounded-none px-4 py-3 text-sm focus:outline-none focus:border-foreground text-foreground placeholder:text-accent-custom/50 resize-none"
                     />
                   </div>
 
                   <button
                     type="submit"
-                    className="flex items-center justify-center gap-2 bg-foreground text-background font-semibold rounded-lg py-3 hover:bg-accent-hover transition-all duration-300 w-full mt-2 group"
+                    className="flex items-center justify-center gap-2 bg-foreground text-background font-semibold rounded-none py-3 hover:bg-accent-hover transition-all duration-300 w-full mt-2 group"
                   >
                     Kirim Pesan
                     <Send className="h-4 w-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />

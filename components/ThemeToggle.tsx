@@ -18,10 +18,10 @@ export default function ThemeToggle() {
         {theme === "light" ? (
           <motion.div
             key="moon"
-            initial={{ y: 10, opacity: 0, rotate: 40 }}
-            animate={{ y: 0, opacity: 1, rotate: 0 }}
-            exit={{ y: -10, opacity: 0, rotate: -40 }}
-            transition={{ duration: 0.2 }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.15 }}
             className="flex items-center justify-center"
           >
             <Moon className="h-5 w-5" strokeWidth={1.5} />
@@ -29,10 +29,10 @@ export default function ThemeToggle() {
         ) : (
           <motion.div
             key="sun"
-            initial={{ y: 10, opacity: 0, rotate: -40 }}
-            animate={{ y: 0, opacity: 1, rotate: 0 }}
-            exit={{ y: -10, opacity: 0, rotate: 40 }}
-            transition={{ duration: 0.2 }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.15 }}
             className="flex items-center justify-center"
           >
             <Sun className="h-5 w-5" strokeWidth={1.5} />

@@ -61,10 +61,9 @@ body {
 .theme-transitioning .bg-card-custom,
 .theme-transitioning .text-foreground,
 .theme-transitioning .text-accent-custom {
-  transition: background-color 0.4s ease-in-out, 
-              color 0.4s ease-in-out, 
-              border-color 0.4s ease-in-out,
-              box-shadow 0.4s ease-in-out !important;
+  transition: background-color 0.2s ease, 
+              color 0.2s ease, 
+              border-color 0.2s ease !important;
   transition-delay: 0s !important;
 }
 

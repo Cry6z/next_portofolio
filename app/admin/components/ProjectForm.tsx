@@ -22,6 +22,7 @@ export default function ProjectForm({ isOpen, onClose, editingProject, onSave, t
     description: string;
     details: string;
     image: string;
+    thumbnail: string;
     tags: string[];
     demoUrl: string;
     githubUrl: string;
@@ -32,6 +33,7 @@ export default function ProjectForm({ isOpen, onClose, editingProject, onSave, t
     description: "",
     details: "",
     image: "",
+    thumbnail: "",
     tags: [],
     demoUrl: "",
     githubUrl: "",
@@ -46,6 +48,7 @@ export default function ProjectForm({ isOpen, onClose, editingProject, onSave, t
         description: editingProject.description || "",
         details: editingProject.details || "",
         image: editingProject.image || "",
+        thumbnail: editingProject.thumbnail || "",
         tags: editingProject.tags ? editingProject.tags.slice(1) : [],
         demoUrl: editingProject.demoUrl || "",
         githubUrl: editingProject.githubUrl || "",
@@ -59,6 +62,7 @@ export default function ProjectForm({ isOpen, onClose, editingProject, onSave, t
         description: "",
         details: "",
         image: "",
+        thumbnail: "",
         tags: [],
         demoUrl: "",
         githubUrl: "",
@@ -184,6 +188,21 @@ export default function ProjectForm({ isOpen, onClose, editingProject, onSave, t
               />
             </div>
 
+            {/* Project Category Input */}
+            <div className="flex flex-col gap-1">
+              <label className="text-[9px] font-bold font-mono text-accent-custom uppercase">
+                Kategori Proyek * (Contoh: Website, Application, Design - Filter utama)
+              </label>
+              <input
+                type="text"
+                required
+                value={category}
+                onChange={(e) => setCategory(e.target.value)}
+                placeholder="Masukkan kategori proyek..."
+                className="bg-background border border-border-custom rounded-none px-3 py-2 text-xs focus:outline-none text-foreground w-full font-mono"
+              />
+            </div>
+
             <div className="flex flex-col gap-1">
               <label className="text-[9px] font-bold font-mono text-accent-custom uppercase">
                 Gambar Mockup (Link URL / Upload Lokal)
@@ -210,19 +229,30 @@ export default function ProjectForm({ isOpen, onClose, editingProject, onSave, t
               </div>
             </div>
 
-            {/* Project Category Input */}
-            <div className="flex flex-col gap-1 md:col-span-2">
+            <div className="flex flex-col gap-1">
               <label className="text-[9px] font-bold font-mono text-accent-custom uppercase">
-                Kategori Proyek * (Contoh: Website, Application, Design - Filter utama)
+                Gambar Thumbnail (Link URL / Upload Lokal)
               </label>
-              <input
-                type="text"
-                required
-                value={category}
-                onChange={(e) => setCategory(e.target.value)}
-                placeholder="Masukkan kategori proyek..."
-                className="bg-background border border-border-custom rounded-none px-3 py-2 text-xs focus:outline-none text-foreground w-full font-mono"
-              />
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  value={projectFormData.thumbnail}
+                  onChange={(e) =>
+                    setProjectFormData({ ...projectFormData, thumbnail: e.target.value })
+                  }
+                  placeholder="Link URL / Base64 (Kosongkan jika sama dengan Mockup)"
+                  className="flex-1 bg-background border border-border-custom rounded-none px-3 py-2 text-xs focus:outline-none text-foreground font-mono"
+                />
+                <label className="border border-border-custom hover:border-foreground bg-background hover:bg-foreground hover:text-background text-foreground text-[10px] font-mono uppercase font-bold rounded-none px-3 py-1.5 cursor-pointer flex items-center justify-center shrink-0 transition-colors">
+                  <span>Pilih File</span>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => handleFileChange(e, (b64) => setProjectFormData({ ...projectFormData, thumbnail: b64 }))}
+                    className="hidden"
+                  />
+                </label>
+              </div>
             </div>
 
             {/* Tags Multi-select Panel */}

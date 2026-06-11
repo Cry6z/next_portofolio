@@ -63,7 +63,7 @@ export default function ProjectsSection({ projects }: ProjectsSectionProps) {
               <button
                 key={tag}
                 onClick={() => setActiveFilter(tag)}
-                className={`px-4 py-1.5 rounded-full text-xs font-mono font-medium transition-all duration-300 border ${
+                className={`px-4 py-1.5 rounded-none text-xs font-mono font-medium transition-all duration-300 border ${
                   activeFilter === tag
                     ? "bg-foreground text-background border-foreground"
                     : "bg-background text-foreground border-border-custom hover:border-foreground"

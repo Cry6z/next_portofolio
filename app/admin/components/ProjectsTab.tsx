@@ -99,7 +99,7 @@ export default function ProjectsTab() {
               <div className="flex items-center gap-4 min-w-0">
                 <div className="h-12 w-20 overflow-hidden rounded-none bg-accent-light shrink-0 border border-border-custom">
                   <img
-                    src={project.image || "https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=800"}
+                    src={project.thumbnail || project.image || "https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=800"}
                     alt={project.title}
                     className="object-cover w-full h-full filter grayscale"
                   />

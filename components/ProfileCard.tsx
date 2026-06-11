@@ -336,7 +336,7 @@ const ProfileCardComponent: React.FC<ProfileCardProps> = ({
     handleDeviceOrientation
   ]);
 
-  const cardRadius = '24px';
+  const cardRadius = '0px';
 
   const cardStyle = useMemo(
     () => ({
@@ -534,26 +534,26 @@ const ProfileCardComponent: React.FC<ProfileCardProps> = ({
                   style={
                     {
                       '--ui-inset': '16px',
-                      '--ui-radius-bias': '6px',
+                      '--ui-radius-bias': '0px',
                       bottom: 'var(--ui-inset)',
                       left: 'var(--ui-inset)',
                       right: 'var(--ui-inset)',
-                      borderRadius: 'calc(max(0px, var(--card-radius) - var(--ui-inset) + var(--ui-radius-bias)))',
+                      borderRadius: '0px',
                       padding: '16px 20px'
                     } as React.CSSProperties
                   }
                 >
                   <div className="flex items-center gap-4 min-w-0 flex-1">
                     <div
-                      className="rounded-full overflow-hidden border border-border-custom shrink-0"
+                      className="rounded-none overflow-hidden border border-border-custom shrink-0"
                       style={{ width: '48px', height: '48px' }}
                     >
                       <img
-                        className="w-full h-full object-cover rounded-full grayscale contrast-110 group-hover:grayscale-0 group-hover:contrast-100 transition-[filter,opacity] duration-500"
+                        className="w-full h-full object-cover rounded-none grayscale contrast-110 group-hover:grayscale-0 group-hover:contrast-100 transition-[filter,opacity] duration-500"
                         src={miniAvatarUrl || avatarUrl}
                         alt={`${name || 'User'} mini avatar`}
                         loading="lazy"
-                        style={{ display: 'block', gridArea: 'auto', borderRadius: '50%', pointerEvents: 'auto' }}
+                        style={{ display: 'block', gridArea: 'auto', borderRadius: '0px', pointerEvents: 'auto' }}
                         onError={e => {
                           const t = e.target as HTMLImageElement;
                           t.style.opacity = '0.5';
@@ -567,9 +567,9 @@ const ProfileCardComponent: React.FC<ProfileCardProps> = ({
                     </div>
                   </div>
                   <button
-                    className="shrink-0 border border-border-custom rounded-lg px-4 py-2.5 text-xs font-semibold text-foreground cursor-pointer transition-all duration-200 ease-out hover:bg-foreground hover:text-background"
+                    className="shrink-0 border border-border-custom rounded-none px-4 py-2.5 text-xs font-semibold text-foreground cursor-pointer transition-all duration-200 ease-out hover:bg-foreground hover:text-background"
                     onClick={handleContactClick}
-                    style={{ pointerEvents: 'auto', display: 'block', gridArea: 'auto', borderRadius: '8px' }}
+                    style={{ pointerEvents: 'auto', display: 'block', gridArea: 'auto', borderRadius: '0px' }}
                     type="button"
                     aria-label={`Contact ${name || 'user'}`}
                   >

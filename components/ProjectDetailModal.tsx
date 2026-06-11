@@ -84,13 +84,13 @@ export default function ProjectDetailModal({ project, isOpen, onClose }: Project
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 15 }}
             transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-            className="relative my-auto w-full max-w-5xl bg-card-custom border border-border-custom rounded-3xl shadow-2xl overflow-hidden flex flex-col md:flex-row focus:outline-none md:max-h-[90vh]"
+            className="relative my-auto w-full max-w-5xl bg-card-custom border border-border-custom rounded-none shadow-2xl overflow-hidden flex flex-col md:flex-row focus:outline-none md:max-h-[90vh]"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Close Button */}
             <button
               onClick={onClose}
-              className="absolute top-4 right-4 z-20 h-9 w-9 rounded-full bg-background/70 border border-border-custom backdrop-blur-md flex items-center justify-center hover:bg-foreground hover:text-background transition-all"
+              className="absolute top-4 right-4 z-20 h-9 w-9 rounded-none bg-background/70 border border-border-custom backdrop-blur-md flex items-center justify-center hover:bg-foreground hover:text-background transition-all"
               title="Tutup (ESC)"
             >
               <X className="h-4 w-4" />
@@ -109,7 +109,7 @@ export default function ProjectDetailModal({ project, isOpen, onClose }: Project
                       animate={{ opacity: 1, filter: "blur(0px)" }}
                       exit={{ opacity: 0, filter: "blur(4px)" }}
                       transition={{ duration: 0.3 }}
-                      className="object-contain max-w-full max-h-full rounded-xl shadow-md filter grayscale-0"
+                      className="object-contain max-w-full max-h-full rounded-none shadow-md filter grayscale-0"
                     />
                   </AnimatePresence>
 
@@ -118,13 +118,13 @@ export default function ProjectDetailModal({ project, isOpen, onClose }: Project
                     <>
                       <button
                         onClick={handlePrevImage}
-                        className="absolute left-4 top-1/2 -translate-y-1/2 h-9 w-9 rounded-full bg-background/80 border border-border-custom hover:bg-foreground hover:text-background transition-all flex items-center justify-center shadow cursor-pointer"
+                        className="absolute left-4 top-1/2 -translate-y-1/2 h-9 w-9 rounded-none bg-background/80 border border-border-custom hover:bg-foreground hover:text-background transition-all flex items-center justify-center shadow cursor-pointer"
                       >
                         <ChevronLeft className="h-5 w-5" />
                       </button>
                       <button
                         onClick={handleNextImage}
-                        className="absolute right-4 top-1/2 -translate-y-1/2 h-9 w-9 rounded-full bg-background/80 border border-border-custom hover:bg-foreground hover:text-background transition-all flex items-center justify-center shadow cursor-pointer"
+                        className="absolute right-4 top-1/2 -translate-y-1/2 h-9 w-9 rounded-none bg-background/80 border border-border-custom hover:bg-foreground hover:text-background transition-all flex items-center justify-center shadow cursor-pointer"
                       >
                         <ChevronRight className="h-5 w-5" />
                       </button>
@@ -133,7 +133,7 @@ export default function ProjectDetailModal({ project, isOpen, onClose }: Project
 
                   {/* Image Counter Badge */}
                   {activeProjectImages.length > 1 && (
-                    <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-background/80 border border-border-custom px-3 py-1 rounded-full text-[10px] font-mono tracking-widest shadow">
+                    <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-background/80 border border-border-custom px-3 py-1 rounded-none text-[10px] font-mono tracking-widest shadow">
                       {screenshotIndex + 1} / {activeProjectImages.length}
                     </div>
                   )}
@@ -152,12 +152,12 @@ export default function ProjectDetailModal({ project, isOpen, onClose }: Project
                     DETAIL PROYEK
                   </span>
                   {project.tags[0] && (
-                    <span className="text-[9px] font-mono font-bold tracking-wider px-2 py-0.5 bg-foreground/5 border border-foreground/10 text-foreground rounded uppercase">
+                    <span className="text-[9px] font-mono font-bold tracking-wider px-2 py-0.5 bg-foreground/5 border border-foreground/10 text-foreground rounded-none uppercase">
                       📁 {project.tags[0]}
                     </span>
                   )}
                   {project.featured && (
-                    <span className="text-[9px] font-mono font-bold tracking-wider px-2 py-0.5 bg-foreground text-background rounded uppercase">
+                    <span className="text-[9px] font-mono font-bold tracking-wider px-2 py-0.5 bg-foreground text-background rounded-none uppercase">
                       Featured
                     </span>
                   )}
@@ -172,7 +172,7 @@ export default function ProjectDetailModal({ project, isOpen, onClose }: Project
                 {project.tags.slice(1).map((tag) => (
                   <span
                     key={tag}
-                    className="text-[9px] font-mono tracking-wider px-2.5 py-1 border border-border-custom bg-background rounded-full text-foreground"
+                    className="text-[9px] font-mono tracking-wider px-2.5 py-1 border border-border-custom bg-background rounded-none text-foreground"
                   >
                     {tag}
                   </span>
@@ -205,7 +205,7 @@ export default function ProjectDetailModal({ project, isOpen, onClose }: Project
                     href={project.demoUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="w-full flex items-center justify-center gap-2 text-xs font-semibold bg-foreground text-background rounded-xl py-3 hover:bg-accent-hover transition-all"
+                    className="w-full flex items-center justify-center gap-2 text-xs font-semibold bg-foreground text-background rounded-none py-3 hover:bg-accent-hover transition-all"
                   >
                     Kunjungi Demo
                     <ExternalLink className="h-3.5 w-3.5" />
@@ -216,7 +216,7 @@ export default function ProjectDetailModal({ project, isOpen, onClose }: Project
                     href={project.githubUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="w-full flex items-center justify-center gap-2 text-xs font-semibold border border-border-custom bg-background text-foreground rounded-xl py-3 hover:border-foreground/45 transition-all hover:text-foreground"
+                    className="w-full flex items-center justify-center gap-2 text-xs font-semibold border border-border-custom bg-background text-foreground rounded-none py-3 hover:border-foreground/45 transition-all hover:text-foreground"
                   >
                     GitHub Repository
                     <GithubIcon className="h-3.5 w-3.5" />
@@ -231,7 +231,7 @@ export default function ProjectDetailModal({ project, isOpen, onClose }: Project
                     <button
                       key={idx}
                       onClick={() => setScreenshotIndex(idx)}
-                      className={`h-8 w-12 rounded overflow-hidden border transition-all cursor-pointer ${
+                      className={`h-8 w-12 rounded-none overflow-hidden border transition-all cursor-pointer ${
                         screenshotIndex === idx
                           ? "border-foreground scale-105"
                           : "border-border-custom hover:border-foreground/30 opacity-70"

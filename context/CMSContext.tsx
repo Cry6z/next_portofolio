@@ -27,6 +27,7 @@ export interface Project {
   description: string;
   details: string;
   image: string;
+  thumbnail?: string;
   tags: string[];
   demoUrl: string;
   githubUrl: string;
@@ -281,6 +282,7 @@ export function CMSProvider({ children }: { children: React.ReactNode }) {
                 demoUrl: p.demourl || p.demoUrl,
                 githubUrl: p.githuburl || p.githubUrl,
                 screenshots: p.screenshots || [],
+                thumbnail: p.thumbnail || "",
               }));
               setProjects(mappedProjects);
             } else {

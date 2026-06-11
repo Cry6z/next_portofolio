@@ -184,3 +184,6 @@ ALTER TABLE profile ADD COLUMN IF NOT EXISTS "contactText" TEXT DEFAULT 'Sapa Sa
 
 -- PERBARUAN: Menambahkan kolom heroBgUrl untuk background image Hero Section
 ALTER TABLE profile ADD COLUMN IF NOT EXISTS "heroBgUrl" TEXT;
+
+-- PERBARUAN: Menambahkan kolom thumbnail untuk gambar pratinjau di Projects
+ALTER TABLE projects ADD COLUMN IF NOT EXISTS thumbnail TEXT;
