@@ -15,6 +15,7 @@ export default function PhotosTab() {
   });
 
   const [isUploading, setIsUploading] = useState(false);
+  const [selectedPhotos, setSelectedPhotos] = useState<string[]>([]);
 
   const handleMultipleFilesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
@@ -280,29 +281,106 @@ export default function PhotosTab() {
               Daftar Koleksi Foto ({gallery?.length || 0})
             </h3>
 
+            {gallery && gallery.length > 0 && (
+              <div className="flex items-center justify-between bg-background border border-border-custom p-3 rounded-none font-mono text-xs">
+                <label className="flex items-center gap-2 cursor-pointer select-none">
+                  <input
+                    type="checkbox"
+                    checked={gallery.length > 0 && selectedPhotos.length === gallery.length}
+                    onChange={() => {
+                      if (selectedPhotos.length === gallery.length) {
+                        setSelectedPhotos([]);
+                      } else {
+                        setSelectedPhotos(gallery.map((item) => item.id));
+                      }
+                    }}
+                    className="h-4 w-4 rounded-none accent-foreground bg-background cursor-pointer"
+                  />
+                  <span className="font-bold text-foreground">PILIH SEMUA</span>
+                </label>
+
+                {selectedPhotos.length > 0 && (
+                  <button
+                    type="button"
+                    onClick={async () => {
+                      if (confirm(`Hapus ${selectedPhotos.length} foto terpilih dari galeri?`)) {
+                        await deleteGalleryItem(selectedPhotos);
+                        setSelectedPhotos([]);
+                      }
+                    }}
+                    className="px-3 py-1.5 bg-red-500 hover:bg-red-650 text-white border-none rounded-none text-[10px] font-bold uppercase cursor-pointer transition-colors"
+                  >
+                    HAPUS TERPILIH ({selectedPhotos.length})
+                  </button>
+                )}
+              </div>
+            )}
+
             {!gallery || gallery.length === 0 ? (
               <p className="text-xs text-accent-custom py-10 text-center font-mono uppercase">
                 Galeri kosong. Silakan unggah beberapa foto di sebelah kiri.
               </p>
             ) : (
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 max-h-[500px] overflow-y-auto pr-1">
-                {gallery.map((item) => (
-                  <div key={item.id} className="border border-border-custom bg-background p-2 rounded-none flex flex-col gap-2 relative group hover:border-foreground/35 transition-all">
-                    <div className="aspect-square w-full overflow-hidden border border-border-custom rounded-none bg-accent-light">
-                      <img src={item.imageUrl} alt="Thumbnail Galeri" className="object-cover w-full h-full filter grayscale group-hover:grayscale-0 transition-all duration-300" />
-                    </div>
-                    <button
+                {gallery.map((item) => {
+                  const isSelected = selectedPhotos.includes(item.id);
+                  return (
+                    <div
+                      key={item.id}
                       onClick={() => {
-                        if (confirm("Hapus foto ini dari galeri?")) {
-                          deleteGalleryItem(item.id);
-                        }
+                        setSelectedPhotos((prev) =>
+                          prev.includes(item.id)
+                            ? prev.filter((id) => id !== item.id)
+                            : [...prev, item.id]
+                        );
                       }}
-                      className="w-full text-center py-1 border border-border-custom bg-background hover:bg-red-500 hover:text-white hover:border-red-500 rounded-none text-[9px] font-mono font-bold uppercase cursor-pointer transition-all"
+                      className={`border p-2 rounded-none flex flex-col gap-2 relative group transition-all cursor-pointer bg-background ${
+                        isSelected ? "border-foreground" : "border-border-custom hover:border-foreground/35"
+                      }`}
                     >
-                      Hapus
-                    </button>
-                  </div>
-                ))}
+                      {/* Checkbox indicator */}
+                      <div
+                        className="absolute top-3 left-3 z-10 bg-background/95 border border-border-custom p-1 rounded-none flex items-center justify-center shadow-md"
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        <input
+                          type="checkbox"
+                          checked={isSelected}
+                          onChange={() => {
+                            setSelectedPhotos((prev) =>
+                              prev.includes(item.id)
+                                ? prev.filter((id) => id !== item.id)
+                                : [...prev, item.id]
+                            );
+                          }}
+                          className="h-3.5 w-3.5 rounded-none accent-foreground bg-background cursor-pointer"
+                        />
+                      </div>
+
+                      <div className="aspect-square w-full overflow-hidden border border-border-custom rounded-none bg-accent-light">
+                        <img
+                          src={item.imageUrl}
+                          alt="Thumbnail Galeri"
+                          className={`object-cover w-full h-full transition-all duration-300 ${
+                            isSelected ? "grayscale-0" : "grayscale group-hover:grayscale-0"
+                          }`}
+                        />
+                      </div>
+                      <button
+                        onClick={async (e) => {
+                          e.stopPropagation();
+                          if (confirm("Hapus foto ini dari galeri?")) {
+                            await deleteGalleryItem(item.id);
+                            setSelectedPhotos((prev) => prev.filter((id) => id !== item.id));
+                          }
+                        }}
+                        className="w-full text-center py-1 border border-border-custom bg-background hover:bg-red-500 hover:text-white hover:border-red-500 rounded-none text-[9px] font-mono font-bold uppercase cursor-pointer transition-all"
+                      >
+                        Hapus
+                      </button>
+                    </div>
+                  );
+                })}
               </div>
             )}
           </div>

@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { ExternalLink, X, ChevronLeft, ChevronRight } from "lucide-react";
+import { ExternalLink, X, ChevronLeft, ChevronRight, Folder } from "lucide-react";
 import { Project } from "@/context/CMSContext";
 
 const GithubIcon = (props: React.SVGProps<SVGSVGElement>) => (
@@ -152,8 +152,8 @@ export default function ProjectDetailModal({ project, isOpen, onClose }: Project
                     DETAIL PROYEK
                   </span>
                   {project.tags[0] && (
-                    <span className="text-[9px] font-mono font-bold tracking-wider px-2 py-0.5 bg-foreground/5 border border-foreground/10 text-foreground rounded-none uppercase">
-                      📁 {project.tags[0]}
+                    <span className="text-[9px] font-mono font-bold tracking-wider px-2 py-0.5 bg-foreground/5 border border-foreground/10 text-foreground rounded-none uppercase inline-flex items-center gap-1">
+                      <Folder className="h-3 w-3" strokeWidth={2.5} /> {project.tags[0]}
                     </span>
                   )}
                   {project.featured && (

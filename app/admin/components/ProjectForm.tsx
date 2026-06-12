@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, Plus } from "lucide-react";
+import { X, Plus, Upload } from "lucide-react";
 import { Project } from "@/context/CMSContext";
 
 interface ProjectFormProps {
@@ -139,6 +139,64 @@ export default function ProjectForm({ isOpen, onClose, editingProject, onSave, t
       ...prev,
       screenshots: next,
     }));
+  };
+
+  const handleBulkScreenshotsUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+
+    const remainingSlots = 10 - projectFormData.screenshots.length;
+    if (remainingSlots <= 0) {
+      alert("Maksimal screenshot adalah 10. Tidak dapat menambah slot baru.");
+      return;
+    }
+
+    const filesArray = Array.from(files).slice(0, remainingSlots);
+    if (filesArray.length < files.length) {
+      alert(`Hanya ${remainingSlots} foto pertama yang akan diunggah karena batas maksimal 10 screenshot.`);
+    }
+
+    const validFiles: File[] = [];
+    for (const file of filesArray) {
+      if (file.size > 5 * 1024 * 1024) {
+        alert(`Berkas "${file.name}" terlalu besar! Maksimal 5MB per screenshot.`);
+        continue;
+      }
+      validFiles.push(file);
+    }
+
+    if (validFiles.length === 0) return;
+
+    const promises = validFiles.map((file) => {
+      return new Promise<string>((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          if (typeof reader.result === "string") {
+            resolve(reader.result);
+          } else {
+            resolve("");
+          }
+        };
+        reader.onerror = () => reject(reader.error);
+        reader.readAsDataURL(file);
+      });
+    });
+
+    Promise.all(promises)
+      .then((base64Images) => {
+        const filtered = base64Images.filter(Boolean);
+        setProjectFormData((prev) => ({
+          ...prev,
+          screenshots: [...prev.screenshots, ...filtered],
+        }));
+      })
+      .catch((error) => {
+        console.error("Gagal memproses screenshot", error);
+        alert("Terjadi kesalahan saat memproses gambar.");
+      })
+      .finally(() => {
+        e.target.value = "";
+      });
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -392,15 +450,29 @@ export default function ProjectForm({ isOpen, onClose, editingProject, onSave, t
                 <label className="text-[9px] font-bold font-mono text-accent-custom uppercase">
                   Screenshot Proyek ({projectFormData.screenshots.length} dari 10)
                 </label>
-                {projectFormData.screenshots.length < 10 && (
-                  <button
-                    type="button"
-                    onClick={handleAddScreenshotSlot}
-                    className="text-[10px] font-mono font-bold text-foreground hover:underline flex items-center gap-1 cursor-pointer uppercase"
-                  >
-                    <Plus className="h-3 w-3" /> Tambah Screenshot
-                  </button>
-                )}
+                <div className="flex items-center gap-4">
+                  {projectFormData.screenshots.length < 10 && (
+                    <>
+                      <label className="text-[10px] font-mono font-bold text-foreground hover:underline flex items-center gap-1 cursor-pointer uppercase select-none">
+                        <Upload className="h-3 w-3" /> Unggah Masal
+                        <input
+                          type="file"
+                          multiple
+                          accept="image/*"
+                          onChange={handleBulkScreenshotsUpload}
+                          className="hidden"
+                        />
+                      </label>
+                      <button
+                        type="button"
+                        onClick={handleAddScreenshotSlot}
+                        className="text-[10px] font-mono font-bold text-foreground hover:underline flex items-center gap-1 cursor-pointer uppercase"
+                      >
+                        <Plus className="h-3 w-3" /> Tambah Slot
+                      </button>
+                    </>
+                  )}
+                </div>
               </div>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mt-1">

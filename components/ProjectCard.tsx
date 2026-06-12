@@ -2,7 +2,7 @@
 
 import React from "react";
 import { motion } from "framer-motion";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Folder } from "lucide-react";
 import { Project } from "@/context/CMSContext";
 
 interface ProjectCardProps {
@@ -49,8 +49,8 @@ export default function ProjectCard({ project, onClick }: ProjectCardProps) {
         <div className="flex flex-wrap gap-1.5">
           {/* Project Category Tag */}
           {project.tags[0] && (
-            <span className="text-[9px] font-mono font-bold tracking-wider px-2.5 py-0.5 border border-foreground/15 bg-foreground/5 rounded-none text-foreground">
-              📁 {project.tags[0]}
+            <span className="text-[9px] font-mono font-bold tracking-wider px-2.5 py-0.5 border border-foreground/15 bg-foreground/5 rounded-none text-foreground inline-flex items-center gap-1">
+              <Folder className="h-3 w-3" strokeWidth={2.5} /> {project.tags[0]}
             </span>
           )}
           {/* Tech stack tags */}

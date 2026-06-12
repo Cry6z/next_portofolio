@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useRef, useCallback } from "react";
-import { Trophy } from "lucide-react";
+import { Trophy, Gamepad2 } from "lucide-react";
 import { useCMS } from "@/context/CMSContext";
 import { useTheme } from "@/context/ThemeContext";
 
@@ -905,7 +905,7 @@ export default function InteractiveTerminal({ onClose }: InteractiveTerminalProp
                 ◀
               </button>
               <div className="w-10 h-10 rounded-none border border-zinc-800 bg-black flex items-center justify-center text-xs text-zinc-500/50 select-none">
-                🕹️
+                <Gamepad2 className="h-5 w-5 text-zinc-650" />
               </div>
               <button
                 type="button"

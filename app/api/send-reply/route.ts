@@ -30,12 +30,26 @@ export async function POST(request: Request) {
       },
     });
 
+    const defaultHtml = `
+      <div style="font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 32px; border: 1px solid #e4e4e7; background-color: #ffffff; color: #18181b;">
+        <div style="border-bottom: 1px solid #e4e4e7; padding-bottom: 16px; margin-bottom: 24px;">
+          <span style="font-size: 12px; font-weight: 800; letter-spacing: 0.05em; font-family: monospace; text-transform: uppercase; color: #18181b;">
+            BALASAN PESAN
+          </span>
+        </div>
+        <div style="font-size: 14px; line-height: 1.6; color: #27272a; white-space: pre-wrap;">${text}</div>
+        <div style="margin-top: 40px; padding-top: 16px; border-top: 1px solid #e4e4e7; font-size: 10px; color: #71717a; font-family: monospace; text-transform: uppercase; letter-spacing: 0.05em;">
+          Pesan ini dikirim oleh pengelola portofolio.
+        </div>
+      </div>
+    `;
+
     const mailOptions = {
       from: user,
       to,
       subject,
       text,
-      html: html || text,
+      html: html || defaultHtml,
     };
 
     const info = await transporter.sendMail(mailOptions);

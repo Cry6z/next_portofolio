@@ -4,8 +4,30 @@ import React, { useState } from "react";
 import { Check, Trash2, Reply, Send, Loader2 } from "lucide-react";
 import { useCMS } from "@/context/CMSContext";
 
+const replyTemplates = [
+  {
+    name: "Pilih Template Balasan...",
+    text: () => "",
+  },
+  {
+    name: "Terima Kasih / Umum",
+    text: (visitorName: string, adminName: string) => 
+      `Halo ${visitorName},\n\nTerima kasih telah menghubungi saya melalui portofolio. Saya telah membaca pesan Anda.\n\nSaya akan meninjau detailnya dan memberikan tanggapan lebih lanjut sesegera mungkin.\n\nSalam hangat,\n${adminName}`,
+  },
+  {
+    name: "Tawaran Kolaborasi Proyek",
+    text: (visitorName: string, adminName: string) => 
+      `Halo ${visitorName},\n\nTerima kasih atas tawaran kolaborasinya! Pesan Anda sangat menarik perhatian saya.\n\nSaya sangat senang untuk berdiskusi lebih lanjut mengenai detail dan kebutuhan proyek ini. Apakah Anda memiliki waktu senggang untuk online meeting singkat minggu ini?\n\nSalam hangat,\n${adminName}`,
+  },
+  {
+    name: "Peluang Karir / Rekrutmen",
+    text: (visitorName: string, adminName: string) => 
+      `Halo ${visitorName},\n\nTerima kasih atas peluang karir dan ketertarikan Anda terhadap profil saya.\n\nSaya sangat tertarik untuk mendengar lebih banyak mengenai posisi ini. Silakan beri tahu saya waktu yang tepat untuk kita berdiskusi lebih lanjut.\n\nSalam hangat,\n${adminName}`,
+  }
+];
+
 export default function MessagesTab() {
-  const { messages, markMessageRead, deleteMessage } = useCMS();
+  const { messages, markMessageRead, deleteMessage, profile } = useCMS();
   
   const [replyingTo, setReplyingTo] = useState<string | null>(null);
   const [replyText, setReplyText] = useState("");
@@ -129,14 +151,33 @@ export default function MessagesTab() {
               {/* Reply Form */}
               {replyingTo === msg.id && (
                 <div className="mt-2 pt-4 border-t border-border-custom/50 flex flex-col gap-2">
-                  <label className="text-[9px] font-mono font-bold tracking-widest text-accent-custom uppercase">
-                    Tulis Balasan ke {msg.email}
-                  </label>
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                    <label className="text-[9px] font-mono font-bold tracking-widest text-accent-custom uppercase">
+                      Tulis Balasan ke {msg.email}
+                    </label>
+                    <div className="flex items-center gap-1.5 font-mono text-[9px]">
+                      <span className="text-accent-custom uppercase font-semibold">Gunakan Template:</span>
+                      <select
+                        onChange={(e) => {
+                          const idx = Number(e.target.value);
+                          if (idx > 0) {
+                            const selected = replyTemplates[idx];
+                            setReplyText(selected.text(msg.name, profile?.name || "Gibran"));
+                          }
+                        }}
+                        className="bg-background border border-border-custom text-foreground px-2 py-0.5 text-[9px] focus:outline-none cursor-pointer rounded-none"
+                      >
+                        {replyTemplates.map((t, idx) => (
+                          <option key={idx} value={idx}>{t.name}</option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
                   <textarea
                     value={replyText}
                     onChange={(e) => setReplyText(e.target.value)}
                     placeholder="Ketik pesan balasan Anda di sini..."
-                    className="w-full bg-background border border-border-custom rounded-none p-3 text-xs focus:outline-none focus:border-foreground resize-y min-h-[100px] text-foreground font-mono"
+                    className="w-full bg-background border border-border-custom rounded-none p-3 text-xs focus:outline-none focus:border-foreground resize-y min-h-[120px] text-foreground font-mono"
                   />
                   <div className="flex justify-end mt-1">
                     <button

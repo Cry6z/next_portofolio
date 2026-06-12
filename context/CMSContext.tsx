@@ -103,7 +103,7 @@ interface CMSContextType {
 
   // Gallery CRUD
   addGalleryItem: (item: Omit<GalleryItem, "id"> | Omit<GalleryItem, "id">[]) => Promise<void>;
-  deleteGalleryItem: (id: string) => Promise<void>;
+  deleteGalleryItem: (idOrIds: string | string[]) => Promise<void>;
   
   // Project CRUD
   addProject: (project: Omit<Project, "id">) => void;
@@ -764,12 +764,13 @@ export function CMSProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  const deleteGalleryItem = async (id: string) => {
-    const nextGallery = gallery.filter((item) => item.id !== id);
+  const deleteGalleryItem = async (idOrIds: string | string[]) => {
+    const ids = Array.isArray(idOrIds) ? idOrIds : [idOrIds];
+    const nextGallery = gallery.filter((item) => !ids.includes(item.id));
     saveGallery(nextGallery);
     if (supabase) {
       try {
-        await supabase.from("gallery").delete().eq("id", id);
+        await supabase.from("gallery").delete().in("id", ids);
       } catch (e) {
         console.error("Supabase delete gallery item failed", e);
       }
