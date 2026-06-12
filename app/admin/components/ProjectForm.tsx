@@ -76,8 +76,8 @@ export default function ProjectForm({ isOpen, onClose, editingProject, onSave, t
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>, callback: (base64: string) => void) => {
     const file = e.target.files?.[0];
     if (file) {
-      if (file.size > 2 * 1024 * 1024) {
-        alert("Ukuran gambar terlalu besar! Maksimal 2MB untuk optimasi penyimpanan browser.");
+      if (file.size > 5 * 1024 * 1024) {
+        alert("Ukuran gambar terlalu besar! Maksimal 5MB untuk optimasi penyimpanan.");
         return;
       }
       const reader = new FileReader();

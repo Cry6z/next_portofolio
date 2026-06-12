@@ -72,6 +72,13 @@ export interface TerminalConfig {
   promptHost: string;
 }
 
+export interface GalleryItem {
+  id: string;
+  title: string;
+  caption?: string;
+  imageUrl: string;
+}
+
 interface CMSContextType {
   profile: Profile;
   projects: Project[];
@@ -83,6 +90,7 @@ interface CMSContextType {
   adminPassword: string;
   isPortfolioOpen: boolean;
   tags: string[];
+  gallery: GalleryItem[];
   
   // Update Profile
   updateProfile: (profile: Partial<Profile>) => void;
@@ -92,6 +100,10 @@ interface CMSContextType {
   // Global Tags CRUD
   addTag: (name: string) => Promise<void>;
   deleteTag: (name: string) => Promise<void>;
+
+  // Gallery CRUD
+  addGalleryItem: (item: Omit<GalleryItem, "id"> | Omit<GalleryItem, "id">[]) => Promise<void>;
+  deleteGalleryItem: (id: string) => Promise<void>;
   
   // Project CRUD
   addProject: (project: Omit<Project, "id">) => void;
@@ -191,6 +203,7 @@ export function CMSProvider({ children }: { children: React.ReactNode }) {
   const [adminPassword, setAdminPassword] = useState<string>("admin123");
   const [isPortfolioOpen, setIsPortfolioOpen] = useState<boolean>(true);
   const [tags, setTags] = useState<string[]>(defaultTags);
+  const [gallery, setGallery] = useState<GalleryItem[]>([]);
   const [mounted, setMounted] = useState(false);
 
   // Load from Supabase (with fallback to localStorage)
@@ -208,7 +221,8 @@ export function CMSProvider({ children }: { children: React.ReactNode }) {
             { data: messagesData, error: msgError },
             { data: termConfigData, error: tcError },
             { data: termCmdsData, error: tcmdError },
-            { data: tagsData, error: tError }
+            { data: tagsData, error: tError },
+            { data: galleryData, error: gError }
           ] = await Promise.all([
             supabase.from("profile").select("*").eq("id", "default").maybeSingle(),
             supabase.from("projects").select("*").order("created_at", { ascending: true }),
@@ -217,11 +231,12 @@ export function CMSProvider({ children }: { children: React.ReactNode }) {
             supabase.from("messages").select("*").order("created_at", { ascending: false }),
             supabase.from("terminal_config").select("*").eq("id", "default").maybeSingle(),
             supabase.from("terminal_commands").select("*").order("created_at", { ascending: true }),
-            supabase.from("tags").select("*").order("name", { ascending: true })
+            supabase.from("tags").select("*").order("name", { ascending: true }),
+            supabase.from("gallery").select("*").order("created_at", { ascending: false })
           ]);
-
+ 
           // Check if it's a table missing error (PGRST205)
-          const isTableMissing = [pError, prError, exError, skError, msgError, tcError, tcmdError, tError].some(
+          const isTableMissing = [pError, prError, exError, skError, msgError, tcError, tcmdError, tError, gError].some(
             (err) => err?.code === 'PGRST205'
           );
 
@@ -339,6 +354,18 @@ export function CMSProvider({ children }: { children: React.ReactNode }) {
               }
               setTags(defaultTags);
             }
+
+            // Apply Gallery
+            if (galleryData && galleryData.length > 0) {
+              setGallery(galleryData.map((g: any) => ({
+                id: g.id,
+                title: g.title,
+                caption: g.caption,
+                imageUrl: g.imageurl || g.imageUrl,
+              })));
+            } else {
+              setGallery([]);
+            }
             
             isSupabaseLoaded = true;
           }
@@ -359,6 +386,7 @@ export function CMSProvider({ children }: { children: React.ReactNode }) {
           const savedPassword = localStorage.getItem("cms-admin-password");
           const savedPortfolioOpen = localStorage.getItem("cms-portfolio-open");
           const savedTags = localStorage.getItem("cms-tags");
+          const savedGallery = localStorage.getItem("cms-gallery");
 
           setTimeout(() => {
             if (savedProfile) setProfile(JSON.parse(savedProfile));
@@ -371,6 +399,7 @@ export function CMSProvider({ children }: { children: React.ReactNode }) {
             if (savedPassword) setAdminPassword(savedPassword);
             if (savedPortfolioOpen) setIsPortfolioOpen(JSON.parse(savedPortfolioOpen));
             if (savedTags) setTags(JSON.parse(savedTags));
+            if (savedGallery) setGallery(JSON.parse(savedGallery));
           }, 0);
         } catch (e) {
           console.error("Failed to load local CMS data", e);
@@ -385,50 +414,59 @@ export function CMSProvider({ children }: { children: React.ReactNode }) {
     loadCMSData();
   }, []);
 
+  // Safe localStorage helper to prevent QuotaExceededError crashes
+  const safeLocalStorageSetItem = (key: string, value: string) => {
+    try {
+      localStorage.setItem(key, value);
+    } catch (e) {
+      console.warn(`Gagal menyimpan "${key}" ke localStorage: QuotaExceededError atau penyimpanan dinonaktifkan.`, e);
+    }
+  };
+
   // Save helpers (saves locally as secondary backup)
   const saveTags = (newTags: string[]) => {
     setTags(newTags);
-    localStorage.setItem("cms-tags", JSON.stringify(newTags));
+    safeLocalStorageSetItem("cms-tags", JSON.stringify(newTags));
   };
 
   const saveProfile = (newProfile: Profile) => {
     setProfile(newProfile);
-    localStorage.setItem("cms-profile", JSON.stringify(newProfile));
+    safeLocalStorageSetItem("cms-profile", JSON.stringify(newProfile));
   };
 
   const saveProjects = (newProjects: Project[]) => {
     setProjects(newProjects);
-    localStorage.setItem("cms-projects", JSON.stringify(newProjects));
+    safeLocalStorageSetItem("cms-projects", JSON.stringify(newProjects));
   };
 
   const saveExperiences = (newExps: Experience[]) => {
     setExperiences(newExps);
-    localStorage.setItem("cms-experiences", JSON.stringify(newExps));
+    safeLocalStorageSetItem("cms-experiences", JSON.stringify(newExps));
   };
 
   const saveSkills = (newSkills: Skill[]) => {
     setSkills(newSkills);
-    localStorage.setItem("cms-skills", JSON.stringify(newSkills));
+    safeLocalStorageSetItem("cms-skills", JSON.stringify(newSkills));
   };
 
   const saveMessages = (newMsgs: Message[]) => {
     setMessages(newMsgs);
-    localStorage.setItem("cms-messages", JSON.stringify(newMsgs));
+    safeLocalStorageSetItem("cms-messages", JSON.stringify(newMsgs));
   };
 
   const saveTerminalConfig = (newConfig: TerminalConfig) => {
     setTerminalConfig(newConfig);
-    localStorage.setItem("cms-terminal-config", JSON.stringify(newConfig));
+    safeLocalStorageSetItem("cms-terminal-config", JSON.stringify(newConfig));
   };
 
   const saveTerminalCommands = (newCmds: TerminalCommand[]) => {
     setTerminalCommands(newCmds);
-    localStorage.setItem("cms-terminal-commands", JSON.stringify(newCmds));
+    safeLocalStorageSetItem("cms-terminal-commands", JSON.stringify(newCmds));
   };
 
   const updateAdminPassword = (newPassword: string) => {
     setAdminPassword(newPassword);
-    localStorage.setItem("cms-admin-password", newPassword);
+    safeLocalStorageSetItem("cms-admin-password", newPassword);
   };
 
   // CRUD actions with Supabase write synchronization
@@ -693,6 +731,51 @@ export function CMSProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
+  const saveGallery = (newGallery: GalleryItem[]) => {
+    setGallery(newGallery);
+    safeLocalStorageSetItem("cms-gallery", JSON.stringify(newGallery));
+  };
+
+  const addGalleryItem = async (itemOrItems: Omit<GalleryItem, "id"> | Omit<GalleryItem, "id">[]) => {
+    const itemsArray = Array.isArray(itemOrItems) ? itemOrItems : [itemOrItems];
+    const newItems: GalleryItem[] = itemsArray.map((item, index) => ({
+      ...item,
+      id: `gal-${Date.now()}-${index}-${Math.random().toString(36).substring(2, 9)}`,
+    }));
+
+    setGallery((prev) => {
+      const next = [...newItems, ...prev];
+      safeLocalStorageSetItem("cms-gallery", JSON.stringify(next));
+      return next;
+    });
+
+    if (supabase) {
+      try {
+        const payload = newItems.map((item) => ({
+          id: item.id,
+          title: item.title,
+          caption: item.caption,
+          imageurl: item.imageUrl,
+        }));
+        await supabase.from("gallery").insert(payload);
+      } catch (e) {
+        console.error("Supabase add gallery items failed", e);
+      }
+    }
+  };
+
+  const deleteGalleryItem = async (id: string) => {
+    const nextGallery = gallery.filter((item) => item.id !== id);
+    saveGallery(nextGallery);
+    if (supabase) {
+      try {
+        await supabase.from("gallery").delete().eq("id", id);
+      } catch (e) {
+        console.error("Supabase delete gallery item failed", e);
+      }
+    }
+  };
+
   const resetAllData = async () => {
     saveProfile(defaultProfile);
     saveProjects(defaultProjects);
@@ -702,6 +785,7 @@ export function CMSProvider({ children }: { children: React.ReactNode }) {
     saveTerminalConfig(defaultTerminalConfig);
     saveTerminalCommands(defaultTerminalCommands);
     saveTags(defaultTags);
+    saveGallery([]);
     
     if (supabase) {
       try {
@@ -735,6 +819,7 @@ export function CMSProvider({ children }: { children: React.ReactNode }) {
         for (const name of defaultTags) {
           await supabase.from("tags").upsert({ id: `tag-${name.toLowerCase().replace(/\s+/g, '-')}`, name });
         }
+        await supabase.from("gallery").delete().neq("id", "none");
       } catch (e) {
         console.error("Supabase reset all data failed", e);
       }
@@ -743,7 +828,7 @@ export function CMSProvider({ children }: { children: React.ReactNode }) {
 
   const togglePortfolioStatus = (isOpen: boolean) => {
     setIsPortfolioOpen(isOpen);
-    localStorage.setItem("cms-portfolio-open", JSON.stringify(isOpen));
+    safeLocalStorageSetItem("cms-portfolio-open", JSON.stringify(isOpen));
   };
 
   const migrateLocalData = async () => {
@@ -820,6 +905,22 @@ export function CMSProvider({ children }: { children: React.ReactNode }) {
         }
       }
 
+      const savedGallery = localStorage.getItem("cms-gallery");
+      if (savedGallery) {
+        const parsed = JSON.parse(savedGallery);
+        setGallery(parsed);
+        await supabase.from("gallery").delete().neq("id", "none");
+        for (const g of parsed) {
+          const { error } = await supabase.from("gallery").upsert({
+            id: g.id,
+            title: g.title,
+            caption: g.caption,
+            imageurl: g.imageUrl,
+          });
+          if (error) throw new Error("Gagal migrasi galeri: " + error.message);
+        }
+      }
+ 
       alert("Penyelamatan data berhasil! Semua data lokal Anda telah dipindahkan ke Cloud.");
     } catch (e: any) {
       console.error(e);
@@ -844,6 +945,7 @@ export function CMSProvider({ children }: { children: React.ReactNode }) {
         adminPassword,
         isPortfolioOpen,
         tags,
+        gallery,
         updateProfile,
         updateAdminPassword,
         togglePortfolioStatus,
@@ -865,6 +967,8 @@ export function CMSProvider({ children }: { children: React.ReactNode }) {
         addTerminalCommand,
         updateTerminalCommand,
         deleteTerminalCommand,
+        addGalleryItem,
+        deleteGalleryItem,
         resetAllData,
         migrateLocalData,
       }}

@@ -3,15 +3,71 @@
 import React, { useState, useEffect } from "react";
 import ProfileCard from "@/components/ProfileCard";
 import { useCMS } from "@/context/CMSContext";
+import { Upload } from "lucide-react";
 
 export default function PhotosTab() {
-  const { profile, updateProfile } = useCMS();
+  const { profile, updateProfile, gallery, addGalleryItem, deleteGalleryItem } = useCMS();
 
   const [photoFormData, setPhotoFormData] = useState({
     avatarUrl: "",
     miniAvatarUrl: "",
     heroBgUrl: "",
   });
+
+  const [isUploading, setIsUploading] = useState(false);
+
+  const handleMultipleFilesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+
+    const filesArray = Array.from(files);
+    const validFiles: File[] = [];
+
+    for (const file of filesArray) {
+      if (file.size > 5 * 1024 * 1024) {
+        alert(`Berkas "${file.name}" terlalu besar! Maksimal 5MB per foto.`);
+        continue;
+      }
+      validFiles.push(file);
+    }
+
+    if (validFiles.length === 0) return;
+
+    setIsUploading(true);
+
+    const promises = validFiles.map((file) => {
+      return new Promise<{ title: string; caption: string; imageUrl: string }>((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          if (typeof reader.result === "string") {
+            resolve({
+              title: file.name.split(".")[0] || "Foto Galeri",
+              caption: "",
+              imageUrl: reader.result,
+            });
+          } else {
+            reject(new Error("Gagal membaca file"));
+          }
+        };
+        reader.onerror = () => reject(reader.error);
+        reader.readAsDataURL(file);
+      });
+    });
+
+    Promise.all(promises)
+      .then(async (newItems) => {
+        await addGalleryItem(newItems);
+        alert(`${newItems.length} foto berhasil diunggah ke Galeri!`);
+      })
+      .catch((error) => {
+        console.error("Gagal mengunggah foto", error);
+        alert("Terjadi kesalahan saat memproses gambar.");
+      })
+      .finally(() => {
+        setIsUploading(false);
+        e.target.value = "";
+      });
+  };
 
   useEffect(() => {
     if (profile) {
@@ -30,16 +86,15 @@ export default function PhotosTab() {
     updateProfile({
       avatarUrl: photoFormData.avatarUrl,
       miniAvatarUrl: photoFormData.miniAvatarUrl,
-      heroBgUrl: photoFormData.heroBgUrl,
     });
-    alert("Foto profil dan background berhasil diperbarui!");
+    alert("Foto profil berhasil diperbarui!");
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>, callback: (base64: string) => void) => {
     const file = e.target.files?.[0];
     if (file) {
-      if (file.size > 2 * 1024 * 1024) {
-        alert("Ukuran gambar terlalu besar! Maksimal 2MB untuk optimasi penyimpanan browser.");
+      if (file.size > 5 * 1024 * 1024) {
+        alert("Ukuran gambar terlalu besar! Maksimal 5MB untuk optimasi penyimpanan.");
         return;
       }
       const reader = new FileReader();
@@ -65,16 +120,6 @@ export default function PhotosTab() {
         
         {/* Left Column: Live Preview */}
         <div className="flex flex-col items-center justify-center w-full bg-card-custom/50 border border-border-custom rounded-none p-6 min-h-[400px] relative overflow-hidden">
-          {photoFormData.heroBgUrl && (
-            <div 
-              className="absolute inset-0 z-0 pointer-events-none opacity-10 dark:opacity-15 transition-all duration-300 filter grayscale"
-              style={{
-                backgroundImage: `url(${photoFormData.heroBgUrl})`,
-                backgroundSize: "cover",
-                backgroundPosition: "center",
-              }}
-            />
-          )}
           <div className="relative z-10 w-full flex flex-col items-center">
             <div className="relative group w-full max-w-[280px] sm:max-w-[340px] lg:w-full lg:max-w-[360px] aspect-[0.718] mx-auto">
               <ProfileCard
@@ -173,39 +218,7 @@ export default function PhotosTab() {
               </div>
             </div>
 
-            {/* Background Image Hero Section */}
-            <div className="flex flex-col gap-3">
-              <label className="text-[9px] font-bold font-mono text-accent-custom uppercase">
-                Foto Background (Hero Section)
-              </label>
-              <div className="flex items-center gap-4">
-                <div className="h-16 w-16 rounded-none border border-border-custom bg-background flex items-center justify-center overflow-hidden shrink-0">
-                  {photoFormData.heroBgUrl ? (
-                    <img src={photoFormData.heroBgUrl} alt="Preview Background" className="w-full h-full object-cover grayscale" />
-                  ) : (
-                    <span className="text-[9px] text-accent-custom font-mono text-center leading-none">Kosong</span>
-                  )}
-                </div>
-                <div className="flex flex-col gap-2 flex-1">
-                  <input
-                    type="text"
-                    value={photoFormData.heroBgUrl}
-                    onChange={(e) => setPhotoFormData({ ...photoFormData, heroBgUrl: e.target.value })}
-                    placeholder="URL / Base64 Background Hero..."
-                    className="w-full bg-background border border-border-custom rounded-none px-3 py-2 text-xs focus:outline-none text-foreground font-mono"
-                  />
-                  <label className="border border-border-custom hover:border-foreground bg-background hover:bg-foreground hover:text-background text-foreground text-[10px] font-mono font-bold rounded-none px-3 py-2 cursor-pointer text-center transition-all uppercase">
-                    Pilih File Background
-                    <input
-                      type="file"
-                      accept="image/*"
-                      onChange={(e) => handleFileChange(e, (b64) => setPhotoFormData({ ...photoFormData, heroBgUrl: b64 }))}
-                      className="hidden"
-                    />
-                  </label>
-                </div>
-              </div>
-            </div>
+
 
             <button
               type="submit"
@@ -214,6 +227,85 @@ export default function PhotosTab() {
               Unggah & Simpan Foto
             </button>
           </form>
+        </div>
+      </div>
+
+      {/* Gallery Photos Management Section */}
+      <div className="border-t border-border-custom pt-8 mt-4 flex flex-col gap-6">
+        <div className="border-b border-border-custom/50 pb-4">
+          <h2 className="text-2xl font-black tracking-tight text-foreground font-mono">GALERI FOTO PORTOFOLIO</h2>
+          <p className="text-xs text-accent-custom font-mono uppercase mt-1">
+            Unggah dan Atur Jurnal Foto Visual Publik Anda
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+          {/* Add New Gallery Items (Left / Col-5) */}
+          <div className="lg:col-span-5 border border-border-custom bg-card-custom p-4 md:p-6 rounded-none flex flex-col gap-4">
+            <h3 className="text-sm font-bold uppercase tracking-tight border-b border-border-custom pb-2 font-mono text-foreground">
+              Unggah Foto Masal (Batch Upload)
+            </h3>
+            <div className="flex flex-col gap-4 font-mono text-xs">
+              <label
+                className={`border border-dashed border-border-custom hover:border-foreground/35 bg-background hover:bg-foreground/5 cursor-pointer p-8 flex flex-col items-center justify-center gap-3 transition-all rounded-none text-center ${
+                  isUploading ? "pointer-events-none opacity-50" : ""
+                }`}
+              >
+                <input
+                  type="file"
+                  multiple
+                  accept="image/*"
+                  onChange={handleMultipleFilesChange}
+                  disabled={isUploading}
+                  className="hidden"
+                />
+                <div className="h-10 w-10 flex items-center justify-center border border-border-custom bg-card-custom text-accent-custom">
+                  <Upload className={`h-5 w-5 ${isUploading ? "animate-bounce" : ""}`} />
+                </div>
+                <div className="flex flex-col gap-1">
+                  <span className="font-bold text-foreground">
+                    {isUploading ? "SEDANG MENGUNGGAH..." : "PILIH BEBERAPA FOTO"}
+                  </span>
+                  <span className="text-[9px] text-accent-custom uppercase tracking-wide">
+                    Klik untuk memilih banyak file gambar sekaligus (maksimal 5MB per foto)
+                  </span>
+                </div>
+              </label>
+            </div>
+          </div>
+
+          {/* Gallery Items Grid List (Right / Col-7) */}
+          <div className="lg:col-span-7 border border-border-custom bg-card-custom p-4 md:p-6 rounded-none flex flex-col gap-4">
+            <h3 className="text-sm font-bold uppercase tracking-tight border-b border-border-custom pb-2 font-mono text-foreground">
+              Daftar Koleksi Foto ({gallery?.length || 0})
+            </h3>
+
+            {!gallery || gallery.length === 0 ? (
+              <p className="text-xs text-accent-custom py-10 text-center font-mono uppercase">
+                Galeri kosong. Silakan unggah beberapa foto di sebelah kiri.
+              </p>
+            ) : (
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 max-h-[500px] overflow-y-auto pr-1">
+                {gallery.map((item) => (
+                  <div key={item.id} className="border border-border-custom bg-background p-2 rounded-none flex flex-col gap-2 relative group hover:border-foreground/35 transition-all">
+                    <div className="aspect-square w-full overflow-hidden border border-border-custom rounded-none bg-accent-light">
+                      <img src={item.imageUrl} alt="Thumbnail Galeri" className="object-cover w-full h-full filter grayscale group-hover:grayscale-0 transition-all duration-300" />
+                    </div>
+                    <button
+                      onClick={() => {
+                        if (confirm("Hapus foto ini dari galeri?")) {
+                          deleteGalleryItem(item.id);
+                        }
+                      }}
+                      className="w-full text-center py-1 border border-border-custom bg-background hover:bg-red-500 hover:text-white hover:border-red-500 rounded-none text-[9px] font-mono font-bold uppercase cursor-pointer transition-all"
+                    >
+                      Hapus
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>

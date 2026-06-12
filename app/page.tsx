@@ -8,6 +8,7 @@ import CustomCursor from "@/components/CustomCursor";
 
 import HeroSection from "@/components/HeroSection";
 import ProjectsSection from "@/components/ProjectsSection";
+import GallerySection from "@/components/GallerySection";
 import SkillsSection from "@/components/SkillsSection";
 import ExperienceSection from "@/components/ExperienceSection";
 import ContactSection from "@/components/ContactSection";
@@ -19,7 +20,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { Terminal } from "lucide-react";
 
 export default function Home() {
-  const { profile, projects, experiences, skills, sendMessage, isPortfolioOpen } = useCMS();
+  const { profile, projects, experiences, skills, gallery, sendMessage, isPortfolioOpen } = useCMS();
   const [showWelcome, setShowWelcome] = useState(false);
   const [hadWelcome, setHadWelcome] = useState(false);
   const [isCheckingWelcome, setIsCheckingWelcome] = useState(true);
@@ -94,6 +95,7 @@ export default function Home() {
         >
           <HeroSection profile={profile} />
           <ProjectsSection projects={projects} />
+          <GallerySection gallery={gallery} limit={6} />
           <SkillsSection skills={skills} />
           <ExperienceSection experiences={experiences} />
           <ContactSection profile={profile} sendMessage={sendMessage} />
@@ -139,7 +141,7 @@ export default function Home() {
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={() => setShowTerminal(true)}
-            className="fixed bottom-6 right-6 z-40 h-14 w-14 rounded-full bg-foreground border border-border-custom text-background shadow-md flex items-center justify-center cursor-pointer transition-all duration-300"
+            className="fixed bottom-6 right-6 z-40 h-14 w-14 rounded-none bg-foreground border border-border-custom text-background shadow-md flex items-center justify-center cursor-pointer transition-all duration-300"
             title="Launch Interactive Terminal"
           >
             <Terminal className="h-6 w-6" />

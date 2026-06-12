@@ -187,3 +187,16 @@ ALTER TABLE profile ADD COLUMN IF NOT EXISTS "heroBgUrl" TEXT;
 
 -- PERBARUAN: Menambahkan kolom thumbnail untuk gambar pratinjau di Projects
 ALTER TABLE projects ADD COLUMN IF NOT EXISTS thumbnail TEXT;
+
+-- PERBARUAN: Menambahkan tabel gallery untuk Jurnal Visual Foto
+CREATE TABLE IF NOT EXISTS gallery (
+  id TEXT PRIMARY KEY,
+  title TEXT NOT NULL,
+  caption TEXT,
+  imageurl TEXT NOT NULL,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now())
+);
+
+ALTER TABLE gallery ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Buka akses baca galeri untuk publik" ON gallery FOR SELECT USING (true);
+CREATE POLICY "Buka akses modifikasi galeri untuk publik" ON gallery FOR ALL USING (true) WITH CHECK (true);

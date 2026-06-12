@@ -16,7 +16,7 @@ interface InteractiveTerminalProps {
 }
 
 export default function InteractiveTerminal({ onClose }: InteractiveTerminalProps) {
-  const { terminalConfig, terminalCommands } = useCMS();
+  const { terminalConfig, terminalCommands, projects, profile } = useCMS();
   const { theme, setTheme } = useTheme();
 
   const [history, setHistory] = useState<TerminalLine[]>([]);
@@ -49,6 +49,41 @@ export default function InteractiveTerminal({ onClose }: InteractiveTerminalProp
   const consoleRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const terminalRef = useRef<HTMLDivElement>(null);
+
+  const [uptimeSeconds, setUptimeSeconds] = useState(0);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setUptimeSeconds((prev) => prev + 1);
+    }, 1000);
+    return () => clearInterval(timer);
+  }, []);
+
+  const getSystemInfo = () => {
+    if (typeof window === "undefined") return { os: "Web", browser: "NodeJS" };
+    const ua = navigator.userAgent;
+    let os = "Web OS";
+    let browser = "Browser";
+
+    if (ua.indexOf("Win") !== -1) os = "Windows";
+    else if (ua.indexOf("Mac") !== -1) os = "macOS";
+    else if (ua.indexOf("X11") !== -1) os = "UNIX";
+    else if (ua.indexOf("Linux") !== -1) os = "Linux";
+
+    if (ua.indexOf("Chrome") !== -1) browser = "Chrome";
+    else if (ua.indexOf("Firefox") !== -1) browser = "Firefox";
+    else if (ua.indexOf("Safari") !== -1) browser = "Safari";
+    else if (ua.indexOf("Edge") !== -1) browser = "Edge";
+    
+    return { os, browser };
+  };
+
+  const formatUptime = (totalSeconds: number) => {
+    const mins = Math.floor(totalSeconds / 60);
+    const secs = totalSeconds % 60;
+    if (mins === 0) return `${secs}s`;
+    return `${mins}m ${secs}s`;
+  };
 
   const promptText = terminalMode === "minigames_menu"
     ? "arcade@minigames:~$ "
@@ -490,6 +525,7 @@ export default function InteractiveTerminal({ onClose }: InteractiveTerminalProp
         { text: "clear / cls - membersihkan baris layar terminal", type: "output" },
         { text: "theme       - mengubah tema situs (hitam <-> putih)", type: "output" },
         { text: "minigames   - membuka menu retro arcade game di terminal", type: "output" },
+        { text: "neofetch    - menampilkan info sistem dan profil ringkas", type: "output" },
       ];
 
       // Load custom commands from CMS
@@ -530,6 +566,32 @@ export default function InteractiveTerminal({ onClose }: InteractiveTerminalProp
       return;
     }
 
+
+
+    // Built-in: Neofetch System Info
+    if (cleanCmd === "neofetch") {
+      const { os, browser } = getSystemInfo();
+      const uptimeStr = formatUptime(uptimeSeconds);
+      const activeTheme = theme || "dark";
+      const projectCount = projects ? projects.length : 0;
+      const devName = profile ? profile.name : "GIBRAN";
+      const devEmail = profile ? profile.email : "gibran@example.com";
+
+      const neofetchOutput: TerminalLine[] = [
+        { text: `         __  _ _                 guest@gibran`, type: "system" },
+        { text: `  ____ _/ /_(_) /_  __________   ------------`, type: "system" },
+        { text: ` / __ \`/ __/ / __ \\/ ___/ ___/   OS:         ${os} (${browser})`, type: "system" },
+        { text: `/ /_/ / /_/ / /_/ / /  (__  )    Uptime:     ${uptimeStr}`, type: "system" },
+        { text: `\\__, /\\__/_/_.___/_/  /____/     Theme:      ${activeTheme} mode`, type: "system" },
+        { text: `/____/                           Projects:   ${projectCount} Active Projects`, type: "system" },
+        { text: `                                 Developer:  ${devName}`, type: "system" },
+        { text: `                                 Contact:    ${devEmail}`, type: "system" },
+      ];
+
+      setHistory([...currentHistory, ...neofetchOutput]);
+      return;
+    }
+
     // 4. Custom CMS Commands lookup
     const customMatch = terminalCommands.find((c) => c.command.toLowerCase().trim() === cleanCmd);
     if (customMatch) {
@@ -555,7 +617,7 @@ export default function InteractiveTerminal({ onClose }: InteractiveTerminalProp
     <div
       ref={terminalRef}
       onClick={focusInput}
-      className="w-full max-w-4xl mx-auto rounded-xl overflow-hidden border border-border-custom bg-black text-white font-mono shadow-xl cursor-text select-text"
+      className="w-full max-w-4xl mx-auto rounded-none overflow-hidden border border-border-custom bg-black text-white font-mono shadow-xl cursor-text select-text"
     >
       {/* Window Titlebar */}
       <div className="flex items-center justify-between bg-zinc-900 border-b border-border-custom/30 px-4 py-3 shrink-0 select-none">
@@ -600,7 +662,7 @@ export default function InteractiveTerminal({ onClose }: InteractiveTerminalProp
             
             {/* The 15x15 pixel grid */}
             <div 
-              className="bg-zinc-950 border border-zinc-800 p-1 rounded shadow-inner shrink-0"
+              className="bg-zinc-950 border border-zinc-800 p-1 rounded-none shadow-inner shrink-0"
               style={{
                 display: "grid",
                 gridTemplateColumns: "repeat(15, 1fr)",
@@ -620,7 +682,7 @@ export default function InteractiveTerminal({ onClose }: InteractiveTerminalProp
                 return (
                   <div 
                     key={idx}
-                    className={`w-full h-full rounded-sm transition-all duration-75 ${
+                    className={`w-full h-full rounded-none transition-all duration-75 ${
                       isHead 
                         ? "bg-white shadow-[0_0_3px_rgba(255,255,255,0.5)]" 
                         : isBody 
@@ -647,13 +709,13 @@ export default function InteractiveTerminal({ onClose }: InteractiveTerminalProp
                         setSnakeGameOver(false);
                         setSnakeIsRunning(true);
                       }}
-                      className="px-3 py-1 bg-zinc-900 hover:bg-zinc-800 border border-zinc-750 rounded text-white font-bold cursor-pointer text-[10px]"
+                      className="px-3 py-1 bg-zinc-900 hover:bg-zinc-800 border border-zinc-750 rounded-none text-white font-bold cursor-pointer text-[10px]"
                     >
                       main lagi
                     </button>
                     <button 
                       onClick={() => setTerminalMode("minigames_menu")}
-                      className="px-3 py-1 bg-zinc-950 hover:bg-zinc-900 border border-zinc-800 rounded text-zinc-400 cursor-pointer text-[10px]"
+                      className="px-3 py-1 bg-zinc-950 hover:bg-zinc-900 border border-zinc-800 rounded-none text-zinc-400 cursor-pointer text-[10px]"
                     >
                       keluar
                     </button>
@@ -666,13 +728,13 @@ export default function InteractiveTerminal({ onClose }: InteractiveTerminalProp
                   <div className="flex gap-2 mt-1">
                     <button
                       onClick={() => setSnakeIsRunning(!snakeIsRunning)}
-                      className="px-2 py-0.5 border border-zinc-850 hover:border-zinc-650 rounded bg-zinc-900 text-zinc-350 font-mono font-bold cursor-pointer"
+                      className="px-2 py-0.5 border border-zinc-850 hover:border-zinc-650 rounded-none bg-zinc-900 text-zinc-350 font-mono font-bold cursor-pointer"
                     >
                       {snakeIsRunning ? "pause" : "resume"}
                     </button>
                     <button
                       onClick={() => setTerminalMode("minigames_menu")}
-                      className="px-2 py-0.5 border border-zinc-850 hover:border-zinc-650 rounded bg-zinc-950 text-zinc-400 font-mono cursor-pointer"
+                      className="px-2 py-0.5 border border-zinc-850 hover:border-zinc-650 rounded-none bg-zinc-950 text-zinc-400 font-mono cursor-pointer"
                     >
                       exit
                     </button>
@@ -701,7 +763,7 @@ export default function InteractiveTerminal({ onClose }: InteractiveTerminalProp
                     setTttWinner(null);
                     setIsPlayerTurn(true);
                   }}
-                  className={`px-2 py-0.5 border rounded lowercase transition-all cursor-pointer ${
+                  className={`px-2 py-0.5 border rounded-none lowercase transition-all cursor-pointer ${
                     tttDifficulty === diff
                       ? "bg-zinc-900 text-white border-zinc-700 font-bold"
                       : "bg-zinc-950 text-zinc-500 border-zinc-900 hover:text-zinc-400 hover:border-zinc-700"
@@ -712,13 +774,13 @@ export default function InteractiveTerminal({ onClose }: InteractiveTerminalProp
               ))}
             </div>
             
-            <div className="grid grid-cols-3 gap-2 bg-zinc-950 border border-zinc-800 p-2.5 rounded shadow-inner" style={{ width: "180px", height: "180px" }}>
+            <div className="grid grid-cols-3 gap-2 bg-zinc-950 border border-zinc-800 p-2.5 rounded-none shadow-inner" style={{ width: "180px", height: "180px" }}>
               {board.map((cell, idx) => (
                 <button
                   key={idx}
                   onClick={() => handleTttClick(idx)}
                   disabled={cell !== null || tttWinner !== null || !isPlayerTurn}
-                  className={`w-full h-full border border-zinc-900 rounded flex items-center justify-center text-lg font-bold font-mono transition-all ${
+                  className={`w-full h-full border border-zinc-900 rounded-none flex items-center justify-center text-lg font-bold font-mono transition-all ${
                     cell === "X"
                       ? "text-white bg-zinc-900"
                       : cell === "O"
@@ -747,13 +809,13 @@ export default function InteractiveTerminal({ onClose }: InteractiveTerminalProp
                         setTttWinner(null);
                         setIsPlayerTurn(true);
                       }}
-                      className="px-3 py-1 bg-zinc-900 hover:bg-zinc-850 border border-zinc-750 rounded text-white font-bold cursor-pointer text-[10px]"
+                      className="px-3 py-1 bg-zinc-900 hover:bg-zinc-850 border border-zinc-750 rounded-none text-white font-bold cursor-pointer text-[10px]"
                     >
                       main lagi
                     </button>
                     <button
                       onClick={() => setTerminalMode("minigames_menu")}
-                      className="px-3 py-1 bg-zinc-950 hover:bg-zinc-900 border border-zinc-800 rounded text-zinc-400 cursor-pointer text-[10px]"
+                      className="px-3 py-1 bg-zinc-950 hover:bg-zinc-900 border border-zinc-800 rounded-none text-zinc-400 cursor-pointer text-[10px]"
                     >
                       keluar
                     </button>
@@ -766,7 +828,7 @@ export default function InteractiveTerminal({ onClose }: InteractiveTerminalProp
                   </span>
                   <button
                     onClick={() => setTerminalMode("minigames_menu")}
-                    className="px-2 py-0.5 border border-zinc-800 hover:border-zinc-500 rounded bg-zinc-950 text-zinc-500 hover:text-zinc-300 font-mono cursor-pointer"
+                    className="px-2 py-0.5 border border-zinc-800 hover:border-zinc-500 rounded-none bg-zinc-950 text-zinc-500 hover:text-zinc-300 font-mono cursor-pointer"
                   >
                     exit
                   </button>
@@ -826,7 +888,7 @@ export default function InteractiveTerminal({ onClose }: InteractiveTerminalProp
               type="button"
               onTouchStart={(e) => { e.preventDefault(); if (dir.y !== 1) setDir({ x: 0, y: -1 }); }}
               onClick={(e) => { e.preventDefault(); if (dir.y !== 1) setDir({ x: 0, y: -1 }); }}
-              className="w-14 h-11 bg-zinc-900 border border-zinc-700 text-zinc-300 active:bg-white active:text-black rounded-lg flex items-center justify-center font-bold text-lg select-none cursor-pointer transition-colors shadow-md"
+              className="w-14 h-11 bg-zinc-900 border border-zinc-700 text-zinc-300 active:bg-white active:text-black rounded-none flex items-center justify-center font-bold text-lg select-none cursor-pointer transition-colors shadow-md"
               aria-label="Snake Up"
             >
               ▲
@@ -837,19 +899,19 @@ export default function InteractiveTerminal({ onClose }: InteractiveTerminalProp
                 type="button"
                 onTouchStart={(e) => { e.preventDefault(); if (dir.x !== 1) setDir({ x: -1, y: 0 }); }}
                 onClick={(e) => { e.preventDefault(); if (dir.x !== 1) setDir({ x: -1, y: 0 }); }}
-                className="w-14 h-11 bg-zinc-900 border border-zinc-700 text-zinc-300 active:bg-white active:text-black rounded-lg flex items-center justify-center font-bold text-lg select-none cursor-pointer transition-colors shadow-md"
+                className="w-14 h-11 bg-zinc-900 border border-zinc-700 text-zinc-300 active:bg-white active:text-black rounded-none flex items-center justify-center font-bold text-lg select-none cursor-pointer transition-colors shadow-md"
                 aria-label="Snake Left"
               >
                 ◀
               </button>
-              <div className="w-10 h-10 rounded-full border border-zinc-800 bg-black flex items-center justify-center text-xs text-zinc-500/50 select-none">
+              <div className="w-10 h-10 rounded-none border border-zinc-800 bg-black flex items-center justify-center text-xs text-zinc-500/50 select-none">
                 🕹️
               </div>
               <button
                 type="button"
                 onTouchStart={(e) => { e.preventDefault(); if (dir.x !== -1) setDir({ x: 1, y: 0 }); }}
                 onClick={(e) => { e.preventDefault(); if (dir.x !== -1) setDir({ x: 1, y: 0 }); }}
-                className="w-14 h-11 bg-zinc-900 border border-zinc-700 text-zinc-300 active:bg-white active:text-black rounded-lg flex items-center justify-center font-bold text-lg select-none cursor-pointer transition-colors shadow-md"
+                className="w-14 h-11 bg-zinc-900 border border-zinc-700 text-zinc-300 active:bg-white active:text-black rounded-none flex items-center justify-center font-bold text-lg select-none cursor-pointer transition-colors shadow-md"
                 aria-label="Snake Right"
               >
                 ▶
@@ -860,7 +922,7 @@ export default function InteractiveTerminal({ onClose }: InteractiveTerminalProp
               type="button"
               onTouchStart={(e) => { e.preventDefault(); if (dir.y !== -1) setDir({ x: 0, y: 1 }); }}
               onClick={(e) => { e.preventDefault(); if (dir.y !== -1) setDir({ x: 0, y: 1 }); }}
-              className="w-14 h-11 bg-zinc-900 border border-zinc-700 text-zinc-300 active:bg-white active:text-black rounded-lg flex items-center justify-center font-bold text-lg select-none cursor-pointer transition-colors shadow-md"
+              className="w-14 h-11 bg-zinc-900 border border-zinc-700 text-zinc-300 active:bg-white active:text-black rounded-none flex items-center justify-center font-bold text-lg select-none cursor-pointer transition-colors shadow-md"
               aria-label="Snake Down"
             >
               ▼
