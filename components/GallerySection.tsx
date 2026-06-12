@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
 import { useCMS, GalleryItem } from "@/context/CMSContext";
 import Link from "next/link";
+import { createPortal } from "react-dom";
 
 interface GallerySectionProps {
   gallery: GalleryItem[];
@@ -12,6 +13,11 @@ interface GallerySectionProps {
 
 export default function GallerySection({ gallery, limit }: GallerySectionProps) {
   const [activePhotoIndex, setActivePhotoIndex] = useState<number | null>(null);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   // Keyboard navigation inside Lightbox
   useEffect(() => {
@@ -93,19 +99,20 @@ export default function GallerySection({ gallery, limit }: GallerySectionProps) 
                           className="break-inside-avoid mb-6 group relative overflow-hidden cursor-pointer rounded-none hover:-translate-y-1 transition-[transform] duration-300 ease-out transform-gpu"
                         >
                           <div className={`w-full overflow-hidden rounded-none relative ${randomAspect}`}>
-                            <img
-                              src={item.imageUrl}
-                              alt={item.title || "Foto Galeri"}
-                              className="object-cover w-full h-full filter grayscale group-hover:grayscale-0 transition-[filter,transform] duration-500 ease-out group-hover:scale-[1.02] transform-gpu will-change-[filter,transform]"
-                              loading="lazy"
-                            />
-                            {/* Hover Overlay CTA */}
-                            <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center pointer-events-none">
-                              <span className="text-foreground text-xs font-mono font-bold tracking-wider border border-border-custom bg-background px-4 py-2 rounded-none uppercase transform translate-y-2 group-hover:translate-y-0 transition-[transform] duration-300 ease-out transform-gpu">
-                                Perbesar Foto
-                              </span>
-                            </div>
-                          </div>
+                    <img
+                      src={item.imageUrl}
+                      alt={item.title || "Foto Galeri"}
+                      className="object-cover w-full h-full filter grayscale group-hover:grayscale-0 transition-all duration-300 ease-out group-hover:scale-[1.03] transform-gpu"
+                      style={{ willChange: "filter, transform" }}
+                      loading="lazy"
+                    />
+                    {/* Hover Overlay CTA */}
+                    <div className="absolute inset-0 bg-black/45 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center pointer-events-none">
+                      <span className="text-foreground text-xs font-mono font-bold tracking-wider border border-border-custom bg-background px-4 py-2 rounded-none uppercase transform translate-y-2 group-hover:translate-y-0 transition-[transform] duration-300 ease-out transform-gpu">
+                        Perbesar Foto
+                      </span>
+                    </div>
+                  </div>        
                         </motion.div>
                       );
                     })}
@@ -134,78 +141,81 @@ export default function GallerySection({ gallery, limit }: GallerySectionProps) 
         )}
       </div>
 
-      {/* Fullscreen Lightbox Modal */}
-      <AnimatePresence>
-        {activePhotoIndex !== null && gallery[activePhotoIndex] && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={() => setActivePhotoIndex(null)}
-            className="fixed inset-0 z-50 overflow-hidden bg-background/95 backdrop-blur-md flex flex-col justify-between p-6 select-none"
-          >
-            {/* Top controls */}
-            <div className="flex justify-between items-center w-full z-10 shrink-0 pb-4">
-              <div className="flex items-center gap-2 font-mono text-[10px] text-accent-custom uppercase tracking-widest">
-                <span>FOTO</span>
-                <span>/</span>
-                <span className="text-foreground font-bold">{activePhotoIndex + 1} OF {gallery.length}</span>
+      {/* Fullscreen Lightbox Modal (Rendered at Body level to escape parent transforms) */}
+      {mounted && createPortal(
+        <AnimatePresence>
+          {activePhotoIndex !== null && gallery[activePhotoIndex] && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setActivePhotoIndex(null)}
+              className="fixed inset-0 z-9999 overflow-hidden bg-background/95 backdrop-blur-md flex flex-col justify-between p-6 select-none"
+            >
+              {/* Top controls */}
+              <div className="flex justify-between items-center w-full z-10 shrink-0 pb-4">
+                <div className="flex items-center gap-2 font-mono text-[10px] text-accent-custom uppercase tracking-widest">
+                  <span>FOTO</span>
+                  <span>/</span>
+                  <span className="text-foreground font-bold">{activePhotoIndex + 1} OF {gallery.length}</span>
+                </div>
+                <button
+                  onClick={() => setActivePhotoIndex(null)}
+                  className="h-9 w-9 rounded-none bg-background/85 border border-border-custom flex items-center justify-center hover:bg-foreground hover:text-background transition-all"
+                  title="Tutup (ESC)"
+                >
+                  <X className="h-4 w-4" />
+                </button>
               </div>
-              <button
-                onClick={() => setActivePhotoIndex(null)}
-                className="h-9 w-9 rounded-none bg-background/85 border border-border-custom flex items-center justify-center hover:bg-foreground hover:text-background transition-all"
-                title="Tutup (ESC)"
-              >
-                <X className="h-4 w-4" />
-              </button>
-            </div>
 
-            {/* Central image viewer */}
-            <div className="flex-1 w-full flex items-center justify-center relative p-4 max-h-[80vh]">
-              <AnimatePresence mode="wait">
-                <motion.img
-                  key={activePhotoIndex}
-                  src={gallery[activePhotoIndex].imageUrl}
-                  alt={gallery[activePhotoIndex].title || "Foto Galeri"}
-                  initial={{ opacity: 0, filter: "blur(4px)" }}
-                  animate={{ opacity: 1, filter: "blur(0px)" }}
-                  exit={{ opacity: 0, filter: "blur(4px)" }}
-                  transition={{ duration: 0.3 }}
-                  className="max-w-full max-h-full object-contain rounded-none shadow-2xl"
-                  onClick={(e) => e.stopPropagation()}
-                />
-              </AnimatePresence>
+              {/* Central image viewer */}
+              <div className="flex-1 w-full flex items-center justify-center relative p-4 max-h-[80vh]">
+                <AnimatePresence mode="wait">
+                  <motion.img
+                    key={activePhotoIndex}
+                    src={gallery[activePhotoIndex].imageUrl}
+                    alt={gallery[activePhotoIndex].title || "Foto Galeri"}
+                    initial={{ opacity: 0, filter: "blur(4px)" }}
+                    animate={{ opacity: 1, filter: "blur(0px)" }}
+                    exit={{ opacity: 0, filter: "blur(4px)" }}
+                    transition={{ duration: 0.3 }}
+                    className="max-w-full max-h-full object-contain rounded-none shadow-2xl"
+                    onClick={(e) => e.stopPropagation()}
+                  />
+                </AnimatePresence>
 
-              {/* Arrow Navs */}
-              {gallery.length > 1 && (
-                <>
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setActivePhotoIndex((prev) => (prev === null || prev === 0 ? gallery.length - 1 : prev - 1));
-                    }}
-                    className="absolute left-2 md:left-6 top-1/2 -translate-y-1/2 h-10 w-10 rounded-none bg-background/80 border border-border-custom hover:bg-foreground hover:text-background transition-all flex items-center justify-center shadow z-20 cursor-pointer"
-                  >
-                    <ChevronLeft className="h-5 w-5" />
-                  </button>
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setActivePhotoIndex((prev) => (prev === null || prev === gallery.length - 1 ? 0 : prev + 1));
-                    }}
-                    className="absolute right-2 md:right-6 top-1/2 -translate-y-1/2 h-10 w-10 rounded-none bg-background/80 border border-border-custom hover:bg-foreground hover:text-background transition-all flex items-center justify-center shadow z-20 cursor-pointer"
-                  >
-                    <ChevronRight className="h-5 w-5" />
-                  </button>
-                </>
-              )}
-            </div>
+                {/* Arrow Navs */}
+                {gallery.length > 1 && (
+                  <>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setActivePhotoIndex((prev) => (prev === null || prev === 0 ? gallery.length - 1 : prev - 1));
+                      }}
+                      className="absolute left-2 md:left-6 top-1/2 -translate-y-1/2 h-10 w-10 rounded-none bg-background/80 border border-border-custom hover:bg-foreground hover:text-background transition-all flex items-center justify-center shadow z-20 cursor-pointer"
+                    >
+                      <ChevronLeft className="h-5 w-5" />
+                    </button>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setActivePhotoIndex((prev) => (prev === null || prev === gallery.length - 1 ? 0 : prev + 1));
+                      }}
+                      className="absolute right-2 md:right-6 top-1/2 -translate-y-1/2 h-10 w-10 rounded-none bg-background/80 border border-border-custom hover:bg-foreground hover:text-background transition-all flex items-center justify-center shadow z-20 cursor-pointer"
+                    >
+                      <ChevronRight className="h-5 w-5" />
+                    </button>
+                  </>
+                )}
+              </div>
 
-            {/* Empty space footer for layout balancing */}
-            <div className="h-4 w-full" />
-          </motion.div>
-        )}
-      </AnimatePresence>
+              {/* Empty space footer for layout balancing */}
+              <div className="h-4 w-full" />
+            </motion.div>
+          )}
+        </AnimatePresence>,
+        document.body
+      )}
     </section>
   );
 }

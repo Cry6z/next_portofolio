@@ -33,7 +33,8 @@ export default function ProjectCard({ project, onClick }: ProjectCardProps) {
         <img
           src={project.thumbnail || project.image || "https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=800"}
           alt={project.title}
-          className="object-cover w-full h-full filter grayscale group-hover:grayscale-0 transition-all duration-700 group-hover:scale-[1.03]"
+          className="object-cover w-full h-full filter grayscale group-hover:grayscale-0 transition-all duration-300 ease-out group-hover:scale-[1.03] transform-gpu"
+          style={{ willChange: "filter, transform" }}
           loading="lazy"
         />
         {/* Hover Overlay CTA */}
@@ -54,9 +55,9 @@ export default function ProjectCard({ project, onClick }: ProjectCardProps) {
             </span>
           )}
           {/* Tech stack tags */}
-          {project.tags.slice(1, 4).map((tag) => (
+          {project.tags.slice(1, 4).map((tag, idx) => (
             <span
-              key={tag}
+              key={`${tag}-${idx}`}
               className="text-[9px] font-mono tracking-wider px-2 py-0.5 border border-border-custom bg-background rounded-none text-accent-custom"
             >
               {tag}

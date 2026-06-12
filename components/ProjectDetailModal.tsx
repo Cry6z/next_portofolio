@@ -169,9 +169,9 @@ export default function ProjectDetailModal({ project, isOpen, onClose }: Project
 
               {/* Tags pills */}
               <div className="flex flex-wrap gap-1.5 border-b border-border-custom/50 pb-4">
-                {project.tags.slice(1).map((tag) => (
+                {project.tags.slice(1).map((tag, idx) => (
                   <span
-                    key={tag}
+                    key={`${tag}-${idx}`}
                     className="text-[9px] font-mono tracking-wider px-2.5 py-1 border border-border-custom bg-background rounded-none text-foreground"
                   >
                     {tag}
