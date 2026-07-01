@@ -51,21 +51,20 @@ export default function Navbar({ onTerminalClick }: NavbarProps) {
         initial={{ y: -50, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.5, ease: "easeOut" }}
-        className={`fixed top-0 left-0 right-0 z-40 transition-[padding,background-color] duration-300 border-b border-border-custom bg-background/90 backdrop-blur-md ${scrolled
-            ? "py-4"
-            : "py-6"
-          }`}
+        className={`fixed top-4 left-4 right-4 md:left-1/2 md:-translate-x-1/2 md:w-full max-w-6xl z-40 transition-all duration-300 border border-border-custom bg-background/80 backdrop-blur-md shadow-sm rounded-none ${
+          scrolled ? "py-2 px-6" : "py-3 px-8"
+        }`}
       >
-        <div className="mx-auto max-w-7xl px-6 md:px-12 flex items-center justify-between">
+        <div className="w-full flex items-center justify-between">
           {/* Logo */}
-          <Link href="#home" className="group flex items-center text-2xl font-black text-foreground transition-all hover:opacity-90">
-            <span className="text-accent-custom transition-transform duration-300 group-hover:-translate-x-1 group-hover:text-foreground">&lt;</span>
+          <Link href="#home" className="group flex items-center text-lg md:text-xl font-black text-foreground transition-all hover:opacity-90">
+            <span className="text-accent-custom transition-transform duration-300 group-hover:-translate-x-0.5 group-hover:text-foreground">&lt;</span>
             <span className="transition-colors duration-300 group-hover:text-accent-custom">/</span>
-            <span className="text-accent-custom transition-transform duration-300 group-hover:translate-x-1 group-hover:text-foreground">&gt;</span>
+            <span className="text-accent-custom transition-transform duration-300 group-hover:translate-x-0.5 group-hover:text-foreground">&gt;</span>
           </Link>
 
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center gap-8">
+          <nav className="hidden md:flex items-center gap-6">
             {navItems.map((item) => {
               const isPage = item.href.startsWith("/");
               const linkHref = getHref(item.href);
@@ -75,7 +74,7 @@ export default function Navbar({ onTerminalClick }: NavbarProps) {
                   <Link
                     key={item.label}
                     href={linkHref}
-                    className={`text-sm font-medium relative transition-colors duration-200 group py-1 ${
+                    className={`text-xs font-medium relative transition-colors duration-200 group py-1 ${
                       isActive ? "text-foreground font-semibold" : "text-accent-custom hover:text-foreground"
                     }`}
                   >
@@ -90,7 +89,7 @@ export default function Navbar({ onTerminalClick }: NavbarProps) {
                 <a
                   key={item.label}
                   href={linkHref}
-                  className="text-sm font-medium text-accent-custom hover:text-foreground relative transition-colors duration-200 group py-1"
+                  className="text-xs font-medium text-accent-custom hover:text-foreground relative transition-colors duration-200 group py-1"
                 >
                   {item.label}
                   <span className="absolute bottom-0 left-0 w-0 h-[1.5px] bg-foreground transition-all duration-300 group-hover:w-full" />
@@ -102,14 +101,14 @@ export default function Navbar({ onTerminalClick }: NavbarProps) {
           </nav>
 
           {/* Mobile Right Controls */}
-          <div className="flex md:hidden items-center gap-4">
+          <div className="flex md:hidden items-center gap-3">
             <ThemeToggle />
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="text-foreground hover:opacity-75 focus:outline-none"
+              className="flex h-8 w-8 items-center justify-center border border-border-custom bg-background text-foreground hover:bg-accent-light focus:outline-none focus:ring-1 focus:ring-foreground transition-all duration-300"
               aria-label="Toggle mobile menu"
             >
-              {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+              {mobileMenuOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
             </button>
           </div>
         </div>
@@ -119,20 +118,20 @@ export default function Navbar({ onTerminalClick }: NavbarProps) {
       <AnimatePresence>
         {mobileMenuOpen && (
           <motion.div
-            initial={{ opacity: 0, y: -20 }}
+            initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            transition={{ duration: 0.3 }}
-            className="fixed inset-0 top-[70px] z-30 bg-background/95 backdrop-blur-lg md:hidden flex flex-col px-8 py-12 justify-between"
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.2 }}
+            className="fixed left-4 right-4 top-[70px] z-30 bg-background/95 backdrop-blur-lg md:hidden flex flex-col p-6 gap-6 border border-border-custom shadow-lg rounded-none"
           >
-            <nav className="flex flex-col gap-6 text-2xl font-bold tracking-tight">
+            <nav className="flex flex-col gap-4 text-sm font-medium tracking-tight">
               {navItems.map((item, idx) => {
                 const isPage = item.href.startsWith("/");
                 const linkHref = getHref(item.href);
                 const linkContent = (
-                  <div className="text-foreground border-b border-border-custom pb-2 flex justify-between items-center w-full">
+                  <div className="text-foreground border-b border-border-custom/50 pb-2 flex justify-between items-center w-full">
                     {item.label}
-                    <span className="text-sm font-normal text-accent-custom">0{idx + 1}</span>
+                    <span className="text-xs font-normal text-accent-custom">0{idx + 1}</span>
                   </div>
                 );
                 
@@ -140,9 +139,9 @@ export default function Navbar({ onTerminalClick }: NavbarProps) {
                   return (
                     <motion.div
                       key={item.label}
-                      initial={{ opacity: 0, x: -20 }}
+                      initial={{ opacity: 0, x: -10 }}
                       animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: idx * 0.05 }}
+                      transition={{ delay: idx * 0.03 }}
                     >
                       <Link href={linkHref} onClick={() => setMobileMenuOpen(false)}>
                         {linkContent}
@@ -153,21 +152,21 @@ export default function Navbar({ onTerminalClick }: NavbarProps) {
                 
                 return (
                   <motion.a
-                    initial={{ opacity: 0, x: -20 }}
+                    initial={{ opacity: 0, x: -10 }}
                     animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: idx * 0.05 }}
+                    transition={{ delay: idx * 0.03 }}
                     key={item.label}
                     href={linkHref}
                     onClick={() => setMobileMenuOpen(false)}
-                    className="text-foreground border-b border-border-custom pb-2 flex justify-between items-center"
+                    className="text-foreground border-b border-border-custom/50 pb-2 flex justify-between items-center"
                   >
                     {item.label}
-                    <span className="text-sm font-normal text-accent-custom">0{idx + 1}</span>
+                    <span className="text-xs font-normal text-accent-custom">0{idx + 1}</span>
                   </motion.a>
                 );
               })}
             </nav>
-            <div className="text-xs text-accent-custom tracking-wider font-mono">
+            <div className="text-[10px] text-accent-custom tracking-wider font-mono pt-2 border-t border-border-custom/20">
               PORTFOLIO v1.0.0
             </div>
           </motion.div>
