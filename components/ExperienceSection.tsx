@@ -83,7 +83,7 @@ export default function ExperienceSection({ experiences }: ExperienceSectionProp
           </div>
 
           {/* Technical Detail Panel */}
-          <div className="col-span-8 border border-border-custom bg-background/40 p-6 md:p-8 rounded-none relative min-h-[320px] flex flex-col justify-between overflow-hidden">
+          <div className="col-span-8 border border-border-custom bg-background/40 p-6 md:p-8 rounded-none relative min-h-80 flex flex-col justify-between overflow-hidden">
             {/* Dot-matrix Mesh Grid Pattern */}
             <div
               className="absolute inset-0 pointer-events-none opacity-[0.03] dark:opacity-[0.06]"

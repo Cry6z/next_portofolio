@@ -95,7 +95,7 @@ export default function SkillsSection({ skills }: SkillsSectionProps) {
                   variants={cardVariants}
                   layout
                   whileHover={{ y: -5, transition: { duration: 0.2 } }}
-                  className="group relative p-5 border border-border-custom bg-card-custom hover:bg-foreground hover:text-background hover:border-foreground transition-all duration-300 flex flex-col justify-between min-h-[130px] shadow-sm select-none cursor-default"
+                  className="group relative p-5 border border-border-custom bg-card-custom hover:bg-foreground hover:text-background hover:border-foreground transition-all duration-300 flex flex-col justify-between min-h-32.5 shadow-sm select-none cursor-default"
                 >
                   {/* Top Info */}
                   <div className="flex flex-col gap-1">

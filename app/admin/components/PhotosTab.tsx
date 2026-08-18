@@ -122,7 +122,7 @@ export default function PhotosTab() {
         {/* Left Column: Live Preview */}
         <div className="flex flex-col items-center justify-center w-full bg-card-custom/50 border border-border-custom rounded-none p-6 min-h-[400px] relative overflow-hidden">
           <div className="relative z-10 w-full flex flex-col items-center">
-            <div className="relative group w-full max-w-[280px] sm:max-w-[340px] lg:w-full lg:max-w-[360px] aspect-[0.718] mx-auto">
+            <div className="relative group w-full max-w-70 sm:max-w-85 lg:w-full lg:max-w-90 aspect-[0.718] mx-auto">
               <ProfileCard
                  name={profile?.name || "GIBRAN"}
                  title={profile?.title || "Creative Developer"}

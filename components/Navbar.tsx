@@ -122,7 +122,7 @@ export default function Navbar({ onTerminalClick }: NavbarProps) {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.2 }}
-            className="fixed left-4 right-4 top-[70px] z-30 bg-background/95 backdrop-blur-lg md:hidden flex flex-col p-6 gap-6 border border-border-custom shadow-lg rounded-none"
+            className="fixed left-4 right-4 top-17.5 z-30 bg-background/95 backdrop-blur-lg md:hidden flex flex-col p-6 gap-6 border border-border-custom shadow-lg rounded-none"
           >
             <nav className="flex flex-col gap-4 text-sm font-medium tracking-tight">
               {navItems.map((item, idx) => {

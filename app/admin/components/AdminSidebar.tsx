@@ -13,7 +13,8 @@ import {
   Settings,
   Home as HomeIcon,
   Layers,
-  Star,
+  Code2,
+  Image as ImageIcon,
 } from "lucide-react";
 import { useCMS } from "@/context/CMSContext";
 
@@ -67,8 +68,8 @@ export default function AdminSidebar({
     const ItemWrapper = isMobile ? motion.div : React.Fragment;
 
     const navProps = isMobile
-      ? { variants: containerVariants, initial: "hidden", animate: "show", className: "flex flex-col gap-1.5 flex-1" }
-      : { className: "flex flex-col gap-1.5 flex-1" };
+      ? { variants: containerVariants, initial: "hidden", animate: "show", className: "flex flex-col gap-1 flex-1" }
+      : { className: "flex flex-col gap-1 flex-1" };
 
     const wrapItem = (child: React.ReactNode, key: string) => {
       if (isMobile) {
@@ -108,12 +109,16 @@ export default function AdminSidebar({
 
         {/* Sidebar Navigation */}
         <NavContainer {...navProps}>
+          {/* Section: UTAMA */}
+          <div className="text-[9px] font-mono uppercase text-accent-custom/60 tracking-wider px-3 pt-2 pb-0.5 font-bold select-none">
+            Utama
+          </div>
           {wrapItem(
             <button
               onClick={() => handleTabClick("overview")}
-              className={`flex items-center gap-2.5 px-3 py-2.5 rounded-none text-xs font-mono uppercase tracking-tight transition-all duration-200 relative overflow-hidden group w-full text-left ${
+              className={`flex items-center gap-2.5 px-3 py-2 rounded-none text-xs font-mono uppercase tracking-tight transition-all duration-200 relative overflow-hidden group w-full text-left cursor-pointer ${
                 activeTab === "overview"
-                  ? "bg-foreground text-background"
+                  ? "bg-foreground text-background font-bold"
                   : "text-accent-custom hover:bg-foreground/5 hover:text-foreground"
               }`}
             >
@@ -123,12 +128,16 @@ export default function AdminSidebar({
             "overview"
           )}
 
+          {/* Section: KONTEN */}
+          <div className="text-[9px] font-mono uppercase text-accent-custom/60 tracking-wider px-3 pt-3 pb-0.5 font-bold select-none">
+            Konten
+          </div>
           {wrapItem(
             <button
               onClick={() => handleTabClick("projects")}
-              className={`flex items-center gap-2.5 px-3 py-2.5 rounded-none text-xs font-mono uppercase tracking-tight transition-all duration-200 relative overflow-hidden group w-full text-left ${
+              className={`flex items-center gap-2.5 px-3 py-2 rounded-none text-xs font-mono uppercase tracking-tight transition-all duration-200 relative overflow-hidden group w-full text-left cursor-pointer ${
                 activeTab === "projects"
-                  ? "bg-foreground text-background"
+                  ? "bg-foreground text-background font-bold"
                   : "text-accent-custom hover:bg-foreground/5 hover:text-foreground"
               }`}
             >
@@ -141,13 +150,13 @@ export default function AdminSidebar({
           {wrapItem(
             <button
               onClick={() => handleTabClick("skills")}
-              className={`flex items-center gap-2.5 px-3 py-2.5 rounded-none text-xs font-mono uppercase tracking-tight transition-all duration-200 relative overflow-hidden group w-full text-left ${
+              className={`flex items-center gap-2.5 px-3 py-2 rounded-none text-xs font-mono uppercase tracking-tight transition-all duration-200 relative overflow-hidden group w-full text-left cursor-pointer ${
                 activeTab === "skills"
-                  ? "bg-foreground text-background"
+                  ? "bg-foreground text-background font-bold"
                   : "text-accent-custom hover:bg-foreground/5 hover:text-foreground"
               }`}
             >
-              <Terminal className="h-3.5 w-3.5" />
+              <Code2 className="h-3.5 w-3.5" />
               <span>Keahlian</span>
             </button>,
             "skills"
@@ -156,9 +165,9 @@ export default function AdminSidebar({
           {wrapItem(
             <button
               onClick={() => handleTabClick("experience")}
-              className={`flex items-center gap-2.5 px-3 py-2.5 rounded-none text-xs font-mono uppercase tracking-tight transition-all duration-200 relative overflow-hidden group w-full text-left ${
+              className={`flex items-center gap-2.5 px-3 py-2 rounded-none text-xs font-mono uppercase tracking-tight transition-all duration-200 relative overflow-hidden group w-full text-left cursor-pointer ${
                 activeTab === "experience"
-                  ? "bg-foreground text-background"
+                  ? "bg-foreground text-background font-bold"
                   : "text-accent-custom hover:bg-foreground/5 hover:text-foreground"
               }`}
             >
@@ -170,10 +179,29 @@ export default function AdminSidebar({
 
           {wrapItem(
             <button
+              onClick={() => handleTabClick("photos")}
+              className={`flex items-center gap-2.5 px-3 py-2 rounded-none text-xs font-mono uppercase tracking-tight transition-all duration-200 relative overflow-hidden group w-full text-left cursor-pointer ${
+                activeTab === "photos"
+                  ? "bg-foreground text-background font-bold"
+                  : "text-accent-custom hover:bg-foreground/5 hover:text-foreground"
+              }`}
+            >
+              <ImageIcon className="h-3.5 w-3.5" />
+              <span>Foto & Galeri</span>
+            </button>,
+            "photos"
+          )}
+
+          {/* Section: INTERAKSI & ALAT */}
+          <div className="text-[9px] font-mono uppercase text-accent-custom/60 tracking-wider px-3 pt-3 pb-0.5 font-bold select-none">
+            Interaksi & Alat
+          </div>
+          {wrapItem(
+            <button
               onClick={() => handleTabClick("messages")}
-              className={`flex items-center gap-2.5 px-3 py-2.5 rounded-none text-xs font-mono uppercase tracking-tight transition-all duration-200 relative overflow-hidden group justify-between w-full text-left ${
+              className={`flex items-center gap-2.5 px-3 py-2 rounded-none text-xs font-mono uppercase tracking-tight transition-all duration-200 relative overflow-hidden group justify-between w-full text-left cursor-pointer ${
                 activeTab === "messages"
-                  ? "bg-foreground text-background"
+                  ? "bg-foreground text-background font-bold"
                   : "text-accent-custom hover:bg-foreground/5 hover:text-foreground"
               }`}
             >
@@ -195,9 +223,9 @@ export default function AdminSidebar({
           {wrapItem(
             <button
               onClick={() => handleTabClick("terminal")}
-              className={`flex items-center gap-2.5 px-3 py-2.5 rounded-none text-xs font-mono uppercase tracking-tight transition-all duration-200 relative overflow-hidden group w-full text-left ${
+              className={`flex items-center gap-2.5 px-3 py-2 rounded-none text-xs font-mono uppercase tracking-tight transition-all duration-200 relative overflow-hidden group w-full text-left cursor-pointer ${
                 activeTab === "terminal"
-                  ? "bg-foreground text-background"
+                  ? "bg-foreground text-background font-bold"
                   : "text-accent-custom hover:bg-foreground/5 hover:text-foreground"
               }`}
             >
@@ -207,35 +235,26 @@ export default function AdminSidebar({
             "terminal"
           )}
 
-          {wrapItem(
-            <button
-              onClick={() => handleTabClick("settings")}
-              className={`flex items-center gap-2.5 px-3 py-2.5 rounded-none text-xs font-mono uppercase tracking-tight transition-all duration-200 relative overflow-hidden group w-full text-left ${
-                activeTab === "settings"
-                  ? "bg-foreground text-background"
-                  : "text-accent-custom hover:bg-foreground/5 hover:text-foreground"
-              }`}
-            >
-              <Settings className="h-3.5 w-3.5" />
-              <span>Pengaturan</span>
-            </button>,
-            "settings"
-          )}
-
-          {wrapItem(
-            <button
-              onClick={() => handleTabClick("photos")}
-              className={`flex items-center gap-2.5 px-3 py-2.5 rounded-none text-xs font-mono uppercase tracking-tight transition-all duration-200 relative overflow-hidden group w-full text-left ${
-                activeTab === "photos"
-                  ? "bg-foreground text-background"
-                  : "text-accent-custom hover:bg-foreground/5 hover:text-foreground"
-              }`}
-            >
-              <Star className="h-3.5 w-3.5" />
-              <span>Foto & Galeri</span>
-            </button>,
-            "photos"
-          )}
+          {/* Section: SISTEM */}
+          <div className="mt-auto pt-3">
+            <div className="text-[9px] font-mono uppercase text-accent-custom/60 tracking-wider px-3 pb-0.5 font-bold select-none">
+              Sistem
+            </div>
+            {wrapItem(
+              <button
+                onClick={() => handleTabClick("settings")}
+                className={`flex items-center gap-2.5 px-3 py-2 rounded-none text-xs font-mono uppercase tracking-tight transition-all duration-200 relative overflow-hidden group w-full text-left cursor-pointer ${
+                  activeTab === "settings"
+                    ? "bg-foreground text-background font-bold"
+                    : "text-accent-custom hover:bg-foreground/5 hover:text-foreground"
+                }`}
+              >
+                <Settings className="h-3.5 w-3.5" />
+                <span>Pengaturan</span>
+              </button>,
+              "settings"
+            )}
+          </div>
         </NavContainer>
 
         {/* Sidebar Footer Controls */}

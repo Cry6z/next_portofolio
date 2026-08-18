@@ -97,7 +97,7 @@ export default function ProjectDetailModal({ project, isOpen, onClose }: Project
             </button>
 
             {/* Gallery Column (Left/Top) */}
-            <div className="w-full md:w-3/5 bg-accent-light/30 relative flex flex-col items-center justify-center border-b md:border-b-0 md:border-r border-border-custom h-[35vh] md:h-auto min-h-[300px] shrink-0">
+            <div className="w-full md:w-3/5 bg-accent-light/30 relative flex flex-col items-center justify-center border-b md:border-b-0 md:border-r border-border-custom h-[35vh] md:h-auto min-h-75 shrink-0">
               {activeProjectImages.length > 0 ? (
                 <div className="w-full h-full relative flex items-center justify-center p-6 md:p-8">
                   <AnimatePresence mode="wait">

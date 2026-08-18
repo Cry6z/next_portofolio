@@ -318,7 +318,7 @@ export default function ProjectForm({ isOpen, onClose, editingProject, onSave, t
               <label className="text-[9px] font-bold font-mono text-accent-custom uppercase">
                 Teknologi / Tags * (Pilih dari Pool Tag Global)
               </label>
-              <div className="flex flex-wrap gap-1.5 p-3 border border-border-custom rounded-none bg-background min-h-[60px]">
+              <div className="flex flex-wrap gap-1.5 p-3 border border-border-custom rounded-none bg-background min-h-15">
                 {tags.length === 0 ? (
                   <span className="text-xs text-accent-custom italic font-mono">Tidak ada tag global. Tambah di bawah atau di Tag Manager.</span>
                 ) : (

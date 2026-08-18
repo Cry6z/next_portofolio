@@ -95,13 +95,13 @@ export default function HeroSection({ profile }: HeroSectionProps) {
       onMouseMove={handleMouseMove}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
-      className="min-h-[85vh] flex flex-col justify-center pt-[192px] pb-20 relative overflow-hidden w-screen left-1/2 -translate-x-1/2"
+      className="min-h-[85vh] flex flex-col justify-center pt-48 pb-20 relative overflow-hidden w-screen left-1/2 -translate-x-1/2"
     >
       {/* Interactive HUD Overlays */}
       {/* Spotlight Radial Glow */}
       <div
         ref={spotlightRef}
-        className="absolute w-[300px] h-[300px] rounded-full bg-[radial-gradient(circle,rgba(0,0,0,0.06)_0%,transparent_70%)] dark:bg-[radial-gradient(circle,rgba(255,255,255,0.06)_0%,transparent_70%)] pointer-events-none z-0 -translate-x-1/2 -translate-y-1/2 opacity-0 transition-opacity duration-300"
+        className="absolute w-75 h-75 rounded-full bg-[radial-gradient(circle,rgba(0,0,0,0.06)_0%,transparent_70%)] dark:bg-[radial-gradient(circle,rgba(255,255,255,0.06)_0%,transparent_70%)] pointer-events-none z-0 -translate-x-1/2 -translate-y-1/2 opacity-0 transition-opacity duration-300"
         style={{ top: 0, left: 0, willChange: "transform" }}
       />
 
@@ -419,7 +419,7 @@ export default function HeroSection({ profile }: HeroSectionProps) {
             transition={{ duration: 0.8, delay: 0.6, ease: "easeOut" }}
             className="order-1 lg:order-2 lg:col-span-4 flex flex-col items-center lg:items-end w-full"
           >
-            <div className="relative group w-full max-w-[280px] sm:max-w-[340px] lg:w-full lg:max-w-[360px] aspect-[0.718]">
+            <div className="relative group w-full max-w-70 sm:max-w-85 lg:w-full lg:max-w-90 aspect-[0.718]">
               <ProfileCard
                 name={profile.name || "GIBRAN"}
                 title={profile.title || "Creative Developer"}

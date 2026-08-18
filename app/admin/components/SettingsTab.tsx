@@ -307,7 +307,7 @@ export default function SettingsTab({ handleResetData }: SettingsTabProps) {
                 <span className={`font-black tracking-widest text-sm font-mono ${isPortfolioOpen ? 'text-green-500' : 'text-red-500'}`}>
                   {isPortfolioOpen ? 'ONLINE' : 'MAINTENANCE'}
                 </span>
-                <span className="text-[9px] text-accent-custom mt-1 max-w-[200px] font-mono leading-relaxed">
+                <span className="text-[9px] text-accent-custom mt-1 max-w-50 font-mono leading-relaxed">
                   {isPortfolioOpen 
                     ? "Situs dapat diakses oleh publik." 
                     : "Situs ditutup dan menampilkan layar Maintenance."}
