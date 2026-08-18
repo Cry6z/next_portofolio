@@ -29,7 +29,7 @@ export default function LockScreen({
     <div className="min-h-screen bg-background flex flex-col items-center justify-center p-6 relative overflow-hidden">
       {/* Animated Grid Background */}
       <div 
-        className="absolute inset-[-40px] grid-bg opacity-10 pointer-events-none animate-grid-move" 
+        className="absolute -inset-10 grid-bg opacity-10 pointer-events-none animate-grid-move" 
       />
 
       {/* Floating Top Controls */}

@@ -177,7 +177,7 @@ export default function MessagesTab() {
                     value={replyText}
                     onChange={(e) => setReplyText(e.target.value)}
                     placeholder="Ketik pesan balasan Anda di sini..."
-                    className="w-full bg-background border border-border-custom rounded-none p-3 text-xs focus:outline-none focus:border-foreground resize-y min-h-[120px] text-foreground font-mono"
+                    className="w-full bg-background border border-border-custom rounded-none p-3 text-xs focus:outline-none focus:border-foreground resize-y min-h-30 text-foreground font-mono"
                   />
                   <div className="flex justify-end mt-1">
                     <button

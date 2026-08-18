@@ -120,7 +120,7 @@ export default function PhotosTab() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
         
         {/* Left Column: Live Preview */}
-        <div className="flex flex-col items-center justify-center w-full bg-card-custom/50 border border-border-custom rounded-none p-6 min-h-[400px] relative overflow-hidden">
+        <div className="flex flex-col items-center justify-center w-full bg-card-custom/50 border border-border-custom rounded-none p-6 min-h-100 relative overflow-hidden">
           <div className="relative z-10 w-full flex flex-col items-center">
             <div className="relative group w-full max-w-70 sm:max-w-85 lg:w-full lg:max-w-90 aspect-[0.718] mx-auto">
               <ProfileCard
@@ -321,7 +321,7 @@ export default function PhotosTab() {
                 Galeri kosong. Silakan unggah beberapa foto di sebelah kiri.
               </p>
             ) : (
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 max-h-[500px] overflow-y-auto pr-1">
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 max-h-125 overflow-y-auto pr-1">
                 {gallery.map((item) => {
                   const isSelected = selectedPhotos.includes(item.id);
                   return (

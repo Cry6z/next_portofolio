@@ -158,7 +158,7 @@ export default function OverviewTab({
             
             {/* Tombol Migrasi Darurat */}
             {supabase && (
-              <div className="bg-foreground/5 border border-border-custom p-3 rounded-none mt-[-4px]">
+              <div className="bg-foreground/5 border border-border-custom p-3 rounded-none -mt-1">
                 <span className="text-[9px] font-mono text-foreground uppercase block tracking-wider mb-1 font-bold">Penyelamatan Data Lokal</span>
                 <p className="text-[9px] text-accent-custom mb-2 font-mono">Jika data Anda hilang setelah terhubung ke Supabase, klik tombol ini untuk memindahkan data.</p>
                 <button
