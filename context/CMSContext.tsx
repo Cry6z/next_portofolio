@@ -274,9 +274,9 @@ export function CMSProvider({ children }: { children: React.ReactNode }) {
               }
 
               const dbPortfolioOpen = profileData.isPortfolioOpen ?? profileData.isportfolioopen;
-              const finalOpenStatus = (dbPortfolioOpen !== undefined && dbPortfolioOpen !== null)
-                ? Boolean(dbPortfolioOpen)
-                : (localPortfolioOpen !== null ? localPortfolioOpen : true);
+              const finalOpenStatus = (localPortfolioOpen !== null)
+                ? localPortfolioOpen
+                : ((dbPortfolioOpen !== undefined && dbPortfolioOpen !== null) ? Boolean(dbPortfolioOpen) : true);
 
               setIsPortfolioOpen(finalOpenStatus);
               safeLocalStorageSetItem("cms-portfolio-open", JSON.stringify(finalOpenStatus));
@@ -422,7 +422,7 @@ export function CMSProvider({ children }: { children: React.ReactNode }) {
             if (savedTerminalConfig) setTerminalConfig(JSON.parse(savedTerminalConfig));
             if (savedTerminalCommands) setTerminalCommands(JSON.parse(savedTerminalCommands));
             if (savedPassword) setAdminPassword(savedPassword);
-            if (savedPortfolioOpen) setIsPortfolioOpen(JSON.parse(savedPortfolioOpen));
+            if (savedPortfolioOpen !== null) setIsPortfolioOpen(JSON.parse(savedPortfolioOpen));
             if (savedTags) setTags(JSON.parse(savedTags));
             if (savedGallery) setGallery(JSON.parse(savedGallery));
           }, 0);
