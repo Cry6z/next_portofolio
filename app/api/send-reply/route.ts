@@ -17,16 +17,18 @@ export async function POST(request: Request) {
 
     if (!user || !pass) {
       return NextResponse.json(
-        { error: 'Server belum dikonfigurasi untuk mengirim email. Harap tambahkan EMAIL_USER dan EMAIL_PASS di file .env' },
+        { error: 'Server belum dikonfigurasi untuk mengirim email. Harap tambahkan EMAIL_USER dan EMAIL_PASS di Environment Variables Vercel.' },
         { status: 500 }
       );
     }
 
     const transporter = nodemailer.createTransport({
-      service: 'gmail',
+      host: 'smtp.gmail.com',
+      port: 465,
+      secure: true, // use SSL
       auth: {
-        user,
-        pass,
+        user: user.trim(),
+        pass: pass.trim().replace(/\s+/g, ''), // Hapus spasi jika disalin dari format Google App Password (xxxx xxxx xxxx xxxx)
       },
     });
 
@@ -45,7 +47,7 @@ export async function POST(request: Request) {
     `;
 
     const mailOptions = {
-      from: user,
+      from: `"Portofolio" <${user.trim()}>`,
       to,
       subject,
       text,
@@ -57,8 +59,12 @@ export async function POST(request: Request) {
     return NextResponse.json({ success: true, messageId: info.messageId }, { status: 200 });
   } catch (error: any) {
     console.error("Error sending email:", error);
+    let errorMessage = error.message || 'Gagal mengirim email.';
+    if (errorMessage.includes('535') || errorMessage.includes('BadCredentials') || errorMessage.includes('Username and Password not accepted')) {
+      errorMessage = 'Gagal Autentikasi Gmail (535 Bad Credentials). Pastikan EMAIL_USER dan EMAIL_PASS (Google App Password 16 karakter) sudah dikonfigurasi di Environment Variables Vercel dan proyek telah di-redeploy.';
+    }
     return NextResponse.json(
-      { error: error.message || 'Gagal mengirim email.' },
+      { error: errorMessage },
       { status: 500 }
     );
   }
