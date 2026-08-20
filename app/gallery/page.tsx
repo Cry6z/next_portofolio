@@ -4,10 +4,15 @@ import React from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import GallerySection from "@/components/GallerySection";
+import MaintenanceScreen from "@/components/MaintenanceScreen";
 import { useCMS } from "@/context/CMSContext";
 
 export default function GalleryPage() {
-  const { gallery } = useCMS();
+  const { gallery, isPortfolioOpen } = useCMS();
+
+  if (!isPortfolioOpen) {
+    return <MaintenanceScreen />;
+  }
 
   return (
     <>

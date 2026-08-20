@@ -200,3 +200,6 @@ CREATE TABLE IF NOT EXISTS gallery (
 ALTER TABLE gallery ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Buka akses baca galeri untuk publik" ON gallery FOR SELECT USING (true);
 CREATE POLICY "Buka akses modifikasi galeri untuk publik" ON gallery FOR ALL USING (true) WITH CHECK (true);
+
+-- PERBARUAN: Menambahkan kolom isPortfolioOpen untuk Status Maintenance/Tutup Portofolio
+ALTER TABLE profile ADD COLUMN IF NOT EXISTS "isPortfolioOpen" BOOLEAN DEFAULT true;

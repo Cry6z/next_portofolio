@@ -246,15 +246,27 @@ export function CMSProvider({ children }: { children: React.ReactNode }) {
             // Apply Profile
             if (profileData) {
               let localHeroBg = "";
+              let localPortfolioOpen: boolean | null = null;
               try {
                 const savedProfile = localStorage.getItem("cms-profile");
                 if (savedProfile) {
                   const parsed = JSON.parse(savedProfile);
                   localHeroBg = parsed.heroBgUrl || "";
                 }
+                const savedOpen = localStorage.getItem("cms-portfolio-open");
+                if (savedOpen !== null) {
+                  localPortfolioOpen = JSON.parse(savedOpen);
+                }
               } catch (e) {
                 console.error("Failed to parse local profile for heroBgUrl fallback", e);
               }
+
+              const dbPortfolioOpen = profileData.isPortfolioOpen ?? profileData.isportfolioopen;
+              const finalOpenStatus = (dbPortfolioOpen !== undefined && dbPortfolioOpen !== null)
+                ? Boolean(dbPortfolioOpen)
+                : (localPortfolioOpen !== null ? localPortfolioOpen : true);
+
+              setIsPortfolioOpen(finalOpenStatus);
 
               const mappedProfile = {
                 ...profileData,
@@ -827,9 +839,28 @@ export function CMSProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  const togglePortfolioStatus = (isOpen: boolean) => {
+  const togglePortfolioStatus = async (isOpen: boolean) => {
     setIsPortfolioOpen(isOpen);
     safeLocalStorageSetItem("cms-portfolio-open", JSON.stringify(isOpen));
+
+    if (supabase) {
+      try {
+        const { error } = await supabase
+          .from("profile")
+          .update({ isPortfolioOpen: isOpen })
+          .eq("id", "default");
+
+        if (error) {
+          console.warn("Update profile isPortfolioOpen failed, trying isportfolioopen:", error.message);
+          await supabase
+            .from("profile")
+            .update({ isportfolioopen: isOpen })
+            .eq("id", "default");
+        }
+      } catch (e) {
+        console.error("Supabase toggle portfolio status failed", e);
+      }
+    }
   };
 
   const migrateLocalData = async () => {
