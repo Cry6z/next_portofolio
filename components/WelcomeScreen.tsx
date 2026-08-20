@@ -23,7 +23,7 @@ export default function WelcomeScreen({ onComplete }: WelcomeScreenProps) {
     exit: {
       opacity: 0,
       transition: {
-        duration: 1.0,
+        duration: 0.4,
         ease: "easeInOut"
       }
     }
@@ -31,8 +31,9 @@ export default function WelcomeScreen({ onComplete }: WelcomeScreenProps) {
 
   useEffect(() => {
     let start = Date.now();
-    const duration = 2500;
+    const duration = 900; // Snappy 0.9s duration
     let animationFrameId: number;
+    let autoCompleteTimer: NodeJS.Timeout;
 
     const updateCounter = () => {
       let elapsed = Date.now() - start;
@@ -47,12 +48,19 @@ export default function WelcomeScreen({ onComplete }: WelcomeScreenProps) {
         animationFrameId = requestAnimationFrame(updateCounter);
       } else {
         setIsReady(true);
+        // Auto-complete fast after counter hits 100%
+        autoCompleteTimer = setTimeout(() => {
+          onComplete();
+        }, 250);
       }
     };
 
     animationFrameId = requestAnimationFrame(updateCounter);
-    return () => cancelAnimationFrame(animationFrameId);
-  }, []);
+    return () => {
+      cancelAnimationFrame(animationFrameId);
+      if (autoCompleteTimer) clearTimeout(autoCompleteTimer);
+    };
+  }, [onComplete]);
 
   return (
     <motion.div
@@ -67,9 +75,9 @@ export default function WelcomeScreen({ onComplete }: WelcomeScreenProps) {
         {/* Welcome Heading */}
         <div className="overflow-hidden py-2">
           <motion.h1
-            initial={{ y: 50, opacity: 0 }}
+            initial={{ y: 30, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
-            transition={{ duration: 1.0, ease: [0.76, 0, 0.24, 1], delay: 0.2 }}
+            transition={{ duration: 0.5, ease: [0.76, 0, 0.24, 1], delay: 0.1 }}
             className="text-5xl md:text-8xl lg:text-[9rem] font-black uppercase font-hero leading-none tracking-tighter"
           >
             WELCOME
@@ -80,7 +88,7 @@ export default function WelcomeScreen({ onComplete }: WelcomeScreenProps) {
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ duration: 0.8, delay: 0.8 }}
+          transition={{ duration: 0.4, delay: 0.2 }}
         >
           <p className="mt-4 text-xs md:text-sm tracking-[0.3em] text-accent-custom uppercase max-w-md">
             {profile?.welcomeMessage || "to my portfolio"}
@@ -112,7 +120,7 @@ export default function WelcomeScreen({ onComplete }: WelcomeScreenProps) {
             ) : (
               <motion.button
                 key="enter-button"
-                initial={{ opacity: 0, y: 10 }}
+                initial={{ opacity: 0, y: 5 }}
                 animate={{ opacity: 1, y: 0 }}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}

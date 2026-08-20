@@ -201,7 +201,19 @@ export function CMSProvider({ children }: { children: React.ReactNode }) {
   const [terminalConfig, setTerminalConfig] = useState<TerminalConfig>(defaultTerminalConfig);
   const [terminalCommands, setTerminalCommands] = useState<TerminalCommand[]>(defaultTerminalCommands);
   const [adminPassword, setAdminPassword] = useState<string>("admin123");
-  const [isPortfolioOpen, setIsPortfolioOpen] = useState<boolean>(true);
+  const [isPortfolioOpen, setIsPortfolioOpen] = useState<boolean>(() => {
+    if (typeof window !== "undefined") {
+      const savedOpen = localStorage.getItem("cms-portfolio-open");
+      if (savedOpen !== null) {
+        try {
+          return JSON.parse(savedOpen);
+        } catch (e) {
+          console.error("Failed to parse cms-portfolio-open", e);
+        }
+      }
+    }
+    return true;
+  });
   const [tags, setTags] = useState<string[]>(defaultTags);
   const [gallery, setGallery] = useState<GalleryItem[]>([]);
   const [mounted, setMounted] = useState(false);
@@ -267,6 +279,7 @@ export function CMSProvider({ children }: { children: React.ReactNode }) {
                 : (localPortfolioOpen !== null ? localPortfolioOpen : true);
 
               setIsPortfolioOpen(finalOpenStatus);
+              safeLocalStorageSetItem("cms-portfolio-open", JSON.stringify(finalOpenStatus));
 
               const mappedProfile = {
                 ...profileData,
@@ -523,6 +536,8 @@ export function CMSProvider({ children }: { children: React.ReactNode }) {
           status: status,
           contactText: contactText,
           heroBgUrl: heroBgUrl,
+          isPortfolioOpen: isPortfolioOpen,
+          isportfolioopen: isPortfolioOpen,
         };
         const { error } = await supabase.from("profile").upsert({ id: "default", ...supabasePayload });
         if (error) {
@@ -847,15 +862,13 @@ export function CMSProvider({ children }: { children: React.ReactNode }) {
       try {
         const { error } = await supabase
           .from("profile")
-          .update({ isPortfolioOpen: isOpen })
-          .eq("id", "default");
+          .upsert({ id: "default", isPortfolioOpen: isOpen, isportfolioopen: isOpen });
 
         if (error) {
-          console.warn("Update profile isPortfolioOpen failed, trying isportfolioopen:", error.message);
+          console.warn("Upsert profile isPortfolioOpen failed, trying fallback payload:", error.message);
           await supabase
             .from("profile")
-            .update({ isportfolioopen: isOpen })
-            .eq("id", "default");
+            .upsert({ id: "default", isportfolioopen: isOpen });
         }
       } catch (e) {
         console.error("Supabase toggle portfolio status failed", e);
